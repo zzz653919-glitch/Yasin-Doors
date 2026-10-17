@@ -76,6 +76,7 @@
     });
     $("#catf", m.el).addEventListener("submit", function (e) { e.preventDefault(); submit(m, $(".modal-foot .btn--gold", m.el)); });
     function submit(api, btn) {
+      if (btn.disabled) return;   // allaqachon yuborilmoqda — takroriy so'rov yuborilmaydi
       var name = $("#cat-name", m.el).value.trim();
       if (name.length < 2) { var b = $("#catErr", m.el); b.textContent = "Nomini kiriting (kamida 2 ta belgi)."; b.hidden = false; return; }
       A.setBusy(btn, true);
@@ -132,6 +133,7 @@
     });
     $("#sf", m.el).addEventListener("submit", function (e) { e.preventDefault(); submit(m, $(".modal-foot .btn--gold", m.el)); });
     function submit(api, btn) {
+      if (btn.disabled) return;   // allaqachon yuborilmoqda — takroriy so'rov yuborilmaydi
       var raw = $("#sf-val", m.el).value.replace(/\s/g, ""), v = Number(raw), err = $("#sfErr", m.el);
       if (raw === "" || !Number.isInteger(v) || v < (kind === "set" ? 0 : 1)) { err.textContent = kind === "set" ? "0 yoki undan katta butun son kiriting." : "Musbat butun son kiriting."; err.hidden = false; return; }
       var body = { product_id: p.id, note: $("#sf-note", m.el).value };
@@ -233,6 +235,7 @@
         });
         $("#uf", m.el).addEventListener("submit", function (e) { e.preventDefault(); submit(m, $(".modal-foot .btn--gold", m.el)); });
         function submit(api, btn) {
+      if (btn.disabled) return;   // allaqachon yuborilmoqda — takroriy so'rov yuborilmaydi
           var fd = $("#uf", m.el).elements, body = { name: fd.name.value, role: fd.role.value };
           if (isEdit) body.active = fd.active.checked; else { body.username = fd.username.value; body.password = fd.password.value; }
           A.setBusy(btn, true);
@@ -248,6 +251,7 @@
         });
         $("#pwf", m.el).addEventListener("submit", function (e) { e.preventDefault(); submit(m, $(".modal-foot .btn--gold", m.el)); });
         function submit(api, btn) {
+      if (btn.disabled) return;   // allaqachon yuborilmoqda — takroriy so'rov yuborilmaydi
           A.setBusy(btn, true);
           A.post("/users/" + u.id + "/password", { password: $("#pw-new", m.el).value }).then(function () { api.close(); A.toast("Parol yangilandi"); })
             .catch(function (err) { A.setBusy(btn, false); var b = $("#pwErr", m.el); b.textContent = err.message; b.hidden = false; });
@@ -309,7 +313,7 @@
             e.preventDefault();
             var fd = form.elements, body = { logo: logo };
             ["store_name", "phone", "email", "address", "work_hours", "hero_subtitle", "footer_about", "delivery_terms", "warranty_info"].forEach(function (k) { body[k] = fd[k].value; });
-            var btn = $("#sSave", root); A.setBusy(btn, true); $("#sErr", root).hidden = true;
+            var btn = $("#sSave", root); if (btn.disabled) return; A.setBusy(btn, true); $("#sErr", root).hidden = true;
             A.put("/settings", body).then(function () { A.toast("Sozlamalar saqlandi"); }).catch(function (err) { var b = $("#sErr", root); b.textContent = err.message; b.hidden = false; }).then(function () { A.setBusy(btn, false); });
           });
           $("#s-tg", root).addEventListener("change", function (e) {

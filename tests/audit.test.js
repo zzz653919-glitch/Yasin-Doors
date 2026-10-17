@@ -314,12 +314,130 @@ test("o'chirilgan mahsulot buyurtmalar, ombor tarixi va katalogni buzmaydi", asy
   const o = (await call("GET", "/api/admin/orders?q=" + r.json.orderId, A(op))).json.items[0];
   assert.equal((await call("PATCH", "/api/admin/orders/" + o.id, { body: { status: "accepted" }, ...A(op) })).status, 200);
   await reauth(mgr);
+  // bajarilmagan (qabul qilingan) buyurtmada bor — o'chirib bo'lmaydi
+  assert.equal((await call("DELETE", "/api/admin/products/" + pid, A(mgr))).status, 409);
+  // buyurtma yakunlangach tarix saqlanadi va mahsulotni o'chirish mumkin
+  assert.equal((await call("PATCH", "/api/admin/orders/" + o.id, { body: { status: "completed" }, ...A(op) })).status, 200);
   assert.equal((await call("DELETE", "/api/admin/products/" + pid, A(mgr))).status, 200);
-  // buyurtma bekor qilinsa — o'chirilgan mahsulot uchun ombor qaytarilmaydi, lekin xato ham bermaydi
+  // keyin buyurtma bekor qilinsa — o'chirilgan mahsulot uchun ombor qaytarilmaydi, lekin xato ham bermaydi
   await reauth(op);
   assert.equal((await call("PATCH", "/api/admin/orders/" + o.id, { body: { status: "cancelled" }, ...A(op) })).status, 200);
   const detail = await call("GET", "/api/admin/orders/" + o.id, A(op));
   assert.equal(detail.json.item.items[0].name, "Vaqtinchalik");
   assert.equal((await call("GET", "/api/catalog")).status, 200);
   assert.equal((await call("GET", "/api/admin/inventory/movements?product=" + pid, A(op))).status, 200);
+});
+
+/* ---------- Mahsulot CRUD: dublikat, tahrirlash, o'chirish ---------- */
+const countProducts = async () => (await call("GET", "/api/admin/products", A(mgr))).json.items.length;
+const newKey = () => "key-" + Math.random().toString(36).slice(2) + Date.now().toString(36) + "abcd";
+
+test("mahsulot yaratish: bir xil kalit bilan takroriy/parallel so'rovlar bitta mahsulot yaratadi", async () => {
+  const key = newKey();
+  const body = { name: "Dublikat Sinovi", price: 1234000, stock: 4, idempotencyKey: key };
+  const before = await countProducts();
+  const res = await Promise.all([1, 2, 3, 4].map(() => call("POST", "/api/admin/products", { body, ...A(mgr) })));
+  res.forEach(r => assert.ok([200, 201].includes(r.status), "status " + r.status));
+  assert.equal(res.filter(r => r.status === 201).length, 1, "faqat bittasi yangi yaratadi");
+  assert.equal(new Set(res.map(r => r.json.item.id)).size, 1, "hammasi bir xil mahsulotni qaytaradi");
+  assert.equal(await countProducts(), before + 1);
+  const moves = (await call("GET", "/api/admin/inventory/movements?product=" + res[0].json.item.id, A(mgr))).json.items;
+  assert.equal(moves.length, 1, "boshlang'ich kirim ham bir marta yoziladi");
+});
+
+test("bir xil nomli mahsulotlarni parallel yaratish 500 bermaydi, ID lar noyob", async () => {
+  const before = await countProducts();
+  const res = await Promise.all([1, 2, 3].map(() => call("POST", "/api/admin/products", { body: { name: "Bir Xil Nom", price: 1000000 }, ...A(mgr) })));
+  res.forEach(r => assert.equal(r.status, 201, JSON.stringify(r.json)));
+  assert.equal(new Set(res.map(r => r.json.item.id)).size, 3);
+  assert.equal(await countProducts(), before + 3);
+});
+
+test("tekshiruv xatolari qaysi maydonga tegishli ekanini ko'rsatadi", async () => {
+  const cases = [
+    [{ name: "x", price: 1000 }, "name"], [{ name: "Maydon", price: 0 }, "price"], [{ name: "Maydon", price: 1000, old_price: 500 }, "old_price"],
+    [{ name: "Maydon", price: 1000, stock: -3 }, "stock"], [{ name: "Maydon", price: 1000, color: "<b>" }, "color"], [{ name: "Maydon", price: 1000, style: "x" }, "style"],
+    [{ name: "Maydon", price: 1000, category_id: 999999 }, "category_id"], [{ name: "Maydon", price: 1000, image: "javascript:alert(1)" }, "image"]
+  ];
+  for (const [body, field] of cases) {
+    const r = await call("POST", "/api/admin/products", { body, ...A(mgr) });
+    assert.equal(r.status, 400, field);
+    assert.equal(r.json.field, field, "field=" + field + " kutilgan, olingan " + r.json.field);
+  }
+});
+
+test("tahrirlash: faqat tanlangan mahsulot o'zgaradi, ID saqlanadi, yangi mahsulot yaratilmaydi", async () => {
+  const a = (await call("POST", "/api/admin/products", { body: { name: "Tahrir A", price: 1100000, stock: 5 }, ...A(mgr) })).json.item;
+  const b = (await call("POST", "/api/admin/products", { body: { name: "Tahrir B", price: 2200000, stock: 7 }, ...A(mgr) })).json.item;
+  const before = await countProducts();
+  const upd = await call("PUT", "/api/admin/products/" + a.id, { body: { name: "Tahrir A (yangi)", price: 1300000, short: "Qisqa matn" }, ...A(mgr) });
+  assert.equal(upd.status, 200);
+  assert.equal(upd.json.item.id, a.id);
+  assert.equal(await countProducts(), before, "yangi mahsulot yaratilmasligi kerak");
+  const bAfter = (await call("GET", "/api/admin/products/" + b.id, A(mgr))).json.item;
+  assert.equal(bAfter.name, "Tahrir B"); assert.equal(bAfter.price, 2200000); assert.equal(bAfter.stock, 7);
+  const aAfter = (await call("GET", "/api/admin/products/" + a.id, A(mgr))).json.item;
+  assert.equal(aAfter.name, "Tahrir A (yangi)"); assert.equal(aAfter.stock, 5, "stock yuborilmasa o'zgarmaydi");
+  assert.equal(aAfter.short, "Qisqa matn");
+  // chegirmani olib tashlash
+  assert.equal((await call("PUT", "/api/admin/products/" + a.id, { body: { old_price: 1500000 }, ...A(mgr) })).json.item.old_price, 1500000);
+  assert.equal((await call("PUT", "/api/admin/products/" + a.id, { body: { old_price: null }, ...A(mgr) })).json.item.old_price, null);
+  // chegirma yangi narxdan kichik bo'lib qolsa rad etiladi
+  await call("PUT", "/api/admin/products/" + a.id, { body: { old_price: 1500000 }, ...A(mgr) });
+  const bad = await call("PUT", "/api/admin/products/" + a.id, { body: { price: 1600000 }, ...A(mgr) });
+  assert.equal(bad.status, 400); assert.equal(bad.json.field, "old_price");
+});
+
+test("ombor to'qnashuvi: forma ochilgach qoldiq o'zgargan bo'lsa, eski qiymat bosib yuborilmaydi", async () => {
+  const p = (await call("POST", "/api/admin/products", { body: { name: "Qoldiq Sinovi", price: 1000000, stock: 10, sizes: ["800 × 2000"] }, ...A(mgr) })).json.item;
+  // forma ochilgan paytda qoldiq 10 edi; shu orada buyurtma tasdiqlandi (qoldiq 8)
+  const r = await placeOrder([{ id: p.id, size: "800 × 2000", qty: 2 }]);
+  const o = (await call("GET", "/api/admin/orders?q=" + r.json.orderId, A(op))).json.items[0];
+  await call("PATCH", "/api/admin/orders/" + o.id, { body: { status: "accepted" }, ...A(op) });
+  const conflict = await call("PUT", "/api/admin/products/" + p.id, { body: { stock: 15, expected_stock: 10 }, ...A(mgr) });
+  assert.equal(conflict.status, 409);
+  assert.equal(conflict.json.field, "stock"); assert.equal(conflict.json.current, 8);
+  assert.equal((await call("GET", "/api/admin/products/" + p.id, A(mgr))).json.item.stock, 8, "qoldiq o'zgarmagan");
+  // to'g'ri kutilgan qiymat bilan — o'tadi
+  assert.equal((await call("PUT", "/api/admin/products/" + p.id, { body: { stock: 15, expected_stock: 8 }, ...A(mgr) })).status, 200);
+  assert.equal((await call("GET", "/api/admin/products/" + p.id, A(mgr))).json.item.stock, 15);
+  // stock yuborilmasa (faqat nom) — qoldiq tegilmaydi
+  assert.equal((await call("PUT", "/api/admin/products/" + p.id, { body: { name: "Qoldiq Sinovi 2" }, ...A(mgr) })).json.item.stock, 15);
+});
+
+test("o'chirish: ochiq buyurtmali mahsulot bloklanadi, ommaviy o'chirishda qisman natija qaytadi", async () => {
+  const free = (await call("POST", "/api/admin/products", { body: { name: "Bo'sh Mahsulot", price: 1000000 }, ...A(mgr) })).json.item;
+  const busy = (await call("POST", "/api/admin/products", { body: { name: "Band Mahsulot", price: 1000000, sizes: ["800 × 2000"] }, ...A(mgr) })).json.item;
+  await placeOrder([{ id: busy.id, size: "800 × 2000", qty: 1 }]);   // 'new' — bajarilmagan
+  await reauth(mgr);
+  const r = await call("POST", "/api/admin/products/bulk", { body: { action: "delete", ids: [free.id, busy.id] }, ...A(mgr) });
+  assert.equal(r.status, 200);
+  assert.equal(r.json.changed, 1);
+  assert.equal(r.json.blocked.length, 1); assert.equal(r.json.blocked[0].id, busy.id); assert.equal(r.json.blocked[0].open, 1);
+  assert.equal((await call("GET", "/api/admin/products/" + free.id, A(mgr))).status, 404);
+  assert.equal((await call("GET", "/api/admin/products/" + busy.id, A(mgr))).status, 200);
+  const single = await call("DELETE", "/api/admin/products/" + busy.id, A(mgr));
+  assert.equal(single.status, 409); assert.equal(single.json.code, "product_in_open_orders");
+  assert.match(single.json.error, /nofaol/i);
+  // nofaol qilish muqobil yechim sifatida ishlaydi va tarixni saqlaydi
+  assert.equal((await call("PUT", "/api/admin/products/" + busy.id, { body: { active: false }, ...A(mgr) })).status, 200);
+  assert.ok(!(await call("GET", "/api/catalog")).json.products.some(x => x.id === busy.id));
+  // ikkinchi marta o'chirish — 404, xato emas
+  assert.equal((await call("DELETE", "/api/admin/products/" + free.id, A(mgr))).status, 404);
+});
+
+test("yuklangan-u ulanmagan eski rasmlar tozalanadi, ishlatilayotganlari saqlanadi", async () => {
+  const png = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
+  const used = (await call("POST", "/api/admin/upload", { body: { data: png }, ...A(mgr) })).json.url;
+  await call("POST", "/api/admin/products", { body: { name: "Rasmli", price: 1000000, image: used }, ...A(mgr) });
+  const old = "aaaaaaaaaaaaaaaaaaaa", oldUsed = "bbbbbbbbbbbbbbbbbbbb";
+  const twoDaysAgo = new Date(Date.now() - 48 * 3600e3).toISOString();
+  await db.run("INSERT INTO images (id, mime, data, created_at) VALUES (?,?,?,?)", [old, "image/png", "AAAA", twoDaysAgo]);
+  await db.run("INSERT INTO images (id, mime, data, created_at) VALUES (?,?,?,?)", [oldUsed, "image/png", "AAAA", twoDaysAgo]);
+  await call("POST", "/api/admin/products", { body: { name: "Eski rasmli", price: 1000000, image: "/api/image/" + oldUsed }, ...A(mgr) });
+  await call("POST", "/api/admin/upload", { body: { data: png }, ...A(mgr) });   // tozalashni ishga tushiradi
+  await new Promise(r => setTimeout(r, 400));
+  assert.equal(await db.get("SELECT 1 AS x FROM images WHERE id = ?", [old]), null, "ulanmagan eski rasm o'chirilgan");
+  assert.ok(await db.get("SELECT 1 AS x FROM images WHERE id = ?", [oldUsed]), "mahsulotga ulangan rasm saqlangan");
+  assert.equal((await call("GET", used)).status, 200);
 });

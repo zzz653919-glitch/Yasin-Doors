@@ -94,8 +94,13 @@
     var headers = { Accept: "application/json" };
     if (body !== undefined) headers["Content-Type"] = "application/json";
     if (method !== "GET") headers["X-CSRF-Token"] = A.state.csrf;
-    return fetch("/api" + path, { method: method, headers: headers, credentials: "same-origin", body: body !== undefined ? JSON.stringify(body) : undefined })
+    // 30 soniyada javob kelmasa so'rov to'xtatiladi — tugma cheksiz "yuklanmoqda" holatida qolib ketmasin
+    var ctrl = window.AbortController ? new AbortController() : null;
+    var timedOut = false;
+    var timer = setTimeout(function () { timedOut = true; if (ctrl) ctrl.abort(); }, 30000);
+    return fetch("/api" + path, { method: method, headers: headers, credentials: "same-origin", signal: ctrl ? ctrl.signal : undefined, body: body !== undefined ? JSON.stringify(body) : undefined })
       .then(function (res) {
+        clearTimeout(timer);
         if (opts.blob && res.ok) return res.blob();
         return res.json().catch(function () { return null; }).then(function (data) {
           if (res.ok) return data;
@@ -104,7 +109,8 @@
           throw err;
         });
       }, function () {
-        var err = new Error("Serverga ulanib bo'lmadi. Internet aloqasini tekshiring.");
+        clearTimeout(timer);
+        var err = new Error(timedOut ? "Server javob bermadi (30 soniya). Birozdan so'ng qayta urinib ko'ring." : "Serverga ulanib bo'lmadi. Internet aloqasini tekshiring.");
         err.network = true;
         throw err;
       });
@@ -268,6 +274,7 @@
     maxSide = maxSide || 1000;
     return new Promise(function (resolve, reject) {
       if (!/^image\/(jpeg|png|webp)$/.test(file.type)) return reject(new Error("Faqat JPG, PNG yoki WEBP rasm tanlang."));
+      if (file.size > 15 * 1024 * 1024) return reject(new Error("Rasm hajmi 15 MB dan oshmasligi kerak."));
       var url = URL.createObjectURL(file);
       var img = new Image();
       img.onload = function () {

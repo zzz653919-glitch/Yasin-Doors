@@ -108,6 +108,14 @@ Buyurtma saytdan `Yangi` holatida bazaga yoziladi (mijoz telefon bo'yicha avtoma
 - omborda yetarli mahsulot bo'lmasa tasdiqlash rad etiladi (409), hech narsa o'zgarmaydi;
 - har bir o'zgarish `stock_movements` jadvalida (kim, qachon, nima uchun) saqlanadi.
 
+## Mahsulotni saqlash va o'chirish qoidalari
+
+- **Yaratish takrorlanmaydi:** forma har ochilganda noyob kalit yaratadi; ikki marta bosish yoki «server yaratdi, javob yo'qoldi» holatida qayta urinish ham bitta mahsulot yaratadi.
+- **Ombor to'qnashuvi:** tahrirlash formasi ochilgach qoldiq boshqa joyda o'zgarsa (masalan, buyurtma tasdiqlansa), eski miqdor jimgina bosib yuborilmaydi — maydon yonida tushunarli xabar chiqadi. Miqdor o'zgartirilmasa umuman yuborilmaydi.
+- **O'chirish:** tasdiqlash oynasi + parolni qayta tasdiqlash talab qilinadi. **Bajarilmagan** (yangi, qabul qilingan, tayyorlanayotgan, yo'ldagi) buyurtmada qatnashayotgan mahsulot o'chirilmaydi — sababi ko'rsatiladi va «Nofaol qilish» taklif etiladi (saytda ko'rinmaydi, hech narsa yo'qolmaydi). Yakunlangan/bekor qilingan buyurtmalar tarixida mahsulot nomi va narxi saqlanib qoladi.
+- Yuklangan, lekin hech qayerga ulanmagan rasmlar 1 kundan keyin avtomatik tozalanadi.
+- Katalog o'zgarishlari saytga ~5–30 soniyada yetib boradi (qisqa kesh).
+
 ## Statistika hisoblash qoidalari
 
 Dashboarddagi barcha raqamlar bazadan shu qoidalar bo'yicha hisoblanadi:

@@ -119,7 +119,13 @@
     var isEdit = !!product;
     var p = product || { name: "", price: "", old_price: "", stock: 0, low_stock: 5, color: "", style: "", material: "MDF", sizes: ["600 × 2000", "700 × 2000", "800 × 2000", "900 × 2000"], short: "", description: "", image: "", category_id: "", active: true, is_new: false, is_popular: false };
     var imageUrl = p.image || "";
-    var uploading = false;
+    var uploading = false, saving = false;
+    // Takroriy bosish/qayta urinishda server bitta mahsulot yaratishi uchun: kalit forma ochilganda bir marta yaratiladi
+    var createKey = (function () { var a = new Uint8Array(16); (window.crypto || window.msCrypto).getRandomValues(a); return [].map.call(a, function (b) { return ("0" + b.toString(16)).slice(-2); }).join(""); })();
+
+    // Tugma ketma-ket bosilsa, bir nechta forma ochilib ketmasin
+    if (A.openProductForm.opening) return;
+    A.openProductForm.opening = true;
 
     A.get("/categories").then(function (c) { return c.items; }).catch(function () { return []; }).then(function (cats) {
       var catOpts = '<option value="">— Kategoriyasiz —</option>' + cats.map(function (c) { return '<option value="' + c.id + '"' + (c.id === p.category_id ? " selected" : "") + ">" + esc(c.name) + "</option>"; }).join("");
@@ -127,14 +133,14 @@
         title: isEdit ? "Mahsulotni tahrirlash" : "Yangi MDF eshik qo'shish", size: "lg", persistent: true,
         body: '<form id="pf" novalidate><div class="form-grid">' +
           '<div class="field full"><label for="pf-name">Nomi *</label><input class="input" id="pf-name" name="name" maxlength="120" value="' + esc(p.name) + '"><span class="err"></span></div>' +
-          '<div class="field"><label for="pf-cat">Kategoriya</label><select class="select" id="pf-cat" name="category_id">' + catOpts + "</select></div>" +
+          '<div class="field"><label for="pf-cat">Kategoriya</label><select class="select" id="pf-cat" name="category_id">' + catOpts + '</select><span class="err"></span></div>' +
           '<div class="field"><label for="pf-mat">Material</label><input class="input" id="pf-mat" name="material" maxlength="80" value="' + esc(p.material) + '"></div>' +
           '<div class="field"><label for="pf-price">Narx (so\'m) *</label><input class="input" id="pf-price" name="price" inputmode="numeric" value="' + esc(p.price) + '"><span class="err"></span></div>' +
           '<div class="field"><label for="pf-old">Chegirmadan oldingi narx</label><input class="input" id="pf-old" name="old_price" inputmode="numeric" value="' + esc(p.old_price == null ? "" : p.old_price) + '" placeholder="Chegirma bo\'lmasa bo\'sh"><span class="err"></span></div>' +
           '<div class="field"><label for="pf-stock">Ombordagi miqdor</label><input class="input" id="pf-stock" name="stock" inputmode="numeric" value="' + esc(p.stock) + '"><span class="err"></span></div>' +
-          '<div class="field"><label for="pf-low">Kam qolish chegarasi</label><input class="input" id="pf-low" name="low_stock" inputmode="numeric" value="' + esc(p.low_stock) + '"><span class="hint">Shu miqdor yoki undan kam bo\'lsa ogohlantiriladi.</span></div>' +
-          '<div class="field"><label for="pf-color">Rang</label><select class="select" id="pf-color" name="color">' + colorOpts(p.color) + "</select></div>" +
-          '<div class="field"><label for="pf-style">Dizayn</label><select class="select" id="pf-style" name="style">' + styleOpts(p.style) + "</select></div>" +
+          '<div class="field"><label for="pf-low">Kam qolish chegarasi</label><input class="input" id="pf-low" name="low_stock" inputmode="numeric" value="' + esc(p.low_stock) + '"><span class="hint">Shu miqdor yoki undan kam bo\'lsa ogohlantiriladi.</span><span class="err"></span></div>' +
+          '<div class="field"><label for="pf-color">Rang</label><select class="select" id="pf-color" name="color">' + colorOpts(p.color) + "</select><span class=\"err\"></span></div>" +
+          '<div class="field"><label for="pf-style">Dizayn</label><select class="select" id="pf-style" name="style">' + styleOpts(p.style) + "</select><span class=\"err\"></span></div>" +
           '<div class="field full"><label for="pf-sizes">O\'lchamlar (mm, vergul bilan)</label><input class="input" id="pf-sizes" name="sizes" value="' + esc((p.sizes || []).join(", ")) + '"><span class="hint">Masalan: 800 × 2000, 900 × 2000</span></div>' +
           '<div class="field full"><label for="pf-short">Qisqa tavsif</label><input class="input" id="pf-short" name="short" maxlength="200" value="' + esc(p.short) + '"></div>' +
           '<div class="field full"><label for="pf-desc">To\'liq tavsif</label><textarea class="textarea" id="pf-desc" name="description" maxlength="2000">' + esc(p.description) + "</textarea></div>" +
@@ -142,10 +148,12 @@
           '<div class="full" style="display:flex;gap:22px;flex-wrap:wrap"><label class="check"><input type="checkbox" name="active"' + (p.active ? " checked" : "") + '> Sotuvda (faol)</label><label class="check"><input type="checkbox" name="is_new"' + (p.is_new ? " checked" : "") + '> Yangi</label><label class="check"><input type="checkbox" name="is_popular"' + (p.is_popular ? " checked" : "") + "> Mashhur</label></div>" +
           '</div><div class="alert alert--error" id="pfErr" hidden style="margin-top:14px"></div></form>',
         actions: [
+          { label: isEdit ? "Asl holatiga qaytarish" : "Formani tozalash", cls: "btn--ghost", id: "pfReset", onClick: function () { resetForm(); } },
           { label: "Bekor qilish", cls: "btn--ghost", onClick: function (api) { api.close(); } },
           { label: isEdit ? "Saqlash" : "Qo'shish", cls: "btn--gold", id: "pfSave", onClick: function (api, btn) { save(api, btn); } }
         ]
       });
+      A.openProductForm.opening = false;
       var form = $("#pf", m.el);
       A.fallbackImg(m.el);
       form.addEventListener("submit", function (e) { e.preventDefault(); save(m, $("#pfSave", m.el)); });
@@ -165,7 +173,19 @@
         $("#pfClear", m.el).hidden = !imageUrl;
       }
       function intOrNull(v) { v = String(v).replace(/\s/g, ""); return v === "" ? null : Number(v); }
+      // Yaratishda — bo'sh forma; tahrirlashda — serverdan kelgan asl qiymatlar
+      function resetForm() {
+        if (saving) return;
+        form.reset();
+        imageUrl = p.image || "";
+        refreshPreview();
+        A.$$(".field.has-error", form).forEach(function (f) { f.classList.remove("has-error"); });
+        $("#pfImgErr", m.el).textContent = "";
+        $("#pfErr", m.el).hidden = true;
+        $("#pf-name", m.el).focus();
+      }
       function save(api, btn) {
+        if (saving || btn.disabled) return;          // allaqachon yuborilmoqda — ikkinchi so'rov yuborilmaydi
         if (uploading) return A.toast("Rasm yuklanmoqda, kuting…", "error");
         var fd = form.elements, ok = true;
         function check(name, cond, msg) { A.fieldError(form, name, cond ? "" : msg); if (!cond) ok = false; }
@@ -185,15 +205,29 @@
         // Forma ochiq turganda ombor boshqa joyda o'zgargan bo'lishi mumkin (masalan, buyurtma tasdiqlangan):
         // miqdor foydalanuvchi o'zgartirgan bo'lsagina yuboriladi, aks holda yangi qoldiq eski qiymat bilan bosib yuboriladi.
         if (isEdit && body.stock === p.stock) delete body.stock;
-        A.setBusy(btn, true);
+        else if (isEdit) body.expected_stock = p.stock;   // server bu orada qoldiq o'zgarganini aniqlay olsin
+        if (!isEdit) body.idempotencyKey = createKey;
+        saving = true;
+        A.setBusy(btn, true, "Saqlanmoqda…");
+        $("#pfReset", m.el).disabled = true;
         $("#pfErr", m.el).hidden = true;
         (isEdit ? A.put("/products/" + encodeURIComponent(p.id), body) : A.post("/products", body)).then(function () {
           api.close();
           A.toast(isEdit ? "Mahsulot saqlandi" : "Mahsulot qo'shildi");
           if (onSaved) onSaved();
         }).catch(function (err) {
+          saving = false;
           A.setBusy(btn, false);
-          var box = $("#pfErr", m.el); box.textContent = err.message; box.hidden = false;
+          $("#pfReset", m.el).disabled = false;
+          // Server tekshiruvi aniq maydonni ko'rsatsa — xato o'sha maydon yonida; kiritilgan ma'lumotlar saqlanib qoladi
+          var field = err.data && err.data.field;
+          var fieldBox = field && form.elements[field] && form.elements[field].closest(".field");
+          if (fieldBox && $(".err", fieldBox)) {
+            A.fieldError(form, field, err.message);
+            form.elements[field].focus();
+          } else {
+            var box = $("#pfErr", m.el); box.textContent = err.message; box.hidden = false;
+          }
         });
       }
     });
@@ -211,7 +245,8 @@
         '<select class="select" id="pcat" aria-label="Kategoriya"><option value="">Barcha kategoriyalar</option></select>' +
         '<select class="select" id="pact" aria-label="Holat"><option value="">Barcha holatlar</option><option value="1">Faol</option><option value="0">Nofaol</option></select>' +
         '<select class="select" id="pstock" aria-label="Ombor"><option value="">Ombor: hammasi</option><option value="low">Kam qolgan</option><option value="out">Tugagan</option></select>' +
-        '<select class="select" id="psort" aria-label="Saralash"><option value="new">Yangilari avval</option><option value="name">Nomi A–Z</option><option value="price_asc">Narx: arzon</option><option value="price_desc">Narx: qimmat</option><option value="stock">Ombor: kam</option></select></div>' +
+        '<select class="select" id="psort" aria-label="Saralash"><option value="new">Yangilari avval</option><option value="name">Nomi A–Z</option><option value="price_asc">Narx: arzon</option><option value="price_desc">Narx: qimmat</option><option value="stock">Ombor: kam</option></select>' +
+        '<button class="btn btn--ghost btn--sm" type="button" id="pClear" hidden>' + A.icon("close") + "Filtrlarni tozalash</button></div>" +
         '<div id="pBulk"></div><div id="pTable">' + A.skeleton() + "</div>";
       $("#pstock", root).value = f.stock;
 
@@ -221,6 +256,7 @@
       }).catch(function () {});
 
       function load() {
+        syncClear();
         return A.get("/products" + A.qs(f)).then(function (r) {
           if (!root.isConnected) return;
           items = r.items;
@@ -270,10 +306,31 @@
       }
 
       var reload = function () { load(); };
+      // Mahsulot o'chirib bo'lmasa: sababi va muqobil yechim (nofaol qilish) taklif qilinadi
+      function blockedDialog(prod, message) {
+        A.modal({
+          title: "O'chirib bo'lmaydi", size: "sm",
+          body: '<div class="confirm-ico gold">' + A.icon("alert") + "</div><p>" + esc(message) + "</p>",
+          actions: [
+            { label: "Yopish", cls: "btn--ghost", onClick: function (api) { api.close(); } },
+            { label: "Nofaol qilish", cls: "btn--gold", onClick: function (api, btn) {
+              A.setBusy(btn, true);
+              A.put("/products/" + encodeURIComponent(prod.id), { active: false }).then(function () { api.close(); A.toast("Mahsulot nofaol qilindi (saytda ko'rinmaydi)"); load(); }).catch(function (e) { A.setBusy(btn, false); A.fail(e); });
+            } }
+          ]
+        });
+      }
+      // «Filtrlarni tozalash»: qidiruv va barcha filtrlar boshlang'ich holatga qaytadi
+      function syncClear() { var b = $("#pClear", root); if (b) b.hidden = !(f.q || f.category || f.active || f.stock || f.sort !== "new"); }
       var onFilter = A.debounce(function () { load(); }, 250);
       $("#pq", root).addEventListener("input", function (e) { f.q = e.target.value.trim(); onFilter(); });
       [["pcat", "category"], ["pact", "active"], ["pstock", "stock"], ["psort", "sort"]].forEach(function (x) {
         $("#" + x[0], root).addEventListener("change", function (e) { f[x[1]] = e.target.value; load(); });
+      });
+      $("#pClear", root).addEventListener("click", function () {
+        f.q = ""; f.category = ""; f.active = ""; f.stock = ""; f.sort = "new";
+        $("#pq", root).value = ""; $("#pcat", root).value = ""; $("#pact", root).value = ""; $("#pstock", root).value = ""; $("#psort", root).value = "new";
+        load();
       });
 
       root.addEventListener("change", function (e) {
@@ -295,20 +352,41 @@
           if (a === "add") A.openProductForm(null, reload);
           if (a === "reload") load();
         } else if (t.hasAttribute("data-edit")) {
+          if (t.disabled) return;
           var id = t.getAttribute("data-edit");
-          A.get("/products/" + encodeURIComponent(id)).then(function (r) { A.openProductForm(r.item, reload); }).catch(A.fail);
+          t.disabled = true;   // ketma-ket bosishda bir nechta forma ochilmasin
+          // Har safar serverdan yangi ma'lumot olinadi (ro'yxatdagi eski nusxa emas) va aynan shu ID bilan forma ochiladi
+          A.get("/products/" + encodeURIComponent(id)).then(function (r) { A.openProductForm(r.item, reload); }).catch(A.fail).then(function () { t.disabled = false; });
         } else if (t.hasAttribute("data-del")) {
+          if (t.disabled) return;
           var pid = t.getAttribute("data-del"), prod = items.filter(function (p) { return p.id === pid; })[0];
-          A.confirm({ title: "Mahsulotni o'chirish", danger: true, confirmLabel: "O'chirish", text: "<b>" + esc(prod ? prod.name : pid) + "</b> mahsuloti butunlay o'chiriladi. Bu amalni qaytarib bo'lmaydi. Eski buyurtmalardagi nomi saqlanib qoladi." }).then(function (ok) {
+          A.confirm({ title: "Mahsulotni o'chirish", danger: true, confirmLabel: "Ha, o'chirish", text: "<b>" + esc(prod ? prod.name : pid) + "</b> mahsuloti butunlay o'chiriladi. Bu amalni qaytarib bo'lmaydi. Yakunlangan va bekor qilingan buyurtmalar tarixida uning nomi saqlanib qoladi. Agar mahsulotni vaqtincha sotuvdan olmoqchi bo'lsangiz, uni o'chirmasdan «nofaol» qiling." }).then(function (ok) {
             if (!ok) return;
-            A.del("/products/" + encodeURIComponent(pid)).then(function () { A.toast("Mahsulot o'chirildi"); selected.delete(pid); load(); }).catch(A.fail);
+            t.disabled = true;
+            A.del("/products/" + encodeURIComponent(pid)).then(function () { A.toast("Mahsulot o'chirildi"); selected.delete(pid); load(); })
+              .catch(function (err) {
+                t.disabled = false;
+                if (err.data && err.data.code === "product_in_open_orders") blockedDialog(prod || { id: pid, name: pid }, err.message);
+                else A.fail(err);
+              });
           });
         } else if (t.hasAttribute("data-bulk")) {
+          if (t.disabled) return;
           var action = t.getAttribute("data-bulk");
           if (action === "clear") { selected.clear(); paint(); return; }
           var ids = Array.from(selected);
           var run = function () {
-            A.post("/products/bulk", { action: action, ids: ids }).then(function (r) { A.toast(r.changed + " ta mahsulot yangilandi"); selected.clear(); load(); }).catch(A.fail);
+            t.disabled = true;
+            A.post("/products/bulk", { action: action, ids: ids }).then(function (r) {
+              selected.clear();
+              if (action === "delete") {
+                A.toast(r.changed + " ta mahsulot o'chirildi");
+                if (r.blocked && r.blocked.length) {
+                  A.modal({ title: "Ba'zi mahsulotlar o'chirilmadi", size: "sm", body: "<p>Quyidagi mahsulotlar bajarilmagan buyurtmalarda bor, shuning uchun o'chirilmadi:</p><ul style=\"margin:10px 0 0;padding-left:18px\">" + r.blocked.map(function (b) { return "<li><b>" + esc(b.name) + "</b> — " + b.open + " ta buyurtma</li>"; }).join("") + "</ul><p class=\"muted\" style=\"margin-top:12px\">Avval buyurtmalarni yakunlang yoki bekor qiling, yoki mahsulotlarni «nofaol» qiling.</p>", actions: [{ label: "Tushunarli", cls: "btn--gold", onClick: function (api) { api.close(); } }] });
+                }
+              } else A.toast(r.changed + " ta mahsulot yangilandi");
+              load();
+            }).catch(function (err) { t.disabled = false; A.fail(err); });
           };
           if (action === "delete") {
             A.confirm({ title: "Tanlanganlarni o'chirish", danger: true, confirmLabel: "O'chirish", text: "<b>" + ids.length + " ta</b> mahsulot butunlay o'chiriladi. Bu amalni qaytarib bo'lmaydi." }).then(function (ok) { if (ok) run(); });
@@ -382,12 +460,15 @@
         '<input class="input grow" id="oq" type="search" placeholder="Raqam, mijoz yoki telefon…" value="' + esc(f.q) + '" aria-label="Qidirish">' +
         '<select class="select" id="ost" aria-label="Holat"><option value="">Barcha holatlar</option>' + Object.keys(A.STATUS).map(function (k) { return '<option value="' + k + '">' + esc(A.STATUS[k]) + "</option>"; }).join("") + "</select>" +
         '<select class="select" id="opay" aria-label="To\'lov"><option value="">To\'lov: hammasi</option>' + Object.keys(A.PAYMENT).map(function (k) { return '<option value="' + k + '">' + esc(A.PAYMENT[k]) + "</option>"; }).join("") + "</select>" +
-        '<input class="input" id="ofrom" type="date" aria-label="Boshlanish sanasi"><input class="input" id="oto" type="date" aria-label="Tugash sanasi"></div>' +
+        '<input class="input" id="ofrom" type="date" aria-label="Boshlanish sanasi"><input class="input" id="oto" type="date" aria-label="Tugash sanasi">' +
+        '<button class="btn btn--ghost btn--sm" type="button" id="oClear" hidden>' + A.icon("close") + "Filtrlarni tozalash</button></div>" +
         '<div id="oCust"></div><div id="oTable">' + A.skeleton() + '</div><div id="oPager"></div></div>';
       $("#ost", root).value = f.status;
       $("#opay", root).value = f.payment;
 
+      function syncClear() { var b = $("#oClear", root); if (b) b.hidden = !(f.q || f.status || f.payment || f.from || f.to || f.customer); }
       function load() {
+        syncClear();
         return A.get("/orders" + A.qs(f)).then(function (r) {
           if (!root.isConnected) return;
           data = r; paint();
@@ -415,6 +496,11 @@
       $("#oq", root).addEventListener("input", function (e) { f.q = e.target.value.trim(); debounced(); });
       [["ost", "status"], ["opay", "payment"], ["ofrom", "from"], ["oto", "to"]].forEach(function (x) {
         $("#" + x[0], root).addEventListener("change", function (e) { f[x[1]] = e.target.value; f.page = 1; load(); });
+      });
+      $("#oClear", root).addEventListener("click", function () {
+        f.q = ""; f.status = ""; f.payment = ""; f.from = ""; f.to = ""; f.customer = ""; f.page = 1;
+        ["oq", "ost", "opay", "ofrom", "oto"].forEach(function (id) { $("#" + id, root).value = ""; });
+        load();
       });
       root.addEventListener("click", function (e) {
         var row = e.target.closest("[data-open]");
