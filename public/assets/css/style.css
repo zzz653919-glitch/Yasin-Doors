@@ -399,158 +399,159 @@ body.menu-open .drawer-backdrop { opacity: 1; visibility: visible; }
 .cta p { color: #b9b3a8; margin: 0; }
 .cta-actions { position: relative; z-index: 1; display: flex; gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
 
-/* ---------- 3D showcase carousel ---------- */
+/* ---------- "Premium MDF eshiklar vitrinasi" — video-vitrina uslubidagi slayder ---------- */
 .showcase {
   position: relative; overflow: hidden; isolation: isolate;
-  padding: 96px 0 80px; background: #0b0b0c; color: #f3efe8;
-}
-.showcase::before {
-  content: ""; position: absolute; inset: -20% 10% auto; height: 70%; z-index: -1;
-  background: radial-gradient(closest-side, rgba(201, 166, 107, .16), transparent 70%);
-  pointer-events: none;
+  padding: 88px 0 72px; background: #0b0b0c; color: #f3efe8;
 }
 .showcase::after {
-  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; z-index: -1;
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; z-index: 3;
   background: linear-gradient(90deg, transparent, rgba(201, 166, 107, .35), transparent);
 }
-.showcase .section-head { margin-bottom: 20px; }
-.showcase .section-head p { color: #9f998f; }
+.showcase .section-head { position: relative; z-index: 2; margin-bottom: 8px; }
+.showcase .section-head p { color: #a39d93; }
 .showcase .eyebrow { color: #c9a66b; }
 
-.dc {
-  --dc-w: min(800px, 64vw);
-  --dc-spacing: .74;
-  --dc-depth: 230;
-  --dc-rotate: 9;
-  --dc-scale: .13;
-  --dc-dur: .8s;
-  position: relative;
+.vs {
+  --vs-w: min(440px, 80vw);          /* kadr kengligi; balandligi 4:5 nisbatdan */
+  --vs-dur: 1.1s;                    /* o'tish davomiyligi */
+  --vs-enter: 44px;                  /* kirish siljishi (yo'nalishga qarab ishorasi o'zgaradi) */
+  position: relative; z-index: 1; padding: 40px 0 28px;
 }
-.dc.is-reduced { --dc-dur: .2s; }
-.dc-viewport { perspective: 1800px; perspective-origin: 50% 45%; }
-.dc-stage {
-  position: relative; display: grid; justify-items: center; align-items: stretch;
-  padding: 36px 0 44px; transform-style: preserve-3d;
-  touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none;
-  outline: none;
-}
-.dc-stage:focus-visible .dc-card.is-active { outline: 2px solid #c9a66b; outline-offset: 6px; }
-.dc-stage.is-dragging { cursor: grabbing; }
-.dc-card {
-  grid-area: 1 / 1; position: relative; width: var(--dc-w);
-  display: grid; grid-template-columns: .92fr 1.08fr;
-  border-radius: 30px; overflow: hidden;
-  background: linear-gradient(155deg, #1f1f22 0%, #141416 60%, #101012 100%);
-  border: 1px solid rgba(255, 255, 255, .07);
-  box-shadow: 0 50px 90px -40px rgba(0, 0, 0, .9), 0 20px 40px -20px rgba(0, 0, 0, .6);
-  transform-origin: 50% 50%; backface-visibility: hidden; will-change: transform, opacity;
-  transition: transform var(--dc-dur) cubic-bezier(.22, .8, .2, 1), opacity var(--dc-dur) cubic-bezier(.22, .8, .2, 1), box-shadow .5s, border-color .5s;
-}
-.dc-card.is-active {
-  border-color: rgba(201, 166, 107, .32);
-  box-shadow: 0 60px 100px -40px rgba(0, 0, 0, .95), 0 0 0 1px rgba(201, 166, 107, .08), 0 30px 80px -50px rgba(201, 166, 107, .45);
-}
-.dc-stage.is-dragging .dc-card, .dc.no-anim .dc-card, .dc.no-anim .dc-shade, .dc-stage.is-dragging .dc-shade { transition: none; }
-.dc-shade {
-  position: absolute; inset: 0; z-index: 4; pointer-events: none;
-  background: linear-gradient(90deg, rgba(5, 5, 6, .55), rgba(5, 5, 6, .9));
-  opacity: calc(var(--shade, 0) * 1.6);
-  transition: opacity var(--dc-dur) cubic-bezier(.22, .8, .2, 1);
-}
-.dc-card:not(.is-active) { cursor: pointer; }
+.vs[data-dir="prev"] { --vs-enter: -44px; }
 
-.dc-media { position: relative; display: block; min-height: 470px; overflow: hidden; background: #2a2926; }
-.dc-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s cubic-bezier(.22, .8, .2, 1); }
-.dc-card.is-active .dc-media:hover img { transform: scale(1.04); }
-.dc-media::after {
-  content: ""; position: absolute; inset: 0;
-  background: linear-gradient(90deg, transparent 70%, rgba(16, 16, 18, .55)), linear-gradient(0deg, rgba(0, 0, 0, .35), transparent 30%);
+/* Ambient fon: joriy eshik tasviri xiralashtirilgan va qoraytirilgan holda butun vitrina orqasida */
+.vs-backdrop {
+  position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 22%, #000 78%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 22%, #000 78%, transparent 100%);
 }
-.dc-tag {
-  position: absolute; left: 18px; top: 18px; z-index: 1;
-  padding: 7px 12px; border-radius: 999px;
+/* Xiralashtirish arzon bo'lishi uchun: element 4 marta kichik o'lchamda chiziladi va blur ham 4 marta kichik,
+   so'ng GPU orqali 4x kattalashtiriladi — natija bir xil (≈42px blur), lekin piksellar soni 16 marta kam. */
+.vs-backdrop i {
+  position: absolute; left: -8%; top: -8%; width: 29%; height: 29%;
+  background-size: cover; background-position: center;
+  transform-origin: 0 0; transform: scale(4); will-change: opacity;
+  filter: blur(10.5px) saturate(1.2) brightness(.42);
+  opacity: 0; visibility: hidden;
+  transition: opacity 1.4s ease, visibility 0s 1.4s;
+}
+.vs-backdrop i.is-active { opacity: .95; visibility: visible; transition-delay: 0s; }
+.vs-backdrop::after { content: ""; position: absolute; inset: 0; background: radial-gradient(70% 60% at 50% 45%, transparent, rgba(8, 8, 9, .72)); }
+
+.vs-stage { position: relative; display: block; outline: none; touch-action: pan-y; cursor: grab; -webkit-user-select: none; user-select: none; }
+.vs-stage:active { cursor: grabbing; }
+.vs-stage:focus-visible .vs-slide.is-active .vs-frame { outline: 2px solid #c9a66b; outline-offset: 6px; }
+
+/* Slaydlar bir katakda ustma-ust turadi — hammasi bir xil o'lcham */
+.vs-slides { display: grid; justify-items: center; }
+.vs-slide {
+  grid-area: 1 / 1; width: 100%; display: flex; flex-direction: column; align-items: center;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transform: translate3d(var(--vs-enter), 0, 0);
+  transition: opacity var(--vs-dur) cubic-bezier(.4, 0, .2, 1), transform calc(var(--vs-dur) + .1s) cubic-bezier(.16, .84, .24, 1), visibility 0s var(--vs-dur);
+}
+.vs-slide.is-active { opacity: 1; visibility: visible; pointer-events: auto; transform: none; transition-delay: 0s; z-index: 2; }
+.vs-slide.is-leaving { opacity: 0; visibility: visible; transform: translate3d(calc(var(--vs-enter) * -.7), 0, 0); transition-delay: 0s; z-index: 1; }
+
+/* Kadr: eshik doim to'liq ko'rinadi (contain), hamma rasm uchun bir xil o'lcham */
+.vs-frame {
+  position: relative; display: block; width: var(--vs-w); aspect-ratio: 4 / 5; overflow: hidden;
+  border-radius: 28px; background: linear-gradient(160deg, #2a2927, #131314);
+  box-shadow: 0 50px 90px -40px rgba(0, 0, 0, .95), 0 0 0 1px rgba(255, 255, 255, .08), 0 24px 60px -34px rgba(201, 166, 107, .35);
+}
+.vs-frame img { width: 100%; height: 100%; object-fit: contain; object-position: center; display: block; }
+.vs-slide.is-active .vs-frame img { animation: vs-zoom 1.8s cubic-bezier(.16, .84, .24, 1) both; }
+@keyframes vs-zoom { from { transform: scale(1.08); } to { transform: scale(1); } }
+.vs-frame::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 72%, rgba(0, 0, 0, .35)); pointer-events: none; }
+.vs-tag {
+  position: absolute; left: 16px; top: 16px; z-index: 1; padding: 6px 12px; border-radius: 999px;
   background: rgba(12, 12, 13, .62); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-  border: 1px solid rgba(201, 166, 107, .4); color: #e6cf9f;
-  font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+  border: 1px solid rgba(201, 166, 107, .4); color: #e6cf9f; font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
 }
 
-.dc-body { display: flex; flex-direction: column; justify-content: center; gap: 14px; padding: 44px 40px; min-width: 0; }
-.dc-meta { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #9f998f; }
-.dc-name { margin: 0; font-size: clamp(26px, 2.6vw, 36px); color: #f6f2ea; }
-.dc-desc {
-  margin: 0; color: #a9a399; font-size: 15.5px; line-height: 1.6;
-  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
-}
-.dc-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; margin-top: 4px; }
-.dc-price strong { font-size: clamp(22px, 2.2vw, 28px); font-weight: 800; color: #f6f2ea; letter-spacing: -.01em; }
-.dc-price .price-old { display: inline; color: #7f796f; }
-.dc-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-.dc-actions .btn { min-height: 48px; padding: 0 22px; }
-.add-btn--text.is-added { --btn-bg: #f5f2ec; --btn-fg: #151515; }
-.dc-fav.fav-btn {
-  position: static; width: 48px; height: 48px; flex: none;
-  background: rgba(255, 255, 255, .06); color: #f3efe8; border: 1px solid rgba(255, 255, 255, .16);
-  box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none;
-}
-.dc-fav.fav-btn:hover { border-color: rgba(255, 255, 255, .5); }
-.dc-fav.fav-btn.is-active { color: #e5636a; border-color: rgba(229, 99, 106, .5); }
+/* Rasm ostidagi matn */
+.vs-info { width: var(--vs-w); max-width: 100%; min-height: 188px; padding-top: 22px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.vs-info > * { opacity: 0; transform: translateY(14px); }
+.vs-slide.is-active .vs-info > * { animation: vs-rise .9s cubic-bezier(.16, .84, .24, 1) both; }
+.vs-slide.is-active .vs-info > :nth-child(1) { animation-delay: .15s; }
+.vs-slide.is-active .vs-info > :nth-child(2) { animation-delay: .24s; }
+.vs-slide.is-active .vs-info > :nth-child(3) { animation-delay: .33s; }
+.vs-slide.is-active .vs-info > :nth-child(4) { animation-delay: .42s; }
+.vs-slide.is-active .vs-info > :nth-child(5) { animation-delay: .5s; }
+@keyframes vs-rise { to { opacity: 1; transform: none; } }
+.vs-meta { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #a39d93; }
+.vs-name { margin: 0; font-size: clamp(24px, 3vw, 34px); color: #f6f2ea; }
+.vs-desc { margin: 0; max-width: 46ch; color: #b0aa9f; font-size: 15px; line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.vs-price { display: flex; align-items: baseline; justify-content: center; flex-wrap: wrap; gap: 4px 12px; }
+.vs-price strong { font-size: clamp(22px, 2.4vw, 28px); font-weight: 800; color: #f6f2ea; letter-spacing: -.01em; }
+.vs-price .price-old { display: inline; color: #7f796f; }
+.vs-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 6px; }
+.vs-actions .btn { min-height: 48px; padding: 0 26px; }
 
-.dc-controls { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; }
-.dc-nav {
-  width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center;
-  color: #f3efe8; border: 1px solid rgba(255, 255, 255, .18); background: rgba(255, 255, 255, .03);
+/* Strelkalar: kadrning ikki yonida, vertikal markazda */
+.vs-arrow {
+  position: absolute; top: calc(var(--vs-w) * .625 - 27px); z-index: 5;
+  width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center;
+  color: #f3efe8; background: rgba(15, 15, 16, .55); border: 1px solid rgba(255, 255, 255, .2);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
   transition: background-color .25s, color .25s, border-color .25s, transform .25s var(--ease);
 }
-.dc-nav:hover { background: #f3efe8; color: #111; border-color: #f3efe8; }
-.dc-nav:active { transform: scale(.94); }
-.dc-toggle { width: 44px; height: 44px; }
-.dc-toggle .icon { width: 16px; height: 16px; }
-.dc-dots { display: flex; align-items: center; gap: 8px; padding: 0 6px; }
-.dc-dot {
-  position: relative; width: 8px; height: 8px; border-radius: 999px; overflow: hidden;
-  background: rgba(255, 255, 255, .22); transition: width .45s var(--ease), background-color .3s;
-}
-.dc-dot::before { content: ""; position: absolute; inset: -12px -4px; } /* kattaroq bosish maydoni */
-.dc-dot:hover { background: rgba(255, 255, 255, .45); }
-.dc-dot.is-active { width: 38px; background: rgba(255, 255, 255, .2); }
-.dc-dot-fill { position: absolute; inset: 0; width: 0; background: #c9a66b; border-radius: inherit; }
-.dc-dot.is-active .dc-dot-fill { animation: dc-progress var(--dc-interval, 5.5s) linear forwards; }
-.dc.is-paused .dc-dot.is-active .dc-dot-fill { animation-play-state: paused; }
-.dc.is-stopped .dc-dot.is-active .dc-dot-fill { animation: none; width: 100%; }
-@keyframes dc-progress { to { width: 100%; } }
-.dc-counter { min-width: 64px; text-align: center; font-size: 14px; font-weight: 700; color: #7f796f; letter-spacing: .06em; font-variant-numeric: tabular-nums; }
-.dc-counter b { color: #f3efe8; }
+.vs-arrow--prev { left: calc(50% - var(--vs-w) / 2 - 86px); }
+.vs-arrow--next { right: calc(50% - var(--vs-w) / 2 - 86px); }
+.vs-arrow:hover { background: #f3efe8; color: #111; border-color: #f3efe8; transform: scale(1.06); }
+.vs-arrow:active { transform: scale(.95); }
+
+/* Indikatorlar */
+.vs-controls { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; padding: 6px 16px 0; }
+.vs-dots { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; max-width: 100%; }
+.vs-dot { position: relative; width: 8px; height: 8px; border-radius: 999px; overflow: hidden; background: rgba(255, 255, 255, .24); transition: width .5s var(--ease), background-color .3s; }
+.vs-dot::before { content: ""; position: absolute; inset: -14px -5px; }   /* bosish maydoni kattaroq */
+.vs-dot:hover { background: rgba(255, 255, 255, .5); }
+.vs-dot.is-active { width: 40px; background: rgba(255, 255, 255, .2); }
+.vs-dot-fill { position: absolute; inset: 0; width: 0; border-radius: inherit; background: #c9a66b; }
+.vs-dot.is-active .vs-dot-fill { animation: vs-progress var(--vs-interval, 5s) linear forwards; }
+.vs.is-paused .vs-dot.is-active .vs-dot-fill { animation-play-state: paused; }
+.vs.is-stopped .vs-dot.is-active .vs-dot-fill { animation: none; width: 100%; }
+@keyframes vs-progress { to { width: 100%; } }
+.vs-counter { min-width: 62px; text-align: center; font-size: 14px; font-weight: 700; color: #7f796f; letter-spacing: .06em; font-variant-numeric: tabular-nums; }
+.vs-counter b { color: #f3efe8; }
+.vs-toggle { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: #f3efe8; border: 1px solid rgba(255, 255, 255, .18); background: rgba(255, 255, 255, .04); transition: background-color .25s, color .25s; }
+.vs-toggle:hover { background: #f3efe8; color: #111; }
+.vs-toggle .icon { width: 16px; height: 16px; }
+
+.vs.no-anim .vs-slide, .vs.no-anim .vs-backdrop i, .vs.no-anim .vs-slide .vs-frame img, .vs.no-anim .vs-slide .vs-info > * { transition: none !important; animation: none !important; }
+.vs.no-anim .vs-slide.is-active .vs-info > * { opacity: 1; transform: none; }
 
 @media (max-width: 960px) {
-  .showcase { padding: 72px 0 64px; }
-  .dc { --dc-w: 80vw; --dc-spacing: .86; --dc-depth: 170; --dc-rotate: 7; --dc-scale: .12; }
-  .dc-media { min-height: 400px; }
-  .dc-body { padding: 32px 26px; }
-  .dc-actions { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; }
-  .dc-actions .btn { min-height: 46px; padding: 0 12px; font-size: 14px; }
-  .dc-fav.fav-btn { width: 46px; height: 46px; }
+  .showcase { padding: 64px 0 52px; }
+  .vs { --vs-w: min(400px, 78vw); padding-top: 28px; }
+  /* Planshet va telefonda strelkalar kadr ustida, pastki chetda */
+  .vs-arrow { top: auto; bottom: calc(var(--vs-w) * .06 + 188px); width: 46px; height: 46px; }
+  .vs-arrow--prev { left: calc(50% - var(--vs-w) / 2 + 10px); }
+  .vs-arrow--next { right: calc(50% - var(--vs-w) / 2 + 10px); }
 }
-@media (max-width: 720px) {
-  .dc { --dc-w: 82vw; --dc-spacing: .92; --dc-depth: 110; --dc-rotate: 4; --dc-scale: .08; }
-  .dc-card { grid-template-columns: 1fr; grid-template-rows: auto 1fr; border-radius: 24px; }
-  .dc-media { min-height: 0; aspect-ratio: 1 / 1; }
-  .dc-media img { object-position: 50% 45%; }
-  .dc-media::after { background: linear-gradient(0deg, rgba(16, 16, 18, .65), transparent 40%); }
-  .dc-body { justify-content: flex-start; gap: 10px; padding: 20px 20px 22px; }
-  .dc-name { font-size: 24px; }
-  .dc-desc { font-size: 14.5px; -webkit-line-clamp: 2; }
-  .dc-stage { padding: 24px 0 32px; }
-  .dc-controls { gap: 10px; }
-  .dc-dots { order: -1; flex-basis: 100%; justify-content: center; margin-bottom: 6px; }
-  .dc-nav { width: 48px; height: 48px; }
+@media (max-width: 640px) {
+  .showcase { padding: 52px 0 44px; }
+  .vs { --vs-w: min(340px, 84vw); --vs-enter: 26px; --vs-dur: .9s; padding-top: 18px; }
+  .vs[data-dir="prev"] { --vs-enter: -26px; }
+  .vs-frame { border-radius: 22px; }
+  .vs-backdrop i { filter: blur(6.5px) saturate(1.15) brightness(.4); }   /* telefonda yengilroq */
+  .vs-info { min-height: 200px; padding-top: 18px; }
+  .vs-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
+  .vs-actions .btn { padding: 0 12px; min-height: 46px; font-size: 14px; }
+  .vs-arrow { bottom: calc(var(--vs-w) * .06 + 200px); width: 42px; height: 42px; }
+  .vs-dots { gap: 6px; }
+  .vs-dot { width: 6px; height: 6px; } .vs-dot.is-active { width: 26px; }
+  .vs-controls { gap: 12px; }
 }
-@media (max-width: 360px) {
-  .dc-actions { grid-template-columns: 1fr auto; }
-  .dc-actions .btn--light { grid-column: 1 / -1; }
-}
-@media (hover: none) {
-  .dc-card.is-active .dc-media:hover img { transform: none; }
-}
+@media (hover: none) { .vs-arrow:hover { background: rgba(15, 15, 16, .55); color: #f3efe8; border-color: rgba(255, 255, 255, .2); transform: none; } }
+
+/* Kamroq harakat: zoom/siljish yo'q, o'tish qisqa, progress to'xtagan holatda */
+.vs.is-reduced { --vs-dur: .25s; --vs-enter: 0px; }
+.vs.is-reduced .vs-slide.is-active .vs-frame img { animation: none; }
+.vs.is-reduced .vs-slide.is-active .vs-info > * { animation-duration: .2s; animation-delay: 0s !important; }
+.vs.is-reduced .vs-backdrop i { transition-duration: .3s; }
 
 /* ---------- Footer ---------- */
 .site-footer { background: #111112; color: #cfc9be; padding: 72px 0 28px; margin-top: 0; }
@@ -951,8 +952,8 @@ body.menu-open .to-top, body.filters-open .to-top { opacity: 0; visibility: hidd
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
   .reveal { opacity: 1; transform: none; }
-  /* carousel taymeri progress animatsiyasiga bog‘langan — uni qisqartirmaymiz */
-  .dc-dot.is-active .dc-dot-fill { animation-duration: var(--dc-interval, 5.5s) !important; }
+  /* vitrina progress-chizig‘i o‘z davomiyligini saqlasin (foydalanuvchi avtomatik almashishni qo‘lda yoqqan bo‘lishi mumkin) */
+  .vs-dot.is-active .vs-dot-fill { animation-duration: var(--vs-interval, 5s) !important; }
 }
 
 @media (hover: none) {
