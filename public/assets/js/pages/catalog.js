@@ -1,5 +1,5 @@
 /* Katalog: qidiruv, saralash va filtrlar (holat URL’da saqlanadi) */
-document.addEventListener("DOMContentLoaded", function () {
+YD.whenReady(function () {
   var D = YD.data;
   var grid = document.getElementById("productGrid");
   var countEl = document.getElementById("resultCount");

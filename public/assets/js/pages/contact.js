@@ -1,5 +1,5 @@
 /* Aloqa sahifasi: kontakt kartalari va xabar formasi */
-document.addEventListener("DOMContentLoaded", function () {
+YD.whenReady(function () {
   var C = YD.config, esc = YD.esc, icon = YD.icon;
 
   function card(ic, label, value, href) {

@@ -12,6 +12,7 @@ const fs = require("fs");
 const path = require("path");
 
 const ROOT = __dirname;
+const PUBLIC = path.join(ROOT, "public"); // faqat shu papka brauzerga beriladi (Vercel'dagi outputDirectory bilan bir xil)
 
 /* ---------- .env yuklash ---------- */
 (function loadEnv() {
@@ -25,11 +26,9 @@ const ROOT = __dirname;
   }
 })();
 
-const { handleOrder, handleContact } = require("./lib/handlers");
-const { clientIp } = require("./lib/vercel-adapter");
+const { handle: handleApi } = require("./lib/router");
 
 const PORT = Number(process.env.PORT) || 3000;
-const ROUTES = { "/api/order": handleOrder, "/api/contact": handleContact };
 const MIME = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
@@ -46,49 +45,39 @@ const MIME = {
   ".txt": "text/plain; charset=utf-8"
 };
 // Brauzerga hech qachon berilmaydigan fayl va papkalar
-const BLOCKED = /^\/(\.env|\.git|node_modules|lib|api|server\.js|package(-lock)?\.json)/i;
+const BLOCKED = /^\/(\.env|\.git|\.claude|node_modules|lib|api|data|scripts|tests|server\.js|package(-lock)?\.json|vercel\.json)/i;
 
-function sendJSON(res, status, data) {
-  res.writeHead(status, { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" });
-  res.end(JSON.stringify(data));
-}
-
-function readBody(req, limit = 50 * 1024) {
-  return new Promise((resolve, reject) => {
-    let size = 0;
-    const chunks = [];
-    req.on("data", c => {
-      size += c.length;
-      if (size > limit) { reject(new Error("too_large")); req.destroy(); return; }
-      chunks.push(c);
-    });
-    req.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
-    req.on("error", reject);
-  });
-}
+// Admin sahifasi uchun qo'shimcha xavfsizlik sarlavhalari (vercel.json dagilar bilan bir xil)
+const ADMIN_HEADERS = {
+  "X-Frame-Options": "DENY",
+  "Referrer-Policy": "same-origin",
+  "X-Robots-Tag": "noindex, nofollow",
+  "Content-Security-Policy": "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"
+};
 
 function serveStatic(req, res, pathname) {
   if (BLOCKED.test(pathname)) return notFound(res);
-  if (pathname === "/") pathname = "/index.html";
-  const file = path.normalize(path.join(ROOT, pathname));
-  if (!file.startsWith(ROOT)) return notFound(res);
+  if (pathname === "/admin") { res.writeHead(301, { Location: "/admin/" }); return res.end(); }
+  if (pathname.endsWith("/")) pathname += "index.html";
+  const file = path.normalize(path.join(PUBLIC, pathname));
+  if (!file.startsWith(PUBLIC)) return notFound(res);
 
   fs.stat(file, (err, stat) => {
     if (err || !stat.isFile()) return notFound(res);
     const ext = path.extname(file).toLowerCase();
-    res.writeHead(200, {
+    res.writeHead(200, Object.assign({
       "Content-Type": MIME[ext] || "application/octet-stream",
       // HTML/CSS/JS har doim yangilansin (o‘zgarishlar darhol ko‘rinadi), rasmlar 1 soat keshda
       "Cache-Control": [".html", ".css", ".js"].includes(ext) ? "no-cache" : "public, max-age=3600",
       "X-Content-Type-Options": "nosniff"
-    });
+    }, pathname.startsWith("/admin/") ? ADMIN_HEADERS : {}));
     if (req.method === "HEAD") return res.end();
     fs.createReadStream(file).pipe(res);
   });
 }
 
 function notFound(res) {
-  const file = path.join(ROOT, "404.html");
+  const file = path.join(PUBLIC, "404.html");
   fs.readFile(file, (err, data) => {
     res.writeHead(404, { "Content-Type": "text/html; charset=utf-8" });
     res.end(err ? "404 — sahifa topilmadi" : data);
@@ -103,29 +92,18 @@ const server = http.createServer(async (req, res) => {
     return notFound(res);
   }
 
-  const handler = ROUTES[pathname];
-  if (handler) {
-    if (req.method !== "POST") return sendJSON(res, 405, { ok: false, error: "Faqat POST so‘rovi qabul qilinadi." });
-    let body;
-    try {
-      body = JSON.parse(await readBody(req));
-    } catch (e) {
-      return sendJSON(res, 400, { ok: false, error: "Noto‘g‘ri so‘rov." });
-    }
-    try {
-      const result = await handler(body, clientIp(req));
-      return sendJSON(res, result.status, result.body);
-    } catch (e) {
-      console.error(e);
-      return sendJSON(res, 500, { ok: false, error: "Server xatosi." });
-    }
-  }
+  if (pathname === "/api" || pathname.startsWith("/api/")) return handleApi(req, res);
 
-  if (req.method !== "GET" && req.method !== "HEAD") return sendJSON(res, 405, { ok: false, error: "Method not allowed" });
+  if (req.method !== "GET" && req.method !== "HEAD") {
+    res.writeHead(405, { "Content-Type": "text/plain; charset=utf-8", Allow: "GET, HEAD" });
+    return res.end("Method not allowed");
+  }
   serveStatic(req, res, pathname);
 });
 
 server.listen(PORT, () => {
+  const dbMode = require("./lib/db").isConfigured() ? "baza: " + (process.env.DATABASE_URL ? "DATABASE_URL" : "lokal fayl data/yasindoors.db") : "baza: YO'Q";
+  console.log(`Admin panel: http://localhost:${PORT}/admin/  |  ${dbMode}`);
   const mode = String(process.env.ORDER_DRY_RUN).toLowerCase() === "true"
     ? "DRY RUN (buyurtmalar faqat konsolga chiqadi)"
     : (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID ? "Telegram ulangan" : "Telegram SOZLANMAGAN — .env faylini to‘ldiring");

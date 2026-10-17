@@ -1,5 +1,5 @@
 /* Savat sahifasi */
-document.addEventListener("DOMContentLoaded", function () {
+YD.whenReady(function () {
   var root = document.getElementById("cartRoot");
   var subtitle = document.getElementById("cartSubtitle");
   var esc = YD.esc, icon = YD.icon, fmt = YD.formatPrice;
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
           '<div class="summary-row"><span>O‘rnatish</span><span class="muted">Kelishiladi</span></div>' +
           '<div class="summary-row total"><span>Jami</span><span>' + fmt(YD.store.cartTotal()) + "</span></div>" +
           '<a class="btn btn--gold btn--block" href="checkout.html">Buyurtmani rasmiylashtirish' + icon("arrow") + "</a>" +
-          '<p class="muted" style="font-size:13px;margin:14px 0 0">Narxlar namunaviy. Yakuniy summa menejer bilan tasdiqlanadi.</p>' +
+          '<p class="muted" style="font-size:13px;margin:14px 0 0">' + (YD.isSample() ? "Narxlar namunaviy. " : "") + 'Yakuniy summa menejer bilan tasdiqlanadi.</p>' +
         "</aside>" +
       "</div>";
   }

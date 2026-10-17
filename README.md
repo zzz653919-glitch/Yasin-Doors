@@ -1,139 +1,154 @@
-# YasinDoors — Premium MDF eshiklar internet-do‘koni
+# YasinDoors — MDF eshiklar internet-do'koni + Admin panel
 
-Faqat MDF eshiklar uchun zamonaviy internet-do‘kon: katalog, filtr va qidiruv, savat, sevimlilar, buyurtma formasi va buyurtmalarni **Telegram bot** orqali administratorga yuborish.
+Faqat MDF eshiklar uchun: ochiq sayt (katalog, savat, sevimlilar, buyurtma) va **admin panel** (`/admin/`) — mahsulotlar, buyurtmalar, mijozlar, ombor, administratorlar, sozlamalar va audit log.
 
-**Texnologiyalar:** HTML5, CSS3, Vanilla JavaScript. Backend — tashqi kutubxonasiz Node.js (Vercel serverless yoki oddiy `server.js`).
+**Texnologiyalar:** HTML5, CSS3, Vanilla JS (frontend) · Node.js serverless API · **libSQL/Turso** (SQLite) ma'lumotlar bazasi · Telegram bot bildirishnomalari. Faqat bitta tashqi bog'liqlik: `@libsql/client`.
 
 ---
 
 ## Fayl tuzilishi
 
 ```
-├── index.html             Bosh sahifa
-├── products.html          Katalog (qidiruv, saralash, filtrlar)
-├── product-detail.html    Mahsulot sahifasi (?id=<mahsulot-id>)
-├── about.html             Biz haqimizda
-├── favorites.html         Sevimlilar
-├── cart.html              Savat
-├── checkout.html          Buyurtma berish
-├── contact.html           Aloqa
-├── 404.html
-├── assets/
-│   ├── css/style.css      Barcha uslublar (light/dark tema, responsive)
-│   ├── img/doors/*.svg    Eshik tasvirlari (haqiqiy fotolar bilan almashtirish mumkin)
-│   ├── img/fallback.svg   Rasm yuklanmasa ko‘rsatiladigan rasm
-│   └── js/
-│       ├── config.js      Kompaniya kontaktlari (telefon, manzil, ...)
-│       ├── products.js    MAHSULOTLAR VA NARXLAR (sayt + server ishlatadi)
-│       ├── app.js         Navbar/footer, tema, savat, sevimlilar, toast
-│       ├── form-utils.js  Forma validatsiyasi va yuborish
-│       ├── theme-init.js  Temani sahifa chizilishidan oldin qo‘llash
-│       └── pages/*.js     Har bir sahifaning skripti
-├── api/order.js           Vercel funksiyasi: POST /api/order
-├── api/contact.js         Vercel funksiyasi: POST /api/contact
-├── lib/handlers.js        Validatsiya, narxni qayta hisoblash, Telegram’ga yuborish
-├── lib/vercel-adapter.js
-├── server.js              Lokal / VPS uchun server (statik fayllar + API)
-├── .env.example           Muhit o‘zgaruvchilari namunasi
-└── package.json
+├── public/                    Brauzerga beriladigan hamma narsa (Vercel outputDirectory)
+│   ├── index.html, products.html, product-detail.html, about.html,
+│   │   favorites.html, cart.html, checkout.html, contact.html, 404.html
+│   ├── assets/ (css, js, img)  Ochiq sayt
+│   └── admin/                  Admin panel (SPA): index.html, admin.css, js/
+├── api/[...path].js           Vercel funksiyasi — barcha /api/* so'rovlari
+├── lib/                       Server kodi (brauzerga berilmaydi)
+│   ├── router.js              Marshrutlash, sessiya, CSRF, ruxsatlar, xatolar
+│   ├── routes-public.js       /api/catalog, /api/order, /api/contact, /api/image/:id
+│   ├── routes-admin.js        /api/admin/...
+│   ├── auth.js                Parol xeshi (scrypt), sessiya, rollar, login cheklovi, audit
+│   ├── store.js               Mahsulot/buyurtma/ombor/mijoz/sozlama mantiqi, statistika
+│   ├── db.js                  Baza ulanishi va sxema (jadvallar avtomatik yaratiladi)
+│   ├── telegram.js            Telegram bildirishnomalari
+│   └── handlers.js            Baza ulanmagan holat uchun zaxira rejim (faqat Telegram)
+├── scripts/create-admin.js    Administrator yaratish / parolni tiklash
+├── tests/api.test.js          Backend testlari (26 ta)
+├── server.js                  Lokal server (public/ + API)
+├── vercel.json, package.json, .env.example
 ```
-
----
 
 ## Lokal ishga tushirish
 
-Talab: **Node.js 18+** (`node -v`).
+Talab: **Node.js 22+**.
 
 ```bash
-cp .env.example .env      # Windows: copy .env.example .env
-node server.js
+npm install
+cp .env.example .env        # Windows: copy .env.example .env
+npm run create-admin        # birinchi Super Admin (pastga qarang)
+npm run dev                 # http://localhost:3000   ·   admin: http://localhost:3000/admin/
 ```
 
-Brauzerda: <http://localhost:3000>
+Lokal baza `data/yasindoors.db` fayli (hisob kerak emas, gitignore'da). Testlar: `npm test`.
 
-- `.env` ichida `ORDER_DRY_RUN=true` bo‘lsa, buyurtmalar Telegram’ga yuborilmaydi — xabar matni server konsoliga chiqadi. Sinov uchun qulay.
-- HTML fayllarni to‘g‘ridan-to‘g‘ri ochish (`file://`) ham ishlaydi: katalog, savat va sevimlilar ishlaydi, lekin buyurtma/aloqa formalari server talab qiladi.
+## Ma'lumotlar bazasi
 
----
+Vercel'da doimiy fayl tizimi yo'q, shuning uchun ishlab chiqarishda **Turso** (libSQL, bepul tarif yetarli) ishlatiladi. Bir xil kod lokalda `file:` bazasi bilan ham ishlaydi.
 
-## Telegram integratsiyasini sozlash
+Jadvallar (`lib/db.js`, birinchi so'rovda avtomatik yaratiladi): `users`, `sessions`, `login_attempts`, `categories`, `products`, `images`, `customers`, `orders`, `order_items`, `order_history`, `stock_movements`, `settings`, `audit_log`.
 
-Bot tokeni **faqat serverda** (environment variable) saqlanadi — frontend JavaScript’da hech qachon bo‘lmaydi. Brauzer faqat `/api/order` ga so‘rov yuboradi, serverning o‘zi Telegram’ga murojaat qiladi.
+**Turso'ni ulash:**
+1. <https://turso.tech> da hisob oching → **Create database** (masalan `yasindoors`).
+2. Baza sahifasidan **URL** (`libsql://...turso.io`) va **Create token** orqali token oling.
+3. Bu ikkisi `DATABASE_URL` va `DATABASE_AUTH_TOKEN` bo'ladi (pastda Vercel bosqichlariga qarang).
 
-1. **Bot yarating.** Telegram’da [@BotFather](https://t.me/BotFather) → `/newbot` → nom bering. Bergan tokenni nusxalang (`123456789:AA...`).
-2. **Chat ID ni aniqlang.**
-   - *Shaxsiy chat:* botingizga istalgan xabar yozing, so‘ng brauzerda oching:
-     `https://api.telegram.org/bot<TOKEN>/getUpdates` → javobdagi `"chat":{"id": ...}` qiymati.
-   - *Guruh:* botni guruhga qo‘shing, guruhda xabar yozing va yuqoridagi havolani oching. Guruh ID odatda `-100` bilan boshlanadi.
-3. **`.env` ni to‘ldiring:**
-   ```env
-   TELEGRAM_BOT_TOKEN=123456789:AA...
-   TELEGRAM_CHAT_ID=-1001234567890
-   ORDER_DRY_RUN=false
-   ```
-4. Serverni qayta ishga tushiring va saytdan sinov buyurtmasi bering.
+Katalog bo'sh bo'lsa, ochiq sayt namunaviy (statik) katalogni ko'rsatadi. Admin panelda mahsulot qo'shilishi bilan sayt bazadagi katalogga o'tadi. Dashboard'dagi **«Namunaviy katalogni import qilish»** tugmasi 10 ta namunaviy eshikni (ombor 0) bazaga qo'shadi.
 
-Agar token/chat ID sozlanmagan bo‘lsa, sayt mijozga "xizmat hozircha sozlanmagan" degan tushunarli xabar ko‘rsatadi, serverda esa ogohlantirish logga yoziladi.
+## Birinchi administratorni xavfsiz yaratish
 
-**Xavfsizlik choralari (allaqachon qo‘shilgan):**
-- Narxlar serverda `products.js` asosida qayta hisoblanadi — brauzerdan kelgan narxga ishonilmaydi.
-- Majburiy maydonlar va telefon raqami serverda ham tekshiriladi, matnlar uzunligi cheklangan, HTML ekranlanadi.
-- Spam-botlar uchun yashirin "honeypot" maydon va IP bo‘yicha oddiy rate-limit (10 daqiqada 5 ta so‘rov).
-- `server.js` `.env`, `lib/`, `api/`, `server.js` kabi fayllarni brauzerga bermaydi.
+Oldindan belgilangan parol yo'q. Ikki yo'l:
 
----
-
-## Deploy qilish
-
-### 1-variant: Vercel (tavsiya etiladi, bepul tarif yetarli)
-
-1. Loyihani GitHub’ga yuklang (`.env` `.gitignore` da — u yuklanmaydi).
-2. [vercel.com](https://vercel.com) → **Add New → Project** → repozitoriyani tanlang. Framework: **Other**, build buyrug‘i shart emas.
-3. **Settings → Environment Variables** bo‘limiga qo‘shing:
-   `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` (`ORDER_DRY_RUN` qo‘shmang yoki `false`).
-4. **Deploy**. Statik sahifalar va `api/order.js`, `api/contact.js` funksiyalari avtomatik ishlaydi.
-
-### 2-variant: VPS / hosting (Node.js mavjud bo‘lsa)
-
+**1) Terminal (tavsiya etiladi)** — parol ekranda ko'rinmaydi va hech qayerda saqlanmaydi (bazada faqat scrypt xeshi):
 ```bash
-git clone <repo> yasindoors && cd yasindoors
-cp .env.example .env && nano .env      # token va chat ID ni yozing
-node server.js                          # yoki: npx pm2 start server.js --name yasindoors
+npm run create-admin
+# Parolni tiklash:  npm run create-admin -- --reset <login>
 ```
+Ishlab chiqarish (Turso) bazasi uchun buyruqni shu bazaning `DATABASE_URL` va `DATABASE_AUTH_TOKEN` qiymatlari bilan ishga tushiring (PowerShell: `$env:DATABASE_URL="libsql://..."; $env:DATABASE_AUTH_TOKEN="..."; npm run create-admin`).
 
-Nginx orqali domenni `http://127.0.0.1:3000` ga proxy qiling va HTTPS (masalan, Let’s Encrypt) ulang.
+**2) Brauzer orqali (bir martalik)** — serverda uzun tasodifiy `SETUP_TOKEN` belgilang, `/admin/` sahifasi birinchi administrator formasini ko'rsatadi. Administrator yaratilgach u o'chadi; `SETUP_TOKEN` ni olib tashlang.
 
-### 3-variant: faqat statik hosting (Netlify, GitHub Pages va h.k.)
+Parol siyosati: kamida 10 belgi, harf va raqam.
 
-Sayt to‘liq ochiladi, lekin formalar ishlashi uchun backend kerak. Backendni Vercel yoki VPS’da alohida joylab, `assets/js/config.js` ichida manzilini ko‘rsating:
+## Rollar va ruxsatlar (server tomonida tekshiriladi)
 
-```js
-apiBase: "https://sizning-backend-domeningiz.uz"
-```
+| | Super Admin | Manager | Operator |
+|---|:-:|:-:|:-:|
+| Dashboard, buyurtmalarni ko'rish | ✓ | ✓ | ✓ |
+| Buyurtma holati/to'lovini o'zgartirish | ✓ | ✓ | ✓ |
+| Buyurtmalarni CSV eksport | ✓ | ✓ | — |
+| Mahsulot/kategoriya qo'shish, tahrirlash, o'chirish | ✓ | ✓ | ko'rish |
+| Mijozlarni tahrirlash | ✓ | ✓ | ko'rish |
+| Ombor kirim/chiqim/tuzatish | ✓ | ✓ | ko'rish |
+| Sozlamalar | ✓ | ko'rish | — |
+| Administratorlar, audit log | ✓ | — | — |
 
-(Bu holda backend boshqa domenda bo‘lgani uchun CORS sarlavhalarini qo‘shish kerak bo‘ladi.)
+**Qayta tasdiqlash (parol so'raladi, 5 daqiqa amal qiladi):** mahsulot/kategoriya o'chirish, buyurtmani bekor qilish, administratorlarni boshqarish, Telegram yoqish/o'chirish.
 
----
+## Xavfsizlik
+
+- **Parollar:** scrypt + tasodifiy tuz, timing-safe solishtirish; API hech qachon xeshni qaytarmaydi.
+- **Sessiya:** tasodifiy token `HttpOnly`, `SameSite=Strict` (HTTPS'da `Secure`) cookie'da; bazada faqat SHA-256 xeshi. 8 soat, logout'da bekor qilinadi.
+- **CSRF:** har bir sessiyaga alohida token (`X-CSRF-Token`) + `Origin` tekshiruvi + `SameSite=Strict`.
+- **Login cheklovi:** 15 daqiqada 5 ta xato (login bo'yicha) / 10 ta (IP bo'yicha) → 429. Baza orqali, serverless instansiyalar o'rtasida ham ishlaydi.
+- **SQL injection:** barcha so'rovlar parametrlangan. **XSS:** admin interfeysida barcha matn ekranlanadi, qat'iy CSP (`script-src 'self'`, inline skript yo'q), `X-Frame-Options: DENY`.
+- **Ruxsatlar:** har bir endpointda serverda tekshiriladi (frontend'da yashirish xavfsizlik hisoblanmaydi).
+- **Audit log:** kirish, mahsulot/buyurtma/ombor/foydalanuvchi/sozlama o'zgarishlari. Parollar va tokenlar yozilmaydi; xato javoblarida ichki ma'lumot yo'q.
+- **Narxlar** serverda bazadan hisoblanadi (brauzerdan kelgan narxga ishonilmaydi). Rasm yuklashda fayl imzosi tekshiriladi. CSV eksportda formula injection'dan himoya.
+- Admin sahifasining HTML qobig'i ommaga ochiq (u faqat kirish formasi), lekin barcha ma'lumotlar himoyalangan API orqali beriladi.
+
+## Buyurtma va ombor mantiqi
+
+Buyurtma saytdan `Yangi` holatida bazaga yoziladi (mijoz telefon bo'yicha avtomatik yaratiladi/yangilanadi). Ombor:
+- `Qabul qilindi` (yoki undan keyingi) holatga o'tganda ombor **bir marta** kamayadi;
+- bekor qilinsa yoki `Yangi`ga qaytarilsa — **bir marta** qaytariladi;
+- bir vaqtda ikki marta bosilsa ham ombor ikki marta o'zgarmaydi (atomik `stock_applied` bayrog'i + tranzaksiya; testlarda tekshirilgan);
+- omborda yetarli mahsulot bo'lmasa tasdiqlash rad etiladi (409), hech narsa o'zgarmaydi;
+- har bir o'zgarish `stock_movements` jadvalida (kim, qachon, nima uchun) saqlanadi.
+
+## Telegram bildirishnomalari
+
+Token va chat ID **faqat serverda** (muhit o'zgaruvchilari); brauzerga hech qachon chiqmaydi. Yangi buyurtma kelganda xabarda: buyurtma raqami, mijoz, telefon, manzil, mahsulotlar va umumiy summa. Sozlanmagan bo'lsa, qolgan hamma funksiyalar ishlayveradi; admin panel (Sozlamalar) yo'riqnoma va «Sinov xabari» tugmasini ko'rsatadi.
+
+1. Telegram'da [@BotFather](https://t.me/BotFather) → `/newbot` → tokenni nusxalang.
+2. Botga xabar yozing (guruh bo'lsa, botni guruhga qo'shing) va `https://api.telegram.org/bot<TOKEN>/getUpdates` ni oching → `chat.id`.
+3. `TELEGRAM_BOT_TOKEN` va `TELEGRAM_CHAT_ID` ni `.env` (lokal) yoki Vercel Environment Variables'ga kiriting.
+4. Qayta deploy/ishga tushiring; Sozlamalar → «Sinov xabarini yuborish».
+
+`ORDER_DRY_RUN=true` — xabarlar Telegram'ga yuborilmaydi, server konsoliga chiqadi (lokal sinov).
+
+## Vercel'ga deploy qilish
+
+1. Loyihani GitHub'ga yuklang (`.env` va `data/` gitignore'da).
+2. [vercel.com](https://vercel.com) → **Add New → Project** → repozitoriyni tanlang. **Framework Preset: Other**, **Root Directory: bo'sh**. Build/Output sozlamalari `vercel.json` da (`outputDirectory: public`).
+3. **Settings → Environment Variables:**
+   - `DATABASE_URL` = `libsql://...turso.io`
+   - `DATABASE_AUTH_TOKEN` = Turso tokeni
+   - `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` (ixtiyoriy)
+   - (`SETUP_TOKEN` — faqat birinchi administrator uchun, ixtiyoriy)
+4. **Deploy**.
+5. Birinchi administratorni yarating (yuqoridagi 1- yoki 2-usul). Keyin `https://<domen>/admin/` ga kiring.
+6. Env o'zgartirsangiz — **Deployments → Redeploy**.
+
+Baza ulanmagan bo'lsa: ochiq sayt statik katalog bilan ishlayveradi, buyurtmalar faqat Telegram'ga yuboriladi (zaxira rejim), admin panel esa aniq xabar ko'rsatadi.
 
 ## Kontentni tahrirlash
 
 | Nima | Qayerda |
 |---|---|
-| Mahsulotlar, **narxlar**, ranglar, uslublar, belgilar (Yangi/Mashhur) | `assets/js/products.js` |
-| Telefon, email, manzil, ish vaqti, Telegram/Instagram, xarita | `assets/js/config.js` |
-| Eshik rasmlari | `assets/img/doors/` — faylni almashtiring yoki `products.js` dagi `image` yo‘lini o‘zgartiring (JPG/WEBP, 4:5 nisbat tavsiya etiladi) |
-| Ranglar va dizayn | `assets/css/style.css` boshidagi `:root` o‘zgaruvchilari |
-| Bosh sahifadagi 3D carousel: mahsulotlar tartibi va aylanish tezligi | `assets/js/pages/home.js` (`SHOWCASE_ORDER`, `interval`) |
-| Loading ekran (faqat sessiyadagi birinchi kirishda; matnlar, maksimal kutish `MAX_WAIT`) | `assets/js/loader.js`, `assets/css/loader.css`. Qayta ko‘rish uchun brauzer konsolida: `sessionStorage.removeItem("yd_intro_seen")` va sahifani yangilang |
-| Scroll tizimi: progress chizig‘i, navbar, parallax, bo‘limlar indikatori, back-to-top | `assets/js/scroll.js` (parallax rasmlari va kuchi — `PARALLAX` ro‘yxati), uslublar — `style.css` → "Premium scroll tizimi" |
-| Carousel geometriyasi (karta kengligi, oraliq, chuqurlik, burilish) | `style.css` → `.dc { --dc-w; --dc-spacing; --dc-depth; --dc-rotate; --dc-scale }` |
+| Mahsulotlar, narxlar, ombor, rasmlar | **Admin panel → Mahsulotlar** |
+| Telefon, manzil, ish vaqti, logotip, matnlar, yetkazib berish/kafolat shartlari | **Admin panel → Sozlamalar** |
+| Zaxira (statik) katalog va rang/dizayn ro'yxatlari | `public/assets/js/products.js` |
+| Dastlabki kontaktlar (baza bo'sh bo'lganda) | `public/assets/js/config.js` |
+| Ranglar va dizayn | `public/assets/css/style.css`, `public/admin/admin.css` (`:root`) |
+| Loading ekran | `public/assets/js/loader.js`, `public/assets/css/loader.css` |
+| Scroll tizimi | `public/assets/js/scroll.js` |
+| Bosh sahifa carousel | `public/assets/js/carousel.js`, `public/assets/js/pages/home.js` |
 
-**Yangi mahsulot qo‘shish** — `products.js` dagi `PRODUCTS` ro‘yxatiga yangi obyekt qo‘shing (`id` takrorlanmas bo‘lsin, `color` va `style` qiymatlari `COLORS`/`STYLES` kalitlaridan biri bo‘lsin). Katalog, filtrlar va server avtomatik yangilanadi.
+### Ishga tushirishdan oldin to'ldirilishi kerak
 
-### Ishga tushirishdan oldin to‘ldirilishi kerak
-
-- [ ] `config.js` — haqiqiy kontakt ma’lumotlari (bo‘sh joylar saytda "Tez orada qo‘shiladi" bo‘lib ko‘rinadi).
-- [ ] `products.js` — haqiqiy narxlar (hozirgilari **namunaviy**).
-- [ ] `index.html` — "Mijozlar fikrlari" bo‘limidagi namunaviy matnlarni haqiqiy, mijoz roziligi bilan olingan fikrlarga almashtiring (yoki bo‘limni olib tashlang).
-- [ ] `about.html` — `[to‘ldiriladi]` deb belgilangan joylar (tashkil topgan yil, materiallar yetkazib beruvchilari, kafolat shartlari, yetkazib berish hududlari). Sertifikat yoki kafolatlarni faqat ular rasman mavjud bo‘lsa yozing.
-- [ ] Eshik rasmlarini haqiqiy mahsulot fotolari bilan almashtirish (ixtiyoriy, lekin tavsiya etiladi).
+- [ ] Sozlamalar'da haqiqiy kontakt ma'lumotlari (bo'sh joylar saytda «Tez orada qo'shiladi» bo'lib ko'rinadi).
+- [ ] Bosh sahifadagi «Mijozlar fikrlari» namunaviy matnlarini (`public/index.html`) haqiqiy fikrlarga almashtiring yoki bo'limni olib tashlang.
+- [ ] `public/about.html` dagi `[to'ldiriladi]` joylar. Sertifikat yoki kafolatni faqat rasman mavjud bo'lsa yozing.
+- [ ] Mahsulot rasmlarini haqiqiy fotolar bilan almashtiring (admin panel orqali yuklanadi, avtomatik kichraytiriladi).

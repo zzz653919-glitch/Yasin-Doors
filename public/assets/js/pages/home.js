@@ -1,5 +1,5 @@
 /* Bosh sahifa: 3D showcase carousel va eng ko‘p sotiladigan eshiklar */
-document.addEventListener("DOMContentLoaded", function () {
+YD.whenReady(function () {
   // Carousel tartibi: turli uslub va ranglar navbatma-navbat ko‘rinsin.
   // Ro‘yxatda yo‘q mahsulotlar oxiriga avtomatik qo‘shiladi.
   var SHOWCASE_ORDER = ["noir-gold", "nordic-oak", "linea-grafit", "neo-arka", "walnut-glass", "classic-royal", "loft-black", "vetro-bianco", "sand-duo", "grey-stripe"];

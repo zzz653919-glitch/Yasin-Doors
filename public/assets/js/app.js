@@ -7,6 +7,95 @@
 
   var DATA = window.YD_DATA || { PRODUCTS: [], COLORS: {}, STYLES: {} };
   var CONFIG = window.YD_CONFIG || {};
+
+  /* ---------- Admin paneldagi ma’lumotlar bilan sinxronlash ----------
+     Sayt avval statik katalog (products.js) bilan ishlaydi. /api/catalog bazadan faol mahsulotlar
+     va sozlamalarni qaytarsa — ular statik ro‘yxat o‘rnini oladi. Baza bo‘sh yoki ishlamasa,
+     statik katalog saqlanib qoladi (sayt hech qachon bo‘sh qolmaydi).
+     Oxirgi javob localStorage’da keshlanadi: savat/sevimlilar sahifa ochilishi bilan to‘g‘ri tanilsin. */
+  var STATIC_PRODUCTS = DATA.PRODUCTS.slice();
+  var SITE = {};
+  var CATALOG_SOURCE = "static";
+  var CATALOG_CACHE = "yd_catalog_v1";
+  var domReady = false, catalogDone = false, siteApplied = false, readyCbs = [];
+
+  function normalizeProduct(p) {
+    p.badges = p.badges || [];
+    p.sizes = p.sizes && p.sizes.length ? p.sizes : ["600 × 2000"];
+    p.specs = p.specs || {};
+    p.short = p.short || "";
+    p.description = p.description || p.short;
+    return p;
+  }
+  function setProducts(list) {
+    DATA.PRODUCTS.length = 0;
+    list.forEach(function (p) { DATA.PRODUCTS.push(normalizeProduct(p)); });
+  }
+  function applyCatalog(res) {
+    if (!res) return;
+    SITE = res.settings || {};
+    if (SITE.phone) CONFIG.phone = SITE.phone;
+    if (SITE.email) CONFIG.email = SITE.email;
+    if (SITE.address) CONFIG.address = SITE.address;
+    if (SITE.work_hours) CONFIG.workHours = SITE.work_hours;
+    CATALOG_SOURCE = res.source === "db" ? "db" : "static";
+    if (CATALOG_SOURCE === "db" && Array.isArray(res.products)) setProducts(res.products);
+    else setProducts(STATIC_PRODUCTS);
+  }
+  try {
+    var cached = JSON.parse(localStorage.getItem(CATALOG_CACHE) || "null");
+    if (cached && cached.source === "db") applyCatalog(cached);
+  } catch (e) { /* kesh yo‘q */ }
+
+  function loadCatalog() {
+    if (location.protocol === "file:" || !window.fetch) return Promise.resolve();
+    var ctrl = window.AbortController ? new AbortController() : null;
+    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 4000);
+    return fetch((CONFIG.apiBase || "").replace(/\/$/, "") + "/api/catalog", { signal: ctrl ? ctrl.signal : undefined, headers: { Accept: "application/json" } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (res) {
+        clearTimeout(timer);
+        if (!res || !res.ok) return;
+        applyCatalog(res);
+        try {
+          if (res.source === "db") localStorage.setItem(CATALOG_CACHE, JSON.stringify(res));
+          else localStorage.removeItem(CATALOG_CACHE);
+        } catch (e) { /* e’tiborsiz */ }
+      })
+      .catch(function () { clearTimeout(timer); }); // tarmoq xatosi — mavjud (statik yoki keshdagi) katalog bilan davom etamiz
+  }
+  loadCatalog().then(function () { catalogDone = true; fireReady(); });
+
+  /** DOM va katalog tayyor bo‘lgach chaqiriladi (sahifa skriptlari shuni ishlatadi) */
+  function whenReady(cb) { readyCbs.push(cb); fireReady(); }
+  function fireReady() {
+    if (!domReady || !catalogDone) return;
+    if (!siteApplied) {
+      siteApplied = true;
+      applySite();
+      document.dispatchEvent(new CustomEvent("yd:change"));
+    }
+    readyCbs.splice(0).forEach(function (cb) {
+      try { cb(); } catch (e) { setTimeout(function () { throw e; }); }
+    });
+  }
+  // Admin sozlamalaridagi matnlar, logotip va aloqa ma’lumotlarini sahifaga qo‘llash
+  function applySite() {
+    var f = document.querySelector(".site-footer");
+    if (f) f.outerHTML = footerHTML();
+    if (SITE.logo) {
+      document.querySelectorAll(".logo-mark").forEach(function (m) {
+        m.innerHTML = '<img src="' + esc(SITE.logo) + '" alt="" width="36" height="36">';
+      });
+    }
+    if (CATALOG_SOURCE === "db") document.querySelectorAll("[data-sample-note]").forEach(function (el) { el.remove(); });
+    var lead = document.querySelector(".hero .lead");
+    if (lead && SITE.hero_subtitle) lead.textContent = SITE.hero_subtitle;
+    document.querySelectorAll("[data-site]").forEach(function (el) {
+      var v = SITE[el.getAttribute("data-site")];
+      if (v) el.textContent = v;
+    });
+  }
   var FALLBACK_IMG = "assets/img/fallback.svg";
 
   /* ---------- Yordamchilar ---------- */
@@ -212,7 +301,7 @@
     return '<footer class="site-footer"><div class="container">' +
       '<div class="footer-grid">' +
       "<div>" + logoHTML() +
-      "<p>Faqat MDF eshiklar: zamonaviy dizayn, puxta ishlov va har bir detalga e’tibor.</p>" +
+      "<p>" + esc(SITE.footer_about || "Faqat MDF eshiklar: zamonaviy dizayn, puxta ishlov va har bir detalga e’tibor.") + "</p>" +
       (socials ? '<div class="socials">' + socials + "</div>" : "") + "</div>" +
       '<div><h4>Sahifalar</h4><ul class="footer-links">' +
       '<li><a href="index.html">Bosh sahifa</a></li><li><a href="products.html">Katalog</a></li>' +
@@ -225,8 +314,8 @@
       "<li>" + icon("pin") + "<span>" + contactValue(CONFIG.address) + "</span></li>" +
       "<li>" + icon("clock") + "<span>" + contactValue(CONFIG.workHours) + "</span></li>" +
       "</ul></div></div>" +
-      '<div class="footer-bottom"><span>© ' + new Date().getFullYear() + " YasinDoors. Barcha huquqlar himoyalangan.</span>" +
-      "<span>Saytdagi narxlar namunaviy va o‘zgarishi mumkin.</span></div>" +
+      '<div class="footer-bottom"><span>© ' + new Date().getFullYear() + " " + esc(SITE.store_name || "YasinDoors") + ". Barcha huquqlar himoyalangan.</span>" +
+      (CATALOG_SOURCE === "db" ? "" : "<span>Saytdagi narxlar namunaviy va o‘zgarishi mumkin.</span>") + "</div>" +
       "</div></footer>";
   }
 
@@ -438,6 +527,8 @@
     document.addEventListener("yd:change", updateCounts);
     updateCounts();
     observeReveal();
+    domReady = true;
+    fireReady();
   }
 
   window.YD = {
@@ -454,6 +545,9 @@
     toast: toast,
     observeReveal: observeReveal,
     contactValue: contactValue,
+    whenReady: whenReady,
+    isSample: function () { return CATALOG_SOURCE !== "db"; },
+    site: function () { return SITE; },
     apiUrl: function (path) { return (CONFIG.apiBase || "").replace(/\/$/, "") + path; }
   };
 

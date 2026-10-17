@@ -1,5 +1,5 @@
 /* Mahsulot sahifasi: product-detail.html?id=<mahsulot-id> */
-document.addEventListener("DOMContentLoaded", function () {
+YD.whenReady(function () {
   var D = YD.data, esc = YD.esc, icon = YD.icon;
   var root = document.getElementById("productRoot");
   var p = YD.getProduct(YD.param("id"));
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
         '<p class="lead">' + esc(p.description) + "</p>" +
         '<div class="detail-price"><span class="price">' + YD.formatPrice(p.price) + "</span>" +
           (hasSale ? '<span class="price-old">' + YD.formatPrice(p.oldPrice) + "</span>" : "") + "</div>" +
-        '<p class="muted" style="font-size:14px;margin:0">Narx 1 komplekt uchun, namunaviy. Aniq narx o‘lcham va komplektatsiyaga qarab menejer tomonidan tasdiqlanadi.</p>' +
+        '<p class="muted" style="font-size:14px;margin:0">Narx 1 komplekt uchun' + (YD.isSample() ? ", namunaviy" : "") + '. Aniq narx o‘lcham va komplektatsiyaga qarab menejer tomonidan tasdiqlanadi.</p>' +
 
         '<div class="option-label">O‘lcham (mm)</div>' +
         '<div class="chips" id="sizeChips" role="radiogroup" aria-label="O‘lcham">' +

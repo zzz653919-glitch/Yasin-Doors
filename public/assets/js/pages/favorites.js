@@ -1,5 +1,5 @@
 /* Sevimlilar sahifasi */
-document.addEventListener("DOMContentLoaded", function () {
+YD.whenReady(function () {
   var grid = document.getElementById("favGrid");
   var toolbar = document.getElementById("favToolbar");
   var subtitle = document.getElementById("favSubtitle");

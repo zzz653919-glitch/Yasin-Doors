@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="uz" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0e0e10">
+  <title>YasinDoors — Admin panel</title>
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+  <script src="js/theme.js"></script>
+</head>
+<body>
+  <div id="boot" class="boot"><span class="spinner"></span><span>Yuklanmoqda…</span></div>
+
+  <!-- Kirish ekrani -->
+  <main id="login" class="login" hidden>
+    <div class="login-card">
+      <div class="brand"><span class="brand-mark"><svg viewBox="0 0 18 22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 21V2.5a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1V21M.5 21h17"/><circle cx="12.3" cy="11.5" r="1.3" fill="currentColor"/></svg></span><span>Yasin<b>Doors</b> Admin</span></div>
+      <h1 id="loginTitle">Tizimga kirish</h1>
+      <p class="sub" id="loginSub">Boshqaruv paneliga kirish uchun login va parolingizni kiriting.</p>
+      <div id="loginNotice" hidden></div>
+      <form id="loginForm" novalidate>
+        <div class="field"><label for="lg-user">Login</label><input class="input" id="lg-user" name="username" autocomplete="username" autocapitalize="off" spellcheck="false" required></div>
+        <div class="field"><label for="lg-pass">Parol</label><input class="input" id="lg-pass" name="password" type="password" autocomplete="current-password" required></div>
+        <div id="loginError" class="alert alert--error" role="alert" hidden></div>
+        <button class="btn btn--gold btn--block" type="submit" id="loginBtn">Kirish</button>
+      </form>
+      <form id="setupForm" novalidate hidden>
+        <div class="field"><label for="st-token">Sozlash kaliti (SETUP_TOKEN)</label><input class="input" id="st-token" name="token" type="password" autocomplete="off" required><span class="hint">Serverdagi <span class="code">SETUP_TOKEN</span> muhit o'zgaruvchisi qiymati.</span></div>
+        <div class="field"><label for="st-name">To'liq ism</label><input class="input" id="st-name" name="name" autocomplete="name" required></div>
+        <div class="field"><label for="st-user">Login</label><input class="input" id="st-user" name="username" autocomplete="username" autocapitalize="off" required></div>
+        <div class="field"><label for="st-pass">Parol (kamida 10 belgi, harf va raqam)</label><input class="input" id="st-pass" name="password" type="password" autocomplete="new-password" required></div>
+        <div id="setupError" class="alert alert--error" role="alert" hidden></div>
+        <button class="btn btn--gold btn--block" type="submit" id="setupBtn">Super Admin yaratish</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- Asosiy ilova -->
+  <div id="app" class="app" hidden>
+    <aside class="sidebar" id="sidebar" aria-label="Asosiy navigatsiya">
+      <a class="brand" href="#/dashboard"><span class="brand-mark"><svg viewBox="0 0 18 22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 21V2.5a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1V21M.5 21h17"/><circle cx="12.3" cy="11.5" r="1.3" fill="currentColor"/></svg></span><span>Yasin<b>Doors</b></span></a>
+      <nav class="nav" id="nav"></nav>
+      <div class="sidebar-foot"><a href="../index.html" target="_blank" rel="noopener"><svg class="ic"><use href="#i-external"/></svg>Saytni ko'rish</a></div>
+    </aside>
+    <div class="scrim" id="scrim"></div>
+    <div class="main">
+      <header class="topbar">
+        <button class="icon-btn bordered menu-btn" id="menuBtn" type="button" aria-label="Menyuni ochish"><svg class="ic"><use href="#i-menu"/></svg></button>
+        <form class="search-box" id="globalSearch" role="search">
+          <svg class="ic"><use href="#i-search"/></svg>
+          <input class="input" id="globalQ" type="search" placeholder="Qidirish…" aria-label="Qidirish" autocomplete="off">
+        </form>
+        <div class="top-actions">
+          <button class="icon-btn bordered" id="themeBtn" type="button" aria-label="Yorug' / qorong'i rejim"><svg class="ic theme-ic-sun"><use href="#i-sun"/></svg><svg class="ic theme-ic-moon"><use href="#i-moon"/></svg></button>
+          <div class="rel">
+            <button class="icon-btn bordered" id="bellBtn" type="button" aria-label="Bildirishnomalar" aria-expanded="false"><svg class="ic"><use href="#i-bell"/></svg><span class="dot-badge" id="bellCount" hidden>0</span></button>
+            <div class="popover" id="bellPop" hidden></div>
+          </div>
+          <div class="rel">
+            <button class="profile-btn" id="profileBtn" type="button" aria-expanded="false"><span class="avatar" id="avatar">A</span><span class="who"><b id="whoName">—</b><span id="whoRole">—</span></span></button>
+            <div class="popover popover-menu" id="profilePop" hidden>
+              <a href="#/settings"><svg class="ic"><use href="#i-settings"/></svg>Sozlamalar</a>
+              <button type="button" id="logoutBtn"><svg class="ic"><use href="#i-logout"/></svg>Chiqish</button>
+            </div>
+          </div>
+        </div>
+      </header>
+      <main class="view" id="view" tabindex="-1"></main>
+    </div>
+  </div>
+
+  <div id="modalRoot"></div>
+  <div class="toast-root" id="toastRoot" role="status" aria-live="polite"></div>
+
+  <script src="../assets/js/products.js"></script>
+  <script src="js/core.js"></script>
+  <script src="js/views-main.js"></script>
+  <script src="js/views-manage.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

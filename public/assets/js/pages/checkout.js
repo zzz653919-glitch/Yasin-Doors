@@ -1,5 +1,5 @@
 /* Buyurtma berish sahifasi */
-document.addEventListener("DOMContentLoaded", function () {
+YD.whenReady(function () {
   var root = document.getElementById("checkoutRoot");
   var form = document.getElementById("orderForm");
   var alertEl = document.getElementById("formAlert");
