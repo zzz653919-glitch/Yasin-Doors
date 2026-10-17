@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="uz" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Buyurtma berish — YasinDoors</title>
+  <meta name="description" content="YasinDoors: MDF eshiklar buyurtmasini rasmiylashtirish.">
+  <meta name="theme-color" content="#f7f5f1">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/loader.css">
+  <script src="assets/js/theme-init.js"></script>
+  <script src="assets/js/loader.js"></script>
+</head>
+<body data-page="checkout">
+  <div data-include="header"></div>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="index.html">Bosh sahifa</a><span>/</span><a href="cart.html">Savat</a><span>/</span><span aria-current="page">Buyurtma</span></nav>
+        <h1 class="title-lg">Buyurtmani rasmiylashtirish</h1>
+        <p>Ma’lumotlaringizni qoldiring — menejerimiz buyurtmani tasdiqlash uchun siz bilan bog‘lanadi.</p>
+      </div>
+    </section>
+
+    <section class="section section--tight">
+      <div class="container" id="checkoutRoot">
+        <div class="cart-layout">
+          <form class="card" id="orderForm" novalidate>
+            <h2 class="title-md">Mijoz ma’lumotlari</h2>
+            <div class="form-grid" style="margin-top:20px">
+              <div class="field">
+                <label for="name">Ismingiz <span class="req">*</span></label>
+                <input class="input" id="name" name="name" type="text" autocomplete="name" maxlength="80" placeholder="Ism va familiya">
+                <span class="error" id="name-error">Iltimos, ismingizni kiriting (kamida 2 ta harf).</span>
+              </div>
+              <div class="field">
+                <label for="phone">Telefon raqami <span class="req">*</span></label>
+                <input class="input" id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="+998 90 123 45 67">
+                <span class="error" id="phone-error">Telefon raqamini to‘g‘ri kiriting, masalan: +998 90 123 45 67.</span>
+              </div>
+              <div class="field full">
+                <label for="address">Yetkazib berish manzili <span class="req">*</span></label>
+                <input class="input" id="address" name="address" type="text" autocomplete="street-address" maxlength="200" placeholder="Shahar, tuman, ko‘cha, uy">
+                <span class="error" id="address-error">Iltimos, yetkazib berish manzilini kiriting.</span>
+              </div>
+              <div class="field full">
+                <label for="comment">Qo‘shimcha izoh</label>
+                <textarea class="textarea" id="comment" name="comment" maxlength="1000" placeholder="Masalan: nostandart o‘lcham, qulay qo‘ng‘iroq vaqti, o‘rnatish kerakligi…"></textarea>
+              </div>
+              <div class="field full">
+                <label class="checkbox"><input type="checkbox" name="install" id="install"> O‘rnatish xizmati ham kerak</label>
+              </div>
+              <div class="field full">
+                <label class="checkbox"><input type="checkbox" name="agree" id="agree"> Ma’lumotlarim buyurtmani rasmiylashtirish maqsadida ishlatilishiga roziman <span class="req">*</span></label>
+                <span class="error" id="agree-error">Davom etish uchun roziligingizni belgilang.</span>
+              </div>
+              <!-- Spam-botlar uchun yashirin maydon -->
+              <div class="hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+            </div>
+            <div class="form-alert" id="formAlert" role="alert" style="margin-top:20px"></div>
+            <button class="btn btn--gold btn--block" type="submit" id="submitBtn" style="margin-top:22px">Buyurtmani yuborish</button>
+          </form>
+
+          <aside class="card summary" aria-label="Tanlangan mahsulotlar">
+            <h2>Tanlangan mahsulotlar</h2>
+            <div class="summary-items" id="summaryItems"></div>
+            <div class="summary-row"><span>Mahsulotlar soni</span><span id="summaryCount">0</span></div>
+            <div class="summary-row"><span>Yetkazib berish</span><span class="muted">Kelishiladi</span></div>
+            <div class="summary-row total"><span>Jami</span><span id="summaryTotal">0 so‘m</span></div>
+            <a class="btn btn--outline btn--block btn--sm" href="cart.html">Savatni tahrirlash</a>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="footer"></div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/scroll.js"></script>
+  <script src="assets/js/form-utils.js"></script>
+  <script src="assets/js/pages/checkout.js"></script>
+</body>
+</html>

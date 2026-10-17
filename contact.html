@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="uz" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aloqa — YasinDoors</title>
+  <meta name="description" content="YasinDoors bilan bog‘lanish: MDF eshiklar bo‘yicha savollar, maslahat va buyurtmalar.">
+  <meta name="theme-color" content="#f7f5f1">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/loader.css">
+  <script src="assets/js/theme-init.js"></script>
+  <script src="assets/js/loader.js"></script>
+</head>
+<body data-page="contact">
+  <div data-include="header"></div>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="index.html">Bosh sahifa</a><span>/</span><span aria-current="page">Aloqa</span></nav>
+        <h1 class="title-lg">Biz bilan bog‘laning</h1>
+        <p>Eshik tanlash, o‘lcham yoki buyurtma bo‘yicha savollaringiz bo‘lsa — xabar qoldiring, siz bilan bog‘lanamiz.</p>
+      </div>
+    </section>
+
+    <section class="section section--tight">
+      <div class="container contact-layout">
+        <div>
+          <div class="contact-cards" id="contactCards"></div>
+          <div class="map-box" id="mapBox"></div>
+        </div>
+
+        <form class="card" id="contactForm" novalidate>
+          <h2 class="title-md">Xabar yuborish</h2>
+          <div class="form-grid" style="margin-top:20px">
+            <div class="field">
+              <label for="c-name">Ismingiz <span class="req">*</span></label>
+              <input class="input" id="c-name" name="name" type="text" autocomplete="name" maxlength="80" placeholder="Ismingiz">
+              <span class="error" id="name-error">Iltimos, ismingizni kiriting.</span>
+            </div>
+            <div class="field">
+              <label for="c-phone">Telefon <span class="req">*</span></label>
+              <input class="input" id="c-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="+998 90 123 45 67">
+              <span class="error" id="phone-error">Telefon raqamini to‘g‘ri kiriting.</span>
+            </div>
+            <div class="field full">
+              <label for="c-topic">Mavzu</label>
+              <select class="select" id="c-topic" name="topic">
+                <option>Eshik tanlash bo‘yicha maslahat</option>
+                <option>Nostandart o‘lcham / individual buyurtma</option>
+                <option>Yetkazib berish va o‘rnatish</option>
+                <option>Boshqa savol</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label for="c-message">Xabar <span class="req">*</span></label>
+              <textarea class="textarea" id="c-message" name="message" maxlength="1500" placeholder="Savolingizni yozing…"></textarea>
+              <span class="error" id="message-error">Xabar kamida 5 ta belgidan iborat bo‘lsin.</span>
+            </div>
+            <div class="hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+          </div>
+          <div class="form-alert" id="contactAlert" role="alert" style="margin-top:20px"></div>
+          <button class="btn btn--block" type="submit" id="contactSubmit" style="margin-top:22px">Yuborish</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="footer"></div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/scroll.js"></script>
+  <script src="assets/js/form-utils.js"></script>
+  <script src="assets/js/pages/contact.js"></script>
+</body>
+</html>

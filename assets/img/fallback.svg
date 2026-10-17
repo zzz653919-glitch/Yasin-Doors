@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 600" width="480" height="600">
+<rect width="480" height="600" fill="#e9e5de"/>
+<g fill="none" stroke="#b8935a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="0.8">
+<path d="M190 380V210a8 8 0 0 1 8-8h84a8 8 0 0 1 8 8v170"/><path d="M170 380h140"/>
+</g>
+<circle cx="268" cy="296" r="7" fill="#b8935a" opacity="0.8"/>
+<text x="240" y="430" text-anchor="middle" font-family="Manrope, Arial, sans-serif" font-size="20" font-weight="700" fill="#8f877b">Rasm mavjud emas</text>
+</svg>

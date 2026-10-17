@@ -1,0 +1,13 @@
+{
+  "name": "yasindoors",
+  "version": "1.0.0",
+  "private": true,
+  "description": "YasinDoors — premium MDF eshiklar internet-do‘koni",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="uz" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Katalog — YasinDoors MDF eshiklar</title>
+  <meta name="description" content="YasinDoors MDF eshiklar katalogi: klassik, neoklassik, zamonaviy, minimalistik, shishali va loft uslubidagi modellar.">
+  <meta name="theme-color" content="#f7f5f1">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/loader.css">
+  <script src="assets/js/theme-init.js"></script>
+  <script src="assets/js/loader.js"></script>
+</head>
+<body data-page="products">
+  <div data-include="header"></div>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="index.html">Bosh sahifa</a><span>/</span><span aria-current="page">Katalog</span></nav>
+        <h1 class="title-lg">MDF eshiklar katalogi</h1>
+        <p>Rang, uslub va narx bo‘yicha o‘zingizga mos eshikni toping. Barcha narxlar namunaviy.</p>
+      </div>
+    </section>
+
+    <section class="section section--tight">
+      <div class="container catalog">
+        <aside class="filters" id="filters" aria-label="Filtrlar">
+          <div class="filters-head">
+            <strong>Filtrlar</strong>
+            <button class="icon-btn" type="button" data-filters-close aria-label="Filtrlarni yopish"><svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg></button>
+          </div>
+          <div class="filter-group">
+            <h3>Uslub / dizayn</h3>
+            <div class="chips" id="styleFilters"></div>
+          </div>
+          <div class="filter-group">
+            <h3>Rang</h3>
+            <div class="chips" id="colorFilters"></div>
+          </div>
+          <div class="filter-group">
+            <h3>Belgi</h3>
+            <div class="chips" id="badgeFilters">
+              <button class="chip" type="button" data-badge="new">Yangi</button>
+              <button class="chip" type="button" data-badge="popular">Mashhur</button>
+            </div>
+          </div>
+          <div class="filter-group">
+            <button class="btn btn--outline btn--block" type="button" id="resetFilters">Filtrlarni tozalash</button>
+            <button class="btn btn--block filters-open-btn" type="button" data-filters-close style="margin-top:10px">Natijalarni ko‘rish</button>
+          </div>
+        </aside>
+
+        <div>
+          <div class="catalog-toolbar">
+            <label class="search">
+              <span class="sr-only">Nomi bo‘yicha qidirish</span>
+              <svg class="icon" aria-hidden="true"><use href="#i-search"></use></svg>
+              <input class="input" type="search" id="searchInput" placeholder="Eshik nomini kiriting…" autocomplete="off">
+            </label>
+            <label>
+              <span class="sr-only">Saralash</span>
+              <select class="select" id="sortSelect">
+                <option value="default">Tavsiya etilgan</option>
+                <option value="price-asc">Narx: arzonidan</option>
+                <option value="price-desc">Narx: qimmatidan</option>
+                <option value="name">Nomi: A–Z</option>
+                <option value="new">Avval yangilari</option>
+              </select>
+            </label>
+            <button class="btn btn--outline filters-open-btn" type="button" id="openFilters"><svg class="icon" aria-hidden="true"><use href="#i-filter"></use></svg>Filtrlar <span id="activeFilterCount"></span></button>
+          </div>
+          <p class="result-count" id="resultCount" aria-live="polite"></p>
+          <div class="product-grid product-grid--3" id="productGrid"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="footer"></div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/scroll.js"></script>
+  <script src="assets/js/pages/catalog.js"></script>
+</body>
+</html>

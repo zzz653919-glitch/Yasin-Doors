@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 600" width="480" height="600">
+<defs>
+<linearGradient id="wall" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#d5cdc1"/><stop offset="1" stop-color="#bab2a6"/>
+</linearGradient>
+<radialGradient id="light" cx="0.62" cy="0.18" r="0.75">
+<stop offset="0" stop-color="#fff" stop-opacity="0.45"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+</radialGradient>
+<linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#907158"/><stop offset="1" stop-color="#68503b"/>
+</linearGradient>
+<linearGradient id="leaf" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0" stop-color="#e2e0db"/><stop offset="0.45" stop-color="#f4f2ed"/><stop offset="1" stop-color="#d6d4d0"/>
+</linearGradient>
+<linearGradient id="sheen" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#fff" stop-opacity="0.16"/><stop offset="0.5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.10"/>
+</linearGradient>
+<linearGradient id="casing" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0" stop-color="#e9e7e3"/><stop offset="0.5" stop-color="#f4f2ee"/><stop offset="1" stop-color="#dbd9d4"/>
+</linearGradient>
+<linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#eef3f4" stop-opacity="0.95"/><stop offset="1" stop-color="#d1d6d7" stop-opacity="0.95"/>
+</linearGradient>
+<linearGradient id="metal" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#e1cca6"/><stop offset="0.5" stop-color="#c9a25e"/><stop offset="1" stop-color="#83693d"/>
+</linearGradient>
+<filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="10"/></filter>
+<filter id="blur2"><feGaussianBlur stdDeviation="1.2"/></filter>
+</defs>
+<rect width="480" height="600" fill="url(#wall)"/>
+<rect width="480" height="600" fill="url(#light)"/>
+<!-- floor -->
+<rect y="540" width="480" height="60" fill="url(#floor)"/>
+<rect y="526" width="480" height="16" fill="#dad3c8"/>
+<rect y="540" width="480" height="2" fill="#000" opacity="0.12"/>
+<!-- shadow -->
+<ellipse cx="240" cy="548" rx="150" ry="10" fill="#000" opacity="0.28" filter="url(#soft)"/>
+<rect x="126" y="56" width="228" height="486" fill="#000" opacity="0.22" filter="url(#soft)" transform="translate(6 6)"/>
+<!-- casing -->
+<rect x="128" y="50" width="224" height="490" rx="2" fill="url(#casing)"/>
+<rect x="128" y="50" width="224" height="490" fill="none" stroke="#000" stroke-opacity="0.12"/>
+<rect x="146" y="66" width="188" height="474" fill="#000" opacity="0.35"/>
+<!-- leaf -->
+<rect x="150" y="70" width="180" height="470" fill="url(#leaf)"/>
+<g>
+<rect x="172" y="96" width="59" height="230" rx="0" fill="#d1cfcb"/>
+<path d="M172 96h59l-9 9h-41v212l-9 9z" fill="#f5f3ef" opacity="0.9"/>
+<path d="M231 326h-59l9 -9h41v-212l9 -9z" fill="#c2c1bd" opacity="0.85"/>
+<rect x="181" y="105" width="41" height="212" fill="url(#leaf)"/>
+<rect x="181" y="105" width="41" height="212" fill="none" stroke="#fff" stroke-opacity="0.22"/>
+</g><g>
+<rect x="249" y="96" width="59" height="230" rx="0" fill="#d1cfcb"/>
+<path d="M249 96h59l-9 9h-41v212l-9 9z" fill="#f5f3ef" opacity="0.9"/>
+<path d="M308 326h-59l9 -9h41v-212l9 -9z" fill="#c2c1bd" opacity="0.85"/>
+<rect x="258" y="105" width="41" height="212" fill="url(#leaf)"/>
+<rect x="258" y="105" width="41" height="212" fill="none" stroke="#fff" stroke-opacity="0.22"/>
+</g><g>
+<rect x="172" y="360" width="59" height="152" rx="0" fill="#d1cfcb"/>
+<path d="M172 360h59l-9 9h-41v134l-9 9z" fill="#f5f3ef" opacity="0.9"/>
+<path d="M231 512h-59l9 -9h41v-134l9 -9z" fill="#c2c1bd" opacity="0.85"/>
+<rect x="181" y="369" width="41" height="134" fill="url(#leaf)"/>
+<rect x="181" y="369" width="41" height="134" fill="none" stroke="#fff" stroke-opacity="0.22"/>
+</g><g>
+<rect x="249" y="360" width="59" height="152" rx="0" fill="#d1cfcb"/>
+<path d="M249 360h59l-9 9h-41v134l-9 9z" fill="#f5f3ef" opacity="0.9"/>
+<path d="M308 512h-59l9 -9h41v-134l9 -9z" fill="#c2c1bd" opacity="0.85"/>
+<rect x="258" y="369" width="41" height="134" fill="url(#leaf)"/>
+<rect x="258" y="369" width="41" height="134" fill="none" stroke="#fff" stroke-opacity="0.22"/>
+</g>
+<rect x="150" y="70" width="180" height="470" fill="url(#sheen)"/>
+<rect x="150.5" y="70.5" width="179" height="469" fill="none" stroke="#fff" stroke-opacity="0.18"/>
+<!-- hinges -->
+<rect x="147" y="120" width="5" height="30" rx="2" fill="url(#metal)"/>
+<rect x="147" y="450" width="5" height="30" rx="2" fill="url(#metal)"/>
+<g>
+<rect x="302" y="303" width="14" height="58" rx="7" fill="url(#metal)"/>
+<rect x="270" y="319" width="44" height="11" rx="5.5" fill="#000" opacity="0.22" transform="translate(2 5)" filter="url(#blur2)"/>
+<rect x="270" y="319" width="44" height="11" rx="5.5" fill="url(#metal)"/>
+<circle cx="309" cy="349" r="3" fill="#65512f"/>
+</g>
+</svg>
