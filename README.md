@@ -25,7 +25,8 @@ Faqat MDF eshiklar uchun: ochiq sayt (katalog, savat, sevimlilar, buyurtma) va *
 │   ├── telegram.js            Telegram bildirishnomalari
 │   └── handlers.js            Baza ulanmagan holat uchun zaxira rejim (faqat Telegram)
 ├── scripts/create-admin.js    Administrator yaratish / parolni tiklash
-├── tests/api.test.js          Backend testlari (26 ta)
+├── tests/api.test.js          Backend integratsiya testlari
+├── tests/audit.test.js        Audit testlari: validatsiya, statistika qoidalari, idempotentlik, Telegram xato yo'li
 ├── server.js                  Lokal server (public/ + API)
 ├── vercel.json, package.json, .env.example
 ```
@@ -106,6 +107,24 @@ Buyurtma saytdan `Yangi` holatida bazaga yoziladi (mijoz telefon bo'yicha avtoma
 - bir vaqtda ikki marta bosilsa ham ombor ikki marta o'zgarmaydi (atomik `stock_applied` bayrog'i + tranzaksiya; testlarda tekshirilgan);
 - omborda yetarli mahsulot bo'lmasa tasdiqlash rad etiladi (409), hech narsa o'zgarmaydi;
 - har bir o'zgarish `stock_movements` jadvalida (kim, qachon, nima uchun) saqlanadi.
+
+## Statistika hisoblash qoidalari
+
+Dashboarddagi barcha raqamlar bazadan shu qoidalar bo'yicha hisoblanadi:
+
+| Ko'rsatkich | Qoida |
+|---|---|
+| Jami buyurtmalar | Barcha buyurtmalar (bekor qilinganlar ham, «Holat» diagrammasida alohida ko'rinadi) |
+| Bugungi buyurtmalar | Toshkent vaqti bo'yicha bugun yaratilganlar |
+| **Umumiy savdo** | **To'langan (`paid`) va bekor qilinmagan** buyurtmalar summasi |
+| Kutilayotgan summa | To'lanmagan (`unpaid`) va bekor qilinmagan buyurtmalar summasi |
+| Savdoga kirmaydi | Bekor qilingan va qaytarilgan (`refunded`) buyurtmalar |
+| O'rtacha chek | Savdo ÷ to'langan buyurtmalar soni |
+| Savdo grafigi | Shu savdo qoidasi, buyurtma yaratilgan kun bo'yicha (yig'indisi «Umumiy savdo» bilan mos) |
+| Eng ko'p sotilgan | Qabul qilingan va undan keyingi (bekor qilinmagan) buyurtmalardagi miqdor |
+| Mijoz xarid summasi | To'langan va bekor qilinmagan buyurtmalar |
+
+Cheklov: bazada to'lov sanasi saqlanmaydi, shuning uchun grafik to'lov kuni emas, buyurtma yaratilgan kun bo'yicha chiziladi.
 
 ## Telegram bildirishnomalari
 

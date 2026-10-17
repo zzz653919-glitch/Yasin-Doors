@@ -6,6 +6,13 @@ YD.whenReady(function () {
   var submitBtn = document.getElementById("submitBtn");
   var esc = YD.esc, fmt = YD.formatPrice;
   var sending = false;
+  var attemptKey = null, attemptSig = "";
+  function randomKey() {
+    var a = new Uint8Array(16);
+    if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(a);
+    else for (var i = 0; i < 16; i++) a[i] = Math.floor(Math.random() * 256);
+    return Array.prototype.map.call(a, function (b) { return ("0" + b.toString(16)).slice(-2); }).join("");
+  }
 
   function renderSummary() {
     if (sending) return;
@@ -68,6 +75,11 @@ YD.whenReady(function () {
       clientTotal: YD.store.cartTotal(),
       website: form.elements.website.value
     };
+    // Takroriy yuborishdan himoya: bir xil savat va telefon uchun qayta urinishda kalit o‘zgarmaydi,
+    // shuning uchun javob yo‘qolib qayta bosilsa ham server bitta buyurtma yaratadi.
+    var sig = JSON.stringify(payload.items) + "|" + payload.customer.phone;
+    if (!attemptKey || sig !== attemptSig) { attemptKey = randomKey(); attemptSig = sig; }
+    payload.idempotencyKey = attemptKey;
 
     sending = true;
     submitBtn.disabled = true;

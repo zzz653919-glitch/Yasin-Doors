@@ -330,7 +330,8 @@ test("dashboard statistikasi haqiqiy ma'lumotlardan hisoblanadi", async () => {
   assert.equal(d.status, 200);
   const all = await call("GET", "/api/admin/orders?limit=100", authed(op));
   assert.equal(d.json.stats.total_orders, all.json.total);
-  const expectedRevenue = all.json.items.filter(o => o.status !== "cancelled").reduce((s, o) => s + o.total, 0);
+  // Qoida: savdo = to'langan va bekor qilinmagan buyurtmalar
+  const expectedRevenue = all.json.items.filter(o => o.status !== "cancelled" && o.payment_status === "paid").reduce((s, o) => s + o.total, 0);
   assert.equal(d.json.stats.revenue, expectedRevenue);
   assert.equal(d.json.stats.today_orders, all.json.total); // hammasi bugun yaratilgan
   assert.equal(d.json.chart.length, 7);

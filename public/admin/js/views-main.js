@@ -54,9 +54,9 @@
           card("box", "Jami mahsulotlar", fmt.num(s.total_products), "Sotuvda: " + s.active_products, false, "#/products") +
           card("warehouse", "Ombordagi mahsulotlar", fmt.num(s.stock_units) + "<small>dona</small>", s.low_stock ? s.low_stock + " ta kam qolgan" : "Hammasi yetarli", s.low_stock > 0, "#/inventory") +
           card("userplus", "Yangi mijozlar", fmt.num(s.new_customers), "So'nggi 7 kun · jami " + s.total_customers, false, "#/customers") +
-          card("money", "Umumiy savdo", fmt.num(s.revenue) + "<small>so'm</small>", "Yakunlangan: " + fmt.money(s.revenue_completed), false, "#/orders") +
+          card("money", "Umumiy savdo (to'langan)", fmt.num(s.revenue) + "<small>so'm</small>", "Kutilayotgan (to'lanmagan): " + fmt.money(s.pending_amount), false, "#/orders?payment=unpaid") +
           card("alert", "Bajarilmagan buyurtmalar", fmt.num(s.open_orders), "Yangi, qabul qilingan, tayyorlanayotgan, yo'lda", s.new_orders > 0, "#/orders?status=new") +
-          card("trend", "O'rtacha chek", fmt.num(s.total_orders ? s.revenue / Math.max(1, s.total_orders - (d.by_status.filter(function (x) { return x.status === "cancelled"; })[0] || { count: 0 }).count) : 0) + "<small>so'm</small>", "Bekor qilinmagan buyurtmalar bo'yicha", false) +
+          card("trend", "O'rtacha chek", fmt.num(s.avg_order) + "<small>so'm</small>", "To'langan buyurtmalar: " + s.paid_orders, false) +
           "</div>";
 
         var total = d.by_status.reduce(function (a, b) { return a + b.count; }, 0);
@@ -75,7 +75,7 @@
           }).join("") + "</tbody></table></div>" : A.emptyState("cart", "Buyurtmalar yo'q", "Saytdan kelgan buyurtmalar shu yerda ko'rinadi.");
 
         $("#dashBody", root).innerHTML =
-          '<div class="grid cols-2"><div class="card"><div class="card-head"><h2>Savdo grafigi</h2><div class="seg" role="group" aria-label="Davr"><button type="button" data-range="week" class="' + (range === "week" ? "is-active" : "") + '">Hafta</button><button type="button" data-range="month" class="' + (range === "month" ? "is-active" : "") + '">Oy</button></div></div><div class="chart" id="salesChart">' + A.charts.sales(d.chart) + "</div></div>" +
+          '<div class="grid cols-2"><div class="card"><div class="card-head"><h2>Savdo grafigi <small class="muted" style="font-weight:600;font-size:12px">(to\'langan buyurtmalar)</small></h2><div class="seg" role="group" aria-label="Davr"><button type="button" data-range="week" class="' + (range === "week" ? "is-active" : "") + '">Hafta</button><button type="button" data-range="month" class="' + (range === "month" ? "is-active" : "") + '">Oy</button></div></div><div class="chart" id="salesChart">' + A.charts.sales(d.chart) + "</div></div>" +
           '<div class="card"><div class="card-head"><h2>Buyurtmalar holati</h2></div>' + (total ? '<div class="donut-wrap">' + A.charts.donut(d.by_status) + '<div class="legend">' + legend + "</div></div>" : A.emptyState("cart", "Ma'lumot yo'q", "Buyurtmalar kelgach diagramma paydo bo'ladi.")) + "</div></div>" +
           '<div class="grid cols-2b"><div class="card"><div class="card-head"><h2>Eng ko\'p sotilgan eshiklar</h2></div><div style="padding-top:8px">' + top + "</div></div>" +
           '<div class="card"><div class="card-head"><h2>So\'nggi buyurtmalar</h2><a class="btn btn--sm btn--ghost" href="#/orders">Barchasi</a></div><div style="padding-top:8px">' + recent + "</div></div></div>";
@@ -171,7 +171,7 @@
         function check(name, cond, msg) { A.fieldError(form, name, cond ? "" : msg); if (!cond) ok = false; }
         var price = intOrNull(fd.price.value), old = intOrNull(fd.old_price.value), stock = intOrNull(fd.stock.value);
         check("name", fd.name.value.trim().length >= 2, "Nomini kiriting (kamida 2 ta belgi).");
-        check("price", price !== null && Number.isInteger(price) && price >= 0, "Narxni butun son bilan kiriting.");
+        check("price", price !== null && Number.isInteger(price) && price >= 1, "Narxni 1 so'mdan katta butun son bilan kiriting.");
         check("old_price", old === null || (Number.isInteger(old) && price !== null && old > price), "Chegirmadan oldingi narx joriy narxdan katta bo'lishi kerak.");
         check("stock", stock === null || (Number.isInteger(stock) && stock >= 0), "Miqdor 0 yoki undan katta butun son bo'lsin.");
         if (!ok) return;
@@ -182,6 +182,9 @@
           short: fd.short.value.trim(), description: fd.description.value.trim(), image: imageUrl,
           active: fd.active.checked, is_new: fd.is_new.checked, is_popular: fd.is_popular.checked
         };
+        // Forma ochiq turganda ombor boshqa joyda o'zgargan bo'lishi mumkin (masalan, buyurtma tasdiqlangan):
+        // miqdor foydalanuvchi o'zgartirgan bo'lsagina yuboriladi, aks holda yangi qoldiq eski qiymat bilan bosib yuboriladi.
+        if (isEdit && body.stock === p.stock) delete body.stock;
         A.setBusy(btn, true);
         $("#pfErr", m.el).hidden = true;
         (isEdit ? A.put("/products/" + encodeURIComponent(p.id), body) : A.post("/products", body)).then(function () {
@@ -225,9 +228,10 @@
           paint();
         }).catch(function (e) { $("#pTable", root).innerHTML = A.emptyState("alert", "Yuklab bo'lmadi", e.message, '<button class="btn btn--gold" data-act="reload">Qayta urinish</button>'); });
       }
-      function paint() {
-        var canW = A.can("products.write"), canD = A.can("products.delete");
-        var bulk = "";
+      // Ommaviy amallar paneli. Katakcha bosilganda butun jadval emas, faqat shu panel yangilanadi
+      // (aks holda jadval qayta chizilib, klaviatura fokusi va scroll yo'qolardi).
+      function paintBulk() {
+        var canW = A.can("products.write"), canD = A.can("products.delete"), bulk = "";
         if (selected.size && canW) {
           bulk = '<div class="bulkbar"><span>' + selected.size + ' ta tanlandi</span>' +
             '<button class="btn btn--sm btn--ghost" data-bulk="activate">Faollashtirish</button><button class="btn btn--sm btn--ghost" data-bulk="deactivate">Nofaol qilish</button>' +
@@ -236,6 +240,12 @@
             '<button class="btn btn--sm btn--ghost" data-bulk="clear" style="margin-left:auto">Bekor qilish</button></div>';
         }
         $("#pBulk", root).innerHTML = bulk;
+        var all = $("[data-selall]", root);
+        if (all) all.checked = items.length > 0 && items.every(function (p) { return selected.has(p.id); });
+      }
+      function paint() {
+        var canW = A.can("products.write"), canD = A.can("products.delete");
+        paintBulk();
         if (!items.length) {
           var filtered = f.q || f.category || f.active || f.stock;
           $("#pTable", root).innerHTML = filtered ? A.emptyState("search", "Hech narsa topilmadi", "Qidiruv yoki filtrlarni o'zgartirib ko'ring.") :
@@ -269,11 +279,12 @@
       root.addEventListener("change", function (e) {
         if (e.target.matches("[data-selall]")) {
           items.forEach(function (p) { if (e.target.checked) selected.add(p.id); else selected.delete(p.id); });
-          paint();
+          $$("[data-sel]", root).forEach(function (b) { b.checked = e.target.checked; });
+          paintBulk();
         } else if (e.target.matches("[data-sel]")) {
           var id = e.target.getAttribute("data-sel");
           if (e.target.checked) selected.add(id); else selected.delete(id);
-          paint();
+          paintBulk();
         }
       });
       root.addEventListener("click", function (e) {
@@ -364,7 +375,7 @@
   A.views.orders = {
     title: "Buyurtmalar", icon: "cart", perm: "orders.read",
     render: function (root, query) {
-      var f = { q: query.q || "", status: query.status || "", payment: "", from: "", to: "", customer: query.customer || "", page: 1 };
+      var f = { q: query.q || "", status: query.status || "", payment: query.payment || "", from: "", to: "", customer: query.customer || "", page: 1 };
       var data = { items: [], total: 0 };
       root.innerHTML = '<div class="page-head"><div><h1>Buyurtmalar</h1><p>Saytdan kelgan barcha buyurtmalar, ularning holati va tarixi.</p></div><div class="head-actions">' +
         (A.can("orders.export") ? '<button class="btn btn--ghost" data-act="export">' + A.icon("download") + "CSV eksport</button>" : "") + '</div></div><div class="card"><div class="toolbar">' +
@@ -374,6 +385,7 @@
         '<input class="input" id="ofrom" type="date" aria-label="Boshlanish sanasi"><input class="input" id="oto" type="date" aria-label="Tugash sanasi"></div>' +
         '<div id="oCust"></div><div id="oTable">' + A.skeleton() + '</div><div id="oPager"></div></div>';
       $("#ost", root).value = f.status;
+      $("#opay", root).value = f.payment;
 
       function load() {
         return A.get("/orders" + A.qs(f)).then(function (r) {

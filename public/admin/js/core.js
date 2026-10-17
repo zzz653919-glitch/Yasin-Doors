@@ -287,10 +287,10 @@
   A.uploadImage = function (file) {
     return A.resizeImage(file).then(function (data) { return A.post("/upload", { data: data }); }).then(function (r) { return r.url; });
   };
-  A.imgSrc = function (p) { return p ? (/^(https?:|\/)/.test(p) ? p : "../" + p) : "../assets/img/fallback.svg"; };
+  A.imgSrc = function (p) { return p ? (/^(https?:|\/)/.test(p) ? p : "/" + p) : "/assets/img/fallback.svg"; };
   A.fallbackImg = function (root) {
     A.$$("img[data-fb]", root || document).forEach(function (im) {
-      im.addEventListener("error", function () { if (!im.dataset.done) { im.dataset.done = "1"; im.src = "../assets/img/fallback.svg"; } }, { once: true });
+      im.addEventListener("error", function () { if (!im.dataset.done) { im.dataset.done = "1"; im.src = "/assets/img/fallback.svg"; } }, { once: true });
     });
   };
 
@@ -367,6 +367,17 @@
       s += '<text x="80" y="78" text-anchor="middle" font-size="26" font-weight="800" fill="var(--text)" font-family="Manrope,sans-serif">' + total + '</text><text x="80" y="98" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="Manrope,sans-serif">buyurtma</text></svg>';
       return s;
     }
+  };
+
+  /* ---------- Jadvallar: telefonda karta ko'rinishi uchun ustun nomlarini yorliq qilish ---------- */
+  A.labelTables = function (root) {
+    A.$$("table.tbl", root).forEach(function (t) {
+      if (!t.tHead || !t.tHead.rows[0]) return;
+      var heads = [].map.call(t.tHead.rows[0].cells, function (th) { return th.textContent.trim(); });
+      A.$$("tbody tr", t).forEach(function (tr) {
+        [].forEach.call(tr.cells, function (td, i) { if (heads[i] !== undefined && td.getAttribute("data-label") !== heads[i]) td.setAttribute("data-label", heads[i]); });
+      });
+    });
   };
 
   /* ---------- Marshrut yordamchilari ---------- */

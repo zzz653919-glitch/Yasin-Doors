@@ -4,6 +4,9 @@
   "buildCommand": null,
   "outputDirectory": "public",
   "cleanUrls": false,
+  "redirects": [
+    { "source": "/admin", "destination": "/admin/", "permanent": false }
+  ],
   "functions": {
     "api/*.js": {
       "maxDuration": 15,

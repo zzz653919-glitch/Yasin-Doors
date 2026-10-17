@@ -68,6 +68,11 @@
       fresh.innerHTML = '<div class="card">' + A.emptyState("shield", "Ruxsat yo'q", "Bu bo'limga kirish uchun sizning rolingizda ruxsat mavjud emas.", '<a class="btn btn--gold" href="#/dashboard">Dashboard</a>') + "</div>";
       return;
     }
+    // Jadval qatorlari keyin (ma'lumot kelgach) chiziladi — o'zgarishlarni kuzatib yorliqlar qo'yiladi
+    if (window.MutationObserver) {
+      var label = A.debounce(function () { A.labelTables(fresh); }, 40);
+      new MutationObserver(label).observe(fresh, { childList: true, subtree: true });
+    }
     try { view.render(fresh, r.query); }
     catch (e) { console.error(e); fresh.innerHTML = '<div class="card">' + A.emptyState("alert", "Xatolik yuz berdi", "Sahifani yangilab ko'ring.") + "</div>"; }
     window.scrollTo(0, 0);

@@ -311,7 +311,8 @@ table.tbl { width: 100%; border-collapse: collapse; min-width: 640px; }
 .guide { font-size: 13.5px; color: var(--text-soft); }
 .guide ol { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 6px; }
 .row-between { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
-.stack { display: grid; gap: 14px; }
+.stack { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
+.guide, .alert, .code { overflow-wrap: anywhere; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1200px) {
@@ -347,7 +348,28 @@ table.tbl { width: 100%; border-collapse: collapse; min-width: 640px; }
   .search-box { max-width: none; }
   .toast-root { left: 12px; right: 12px; bottom: 12px; }
   .donut-wrap svg { width: 140px; height: 140px; }
-  .tbl th, .tbl td { padding: 11px 12px; }
+
+  /* Jadvallar telefonda karta qatorlariga aylanadi (yonga siljish yo'q) */
+  table.tbl { min-width: 0; }
+  .tbl thead { display: none; }
+  .tbl, .tbl tbody, .tbl tr, .tbl td { display: block; width: 100%; }
+  .tbl tbody tr { padding: 12px 14px; border-bottom: 1px solid var(--border); }
+  .tbl tbody tr:last-child { border-bottom: 0; }
+  .tbl td { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 5px 0; border: 0; text-align: right; }
+  .tbl td::before { content: attr(data-label); flex: none; color: var(--muted); font-weight: 700; font-size: 12px; text-align: left; }
+  .tbl td[data-label=""]::before, .tbl td:not([data-label])::before { content: none; }
+  .tbl td[data-label=""] { justify-content: flex-end; }
+  .tbl .cell-product { min-width: 0; text-align: left; }
+  .tbl td .cell-main, .tbl td .cell-sub { text-align: right; }
+  .tbl .cell-product .cell-main, .tbl .cell-product .cell-sub { text-align: left; }
+  .tbl .actions { width: 100%; justify-content: flex-end; flex-wrap: wrap; }
+  .tbl .price-old { display: inline; margin-right: 6px; }
+
+  /* Bosish oson bo'lishi uchun kattaroq tugmalar */
+  .icon-btn { width: 44px; height: 44px; }
+  .btn--sm { min-height: 40px; }
+  .nav a { padding: 13px 12px; }
+  .chip { padding: 4px 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
