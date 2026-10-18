@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="uz" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>3D eshik konstruktori — YasinDoors</title>
+  <meta name="description" content="YasinDoors 3D konstruktori: MDF eshik modelini, rangini, tutqichini va o‘lchamini tanlang, natijani 3D da ko‘ring va buyurtma bering.">
+  <meta name="theme-color" content="#f7f5f1">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/configurator.css">
+  <link rel="stylesheet" href="assets/css/loader.css">
+  <script src="assets/js/theme-init.js"></script>
+  <script src="assets/js/loader.js"></script>
+  <!-- Three.js lokal nusxasi (CDN ishlatilmaydi). Faqat shu sahifada yuklanadi. -->
+  <script type="importmap">
+  { "imports": { "three": "/assets/vendor/three/three.module.min.js", "three/addons/": "/assets/vendor/three/" } }
+  </script>
+</head>
+<body data-page="configurator">
+  <div data-include="header"></div>
+
+  <main>
+    <section class="page-hero cfg-hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="index.html">Bosh sahifa</a><span>/</span><span aria-current="page">3D konstruktor</span></nav>
+        <h1 class="title-lg">3D eshik konstruktori</h1>
+        <p>O‘zingizga mos MDF eshikni yig‘ing: model, rang, tutqich va o‘lchamni tanlang — natija darhol 3D da yangilanadi.</p>
+      </div>
+    </section>
+
+    <section class="cfg" id="cfgRoot" aria-label="Eshik konstruktori">
+      <div class="container container--wide cfg-layout">
+
+        <!-- Chap: sozlamalar (mobilda pastdan chiqadigan panel) -->
+        <aside class="cfg-panel" id="cfgPanel" aria-label="Eshik sozlamalari">
+          <div class="cfg-panel-head">
+            <h2>Sozlamalar</h2>
+            <button class="icon-btn cfg-sheet-close" type="button" id="cfgSheetClose" aria-label="Sozlamalarni yopish"><svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg></button>
+          </div>
+          <p class="cfg-legend"><span class="cfg-tag">Buyurtma asosida</span> belgisi bor variantlarning ishlab chiqarilishini menejer tasdiqlaydi.</p>
+          <div id="cfgOptions"></div>
+        </aside>
+
+        <!-- Markaz: 3D ko‘rinish -->
+        <div class="cfg-stage">
+          <div class="cfg-viewport" id="cfgViewport">
+            <div class="cfg-loading" id="cfgLoading" role="status"><span class="cfg-spinner" aria-hidden="true"></span><span id="cfgLoadingText">3D model yuklanmoqda…</span></div>
+            <div class="cfg-fallback" id="cfgFallback" hidden></div>
+            <div class="cfg-vignette" aria-hidden="true"></div>
+            <div class="cfg-viewbar" id="cfgViewbar" role="group" aria-label="Ko‘rinish burchagi">
+              <button type="button" data-view="front">Old</button>
+              <button type="button" data-view="back">Orqa</button>
+              <button type="button" data-view="side">Yon</button>
+              <button type="button" data-view="handle">Tutqich</button>
+            </div>
+            <p class="cfg-hint" id="cfgHint">Sudrang — aylantirish · G‘ildirak/chimchilash — yaqinlashtirish · Klaviatura: ← → ↑ ↓ va + −</p>
+          </div>
+          <div class="cfg-tools" role="toolbar" aria-label="Konstruktor amallari">
+            <button class="btn btn--outline btn--sm" type="button" id="cfgUndo" disabled><svg class="icon" aria-hidden="true"><use href="#i-arrow-left"></use></svg>Oldingi holat</button>
+            <button class="btn btn--outline btn--sm" type="button" id="cfgReset">Boshidan boshlash</button>
+            <button class="btn btn--outline btn--sm" type="button" id="cfgShare">Havolani nusxalash</button>
+            <button class="btn btn--outline btn--sm" type="button" id="cfgDownload"><svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg>Rasm yuklab olish</button>
+          </div>
+        </div>
+
+        <!-- O‘ng: buyurtma xulosasi -->
+        <aside class="cfg-summary" id="cfgSummary" aria-label="Buyurtma xulosasi"></aside>
+      </div>
+
+      <button class="btn btn--gold cfg-sheet-open" type="button" id="cfgSheetOpen" aria-controls="cfgPanel" aria-expanded="false">
+        <svg class="icon" aria-hidden="true"><use href="#i-filter"></use></svg>Sozlash
+      </button>
+      <div class="cfg-sheet-backdrop" id="cfgSheetBackdrop"></div>
+    </section>
+  </main>
+
+  <!-- Buyurtma oynasi -->
+  <div class="cfg-modal" id="cfgModal" hidden>
+    <div class="cfg-modal-card" role="dialog" aria-modal="true" aria-labelledby="cfgModalTitle">
+      <div class="cfg-modal-head"><h2 id="cfgModalTitle">Buyurtma berish</h2><button class="icon-btn" type="button" id="cfgModalClose" aria-label="Yopish"><svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg></button></div>
+      <div id="cfgModalBody"></div>
+    </div>
+  </div>
+
+  <div data-include="footer"></div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/scroll.js"></script>
+  <script src="assets/js/form-utils.js"></script>
+  <script src="assets/js/configurator-data.js"></script>
+  <script type="module" src="assets/js/configurator.js"></script>
+</body>
+</html>

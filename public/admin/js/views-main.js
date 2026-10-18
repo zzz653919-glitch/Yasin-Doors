@@ -406,6 +406,24 @@
     return items.length > 1 ? first + ' <span class="muted">+' + (items.length - 1) + " ta</span>" : first;
   }
 
+  /** 3D konstruktor qatorlari: barcha tanlovlar, 3D rasm, narx holati va (narxi yo'q bo'lsa) narx belgilash maydoni */
+  function cfgBlocks(o, canU) {
+    var html = "";
+    o.items.forEach(function (i) {
+      var c = i.config; if (!c || !c.cfg) return;
+      var rows = window.YD_CFG ? window.YD_CFG.describe(c.cfg).map(function (r) { return "<dt>" + esc(r.label) + "</dt><dd>" + esc(r.value) + "</dd>"; }).join("") : "";
+      html += '<div><p class="section-title">3D konstruktor · ' + esc(c.code) + "</p>" +
+        '<div style="display:flex;gap:14px;flex-wrap:wrap">' +
+        (c.image ? '<a href="' + esc(A.imgSrc(c.image)) + '" target="_blank" rel="noopener"><img src="' + esc(A.imgSrc(c.image)) + '" alt="3D konfiguratsiya rasmi" style="width:120px;border-radius:10px;border:1px solid var(--border,#ddd)"></a>' : "") +
+        '<dl class="kv" style="flex:1;min-width:200px">' + rows + "</dl></div>" +
+        (c.priced ? '<p class="muted" style="font-size:13px">Narx admin kiritgan qoidalardan hisoblangan.</p>' :
+          '<div class="alert alert--warn">' + A.icon("alert") + "<div>Narx avtomatik aniqlanmadi" + (c.missing && c.missing.length ? " (qoida yo'q: " + esc(c.missing.join("; ")) + ")" : "") + ". Mijoz bilan kelishib, 1 dona narxini kiriting.</div></div>" +
+          (canU && !i.price ? '<div class="field"><label for="od-quote">1 dona narxi (so\'m)</label><input class="input" id="od-quote" inputmode="numeric" placeholder="Masalan: 2 150 000"></div>' : "")) +
+        (c.link ? '<p><a class="text-link" href="/' + esc(c.link) + '" target="_blank" rel="noopener">Konfiguratsiyani konstruktorda ochish</a></p>' : "") + "</div>";
+    });
+    return html;
+  }
+
   A.openOrder = function (id, onChanged) {
     A.get("/orders/" + id).then(function (r) {
       var o = r.item, canU = A.can("orders.update");
@@ -413,7 +431,8 @@
       var payOpts = Object.keys(A.PAYMENT).map(function (k) { return '<option value="' + k + '"' + (k === o.payment_status ? " selected" : "") + ">" + esc(A.PAYMENT[k]) + "</option>"; }).join("");
       var hist = o.history.map(function (h) {
         var what = h.field === "status" ? "Holat: " + esc(A.STATUS[h.from_value] || "—") + " → <b>" + esc(A.STATUS[h.to_value] || h.to_value) + "</b>" :
-          h.field === "payment_status" ? "To'lov: " + esc(A.PAYMENT[h.from_value] || "—") + " → <b>" + esc(A.PAYMENT[h.to_value] || h.to_value) + "</b>" : "Admin izohi yangilandi";
+          h.field === "payment_status" ? "To'lov: " + esc(A.PAYMENT[h.from_value] || "—") + " → <b>" + esc(A.PAYMENT[h.to_value] || h.to_value) + "</b>" :
+          h.field === "quote" ? "Narx belgilandi: " + fmt.money(Number(h.from_value)) + " → <b>" + fmt.money(Number(h.to_value)) + "</b>" : "Admin izohi yangilandi";
         return "<div>" + what + "<small>" + fmt.date(h.at) + (h.username ? " · " + esc(h.username) : "") + (h.note ? " · " + esc(h.note) : "") + "</small></div>";
       }).reverse().join("");
       var m = A.modal({
@@ -421,8 +440,12 @@
         body: '<div class="order-grid"><div class="stack">' +
           '<div><p class="section-title">Mijoz</p><dl class="kv"><dt>Ism</dt><dd>' + esc(o.name) + "</dd><dt>Telefon</dt><dd><a href=\"tel:" + esc(o.phone) + '" class="text-link">' + esc(fmt.phone(o.phone)) + "</a></dd><dt>Manzil</dt><dd>" + esc(o.address) + "</dd><dt>O'rnatish</dt><dd>" + (o.install ? "Kerak" : "Kerak emas") + "</dd><dt>Mijoz izohi</dt><dd>" + (o.comment ? esc(o.comment) : '<span class="muted">—</span>') + "</dd><dt>Sana</dt><dd>" + fmt.date(o.created_at) + "</dd></dl></div>" +
           '<div><p class="section-title">Mahsulotlar</p><table class="items-tbl"><thead><tr><th>Eshik</th><th>O\'lcham</th><th class="right">Soni</th><th class="right">Summa</th></tr></thead><tbody>' +
-          o.items.map(function (i) { return "<tr><td>" + esc(i.name) + '</td><td class="nowrap">' + esc(i.size) + '</td><td class="right">' + i.qty + '</td><td class="right mono nowrap">' + fmt.money(i.price * i.qty) + "</td></tr>"; }).join("") +
-          '</tbody><tfoot><tr><td colspan="2">Jami (' + o.items_count + ' dona)</td><td colspan="2" class="right mono">' + fmt.money(o.total) + "</td></tr></tfoot></table></div></div>" +
+          o.items.map(function (i) {
+            var price = i.config && !i.config.priced && !i.price ? '<span class="muted">Narx so\'raladi</span>' : fmt.money(i.price * i.qty);
+            return "<tr><td>" + esc(i.name) + '</td><td class="nowrap">' + esc(i.size) + '</td><td class="right">' + i.qty + '</td><td class="right mono nowrap">' + price + "</td></tr>";
+          }).join("") +
+          '</tbody><tfoot><tr><td colspan="2">Jami (' + o.items_count + ' dona)</td><td colspan="2" class="right mono">' + fmt.money(o.total) + "</td></tr></tfoot></table></div>" +
+          cfgBlocks(o, canU) + "</div>" +
           '<div class="stack"><div><p class="section-title">Holat</p>' +
           '<div class="field"><label for="od-status">Buyurtma holati</label><select class="select" id="od-status"' + (canU ? "" : " disabled") + ">" + statusOpts + '</select><span class="hint">Qabul qilinganda ombor avtomatik kamayadi; bekor qilinsa qaytariladi.</span></div></div>' +
           '<div class="field"><label for="od-pay">To\'lov holati</label><select class="select" id="od-pay"' + (canU ? "" : " disabled") + ">" + payOpts + "</select></div>" +
@@ -436,6 +459,12 @@
             if (st !== o.status) patch.status = st;
             if (pay !== o.payment_status) patch.payment_status = pay;
             if (note !== o.admin_note) patch.admin_note = note;
+            var q = $("#od-quote", m.el);
+            if (q && q.value.trim() !== "") {
+              var qn = Number(q.value.replace(/\s/g, ""));
+              if (!isFinite(qn) || qn < 0 || Math.floor(qn) !== qn) { var eb = $("#odErr", m.el); eb.textContent = "Narxni butun son bilan kiriting."; eb.hidden = false; return; }
+              patch.quote_unit = qn;
+            }
             if (!Object.keys(patch).length) { api.close(); return; }
             A.setBusy(btn, true);
             A.patch("/orders/" + o.id, patch).then(function () {

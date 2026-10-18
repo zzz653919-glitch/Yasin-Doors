@@ -245,6 +245,7 @@
   var NAV = [
     { href: "index.html", label: "Bosh sahifa", page: "home" },
     { href: "products.html", label: "Katalog", page: "products" },
+    { href: "configurator.html", label: "3D konstruktor", page: "configurator" },
     { href: "about.html", label: "Biz haqimizda", page: "about" },
     { href: "contact.html", label: "Aloqa", page: "contact" }
   ];

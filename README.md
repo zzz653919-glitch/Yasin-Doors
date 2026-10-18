@@ -134,6 +134,16 @@ Dashboarddagi barcha raqamlar bazadan shu qoidalar bo'yicha hisoblanadi:
 
 Cheklov: bazada to'lov sanasi saqlanmaydi, shuning uchun grafik to'lov kuni emas, buyurtma yaratilgan kun bo'yicha chiziladi.
 
+## 3D eshik konstruktori (`/configurator.html`)
+
+Mijoz model, naqsh, rang, qoplama, tutqich, ochilish tomoni, o'lcham, rom va dekorni tanlaydi; natija 3D da darhol yangilanadi (aylantirish, zoom, old/orqa/yon/tutqich ko'rinishlari). Chap — sozlamalar, markaz — 3D, o'ng — buyurtma xulosasi; mobilda sozlamalar pastdan chiqadigan panel. Oldingi holat, boshidan boshlash, havola (`#c=…`), PNG yuklab olish bor. 3D ishlamasa (WebGL yo'q/xato) — 2D zaxira ko'rinish, barcha sozlamalar va buyurtma ishlayveradi (sinash: `?fallback=1`).
+
+**Muhim — haqiqiy 3D model hali yo'q.** Hozir eshik *protsedurali vaqtinchalik model* (kodda yasalgan geometriya: panel, chiziq, geometrik, shishali naqshlar). Haqiqiy fotorealistik model uchun `.glb` fayl kerak. Uni ulash: `configurator-3d.js` dagi `setDoorBuilder(fn)` kanca orqali o'z quruvchingizni bering (Three.js `GLTFLoader` qo'shiladi). Shu vaqtgacha ko'rinish taxminiy, ishlab chiqarish namunasi emas.
+
+**Narx faqat tasdiqlangan qoidalardan.** Admin → Sozlamalar → «3D konstruktor narxlari»da kiritilgan qiymatlar ishlatiladi. Tanlangan biror qism uchun qoida **bo'sh** bo'lsa, narx taxmin qilinmaydi: «Narx so'raladi» ko'rsatiladi, buyurtma narxi 0 bo'lib, menejer admin paneldagi buyurtma oynasida 1 dona narxini belgilaydi. Narx serverda qayta hisoblanadi (klient yuborgan summa e'tiborga olinmaydi). Katalogda yo'q uslublar yo'q deb hisoblanadi; tutqich shakli/rangi, rom, dekor «Buyurtma asosida» deb belgilangan — ishlab chiqarilishini menejer tasdiqlaydi.
+
+Buyurtma `POST /api/configurator/order`: konfiguratsiya serverda qat'iy tekshiriladi (`configurator-data.js` mijoz va serverda umumiy), idempotentlik kaliti, tezlik cheklovi, honeypot; 3D rasm (ixtiyoriy) `images` jadvaliga, konfiguratsiya `order_items.config` ga saqlanadi; Telegram xabarida barcha tanlovlar va narx holati bor. Baza ulanmagan rejimda faqat Telegram'ga yuboriladi. Three.js `public/assets/vendor/three/` da lokal (MIT, CDN yo'q).
+
 ## Telegram bildirishnomalari
 
 Token va chat ID **faqat serverda** (muhit o'zgaruvchilari); brauzerga hech qachon chiqmaydi. Yangi buyurtma kelganda xabarda: buyurtma raqami, mijoz, telefon, manzil, mahsulotlar va umumiy summa. Sozlanmagan bo'lsa, qolgan hamma funksiyalar ishlayveradi; admin panel (Sozlamalar) yo'riqnoma va «Sinov xabari» tugmasini ko'rsatadi.

@@ -20,35 +20,36 @@
 
   <main>
     <!-- HERO -->
-    <section class="hero">
-      <div class="container hero-grid">
-        <div>
-          <span class="eyebrow">Premium MDF eshiklar</span>
-          <h1 class="title-xl">Uyingiz uchun <em>mukammal</em> MDF eshiklar</h1>
-          <p class="lead">Zamonaviy dizayn, yuqori sifat va har bir detalda mukammallik.</p>
-          <div class="hero-actions">
-            <a class="btn btn--gold" href="products.html">Mahsulotlarni ko‘rish <svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg></a>
-            <a class="btn btn--outline" href="about.html">Biz haqimizda</a>
+    <!-- Video fayllar: assets/video/hero-16x9.mp4 (kompyuter) va hero-9x16.mp4 (telefon).
+         Fayl yo‘q yoki yuklanmasa poster-rasm banner sifatida qoladi (assets/js/hero-video.js, docs/HERO_VIDEO.md). -->
+    <section class="hero hero--video" aria-labelledby="heroTitle">
+      <div class="container">
+        <div class="hero-banner">
+          <div class="hero-media" id="heroMedia"
+               data-video-wide="assets/video/hero-16x9.mp4"
+               data-video-tall="assets/video/hero-9x16.mp4">
+            <img class="hero-poster" src="assets/img/hero-poster.svg" alt="" width="1600" height="900" fetchpriority="high">
+            <span class="hero-loading" aria-hidden="true"></span>
           </div>
-          <ul class="hero-points">
-            <li><svg class="icon" aria-hidden="true"><use href="#i-ruler"></use></svg>Buyurtma asosida o‘lcham</li>
-            <li><svg class="icon" aria-hidden="true"><use href="#i-truck"></use></svg>Yetkazib berish</li>
-            <li><svg class="icon" aria-hidden="true"><use href="#i-tool"></use></svg>O‘rnatish xizmati</li>
-          </ul>
+          <div class="hero-content">
+            <span class="eyebrow">Premium MDF eshiklar</span>
+            <h1 class="title-xl" id="heroTitle">Uyingizga <em>yarashadigan</em> uslub</h1>
+            <p class="lead">Zamonaviy dizayn, yuqori sifat va har bir detalda mukammallik.</p>
+            <div class="hero-actions">
+              <a class="btn btn--gold" href="products.html">Katalogni ko‘rish <svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg></a>
+              <a class="btn btn--ghost-light" href="about.html">Biz haqimizda</a>
+            </div>
+          </div>
+          <button class="hero-toggle" type="button" id="heroToggle" aria-pressed="false" aria-label="Videoni to‘xtatish" hidden>
+            <svg class="icon icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg>
+            <svg class="icon icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg>
+          </button>
         </div>
-        <div class="hero-visual">
-          <div class="hero-frame">
-            <img src="assets/img/doors/noir-gold.svg" alt="Noir Gold — qora rangli, oltin chiziqli premium MDF eshik" width="480" height="600" fetchpriority="high">
-          </div>
-          <div class="hero-tag hero-tag--b">
-            <span class="dot"><svg class="icon" aria-hidden="true"><use href="#i-spark"></use></svg></span>
-            <span><strong>Noir Gold</strong>Yangi kolleksiya</span>
-          </div>
-          <div class="hero-tag hero-tag--a">
-            <span class="dot"><svg class="icon" aria-hidden="true"><use href="#i-layers"></use></svg></span>
-            <span><strong>10+ model</strong>Turli rang va uslublar</span>
-          </div>
-        </div>
+        <ul class="hero-points">
+          <li><svg class="icon" aria-hidden="true"><use href="#i-ruler"></use></svg>Buyurtma asosida o‘lcham</li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-truck"></use></svg>Yetkazib berish</li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-tool"></use></svg>O‘rnatish xizmati</li>
+        </ul>
       </div>
     </section>
 
@@ -224,6 +225,7 @@
   <script src="assets/js/app.js"></script>
   <script src="assets/js/scroll.js"></script>
   <script src="assets/js/showcase.js"></script>
+  <script src="assets/js/hero-video.js"></script>
   <script src="assets/js/pages/home.js"></script>
 </body>
 </html>

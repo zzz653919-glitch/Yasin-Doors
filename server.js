@@ -42,6 +42,8 @@ const MIME = {
   ".avif": "image/avif",
   ".ico": "image/x-icon",
   ".woff2": "font/woff2",
+  ".mp4": "video/mp4",
+  ".webm": "video/webm",
   ".txt": "text/plain; charset=utf-8"
 };
 // Brauzerga hech qachon berilmaydigan fayl va papkalar
@@ -65,12 +67,32 @@ function serveStatic(req, res, pathname) {
   fs.stat(file, (err, stat) => {
     if (err || !stat.isFile()) return notFound(res);
     const ext = path.extname(file).toLowerCase();
-    res.writeHead(200, Object.assign({
+    const headers = Object.assign({
       "Content-Type": MIME[ext] || "application/octet-stream",
       // HTML/CSS/JS har doim yangilansin (o‘zgarishlar darhol ko‘rinadi), rasmlar 1 soat keshda
       "Cache-Control": [".html", ".css", ".js"].includes(ext) ? "no-cache" : "public, max-age=3600",
       "X-Content-Type-Options": "nosniff"
-    }, pathname.startsWith("/admin/") ? ADMIN_HEADERS : {}));
+    }, pathname.startsWith("/admin/") ? ADMIN_HEADERS : {});
+
+    // Video uchun Range so‘rovlari (Safari/iOS videoni faqat shu bilan ijro etadi, oldinga o‘tkazish ham shunga tayanadi)
+    const range = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || "");
+    if (range && (range[1] || range[2])) {
+      let start = range[1] ? Number(range[1]) : Math.max(0, stat.size - Number(range[2]));
+      let end = range[1] && range[2] ? Math.min(Number(range[2]), stat.size - 1) : stat.size - 1;
+      if (start > end || start >= stat.size) {
+        res.writeHead(416, { "Content-Range": `bytes */${stat.size}` });
+        return res.end();
+      }
+      res.writeHead(206, Object.assign(headers, {
+        "Accept-Ranges": "bytes",
+        "Content-Range": `bytes ${start}-${end}/${stat.size}`,
+        "Content-Length": end - start + 1
+      }));
+      if (req.method === "HEAD") return res.end();
+      return fs.createReadStream(file, { start, end }).pipe(res);
+    }
+
+    res.writeHead(200, Object.assign(headers, { "Accept-Ranges": "bytes", "Content-Length": stat.size }));
     if (req.method === "HEAD") return res.end();
     fs.createReadStream(file).pipe(res);
   });

@@ -1,0 +1,196 @@
+/* =========================================================
+   YasinDoors — 3D eshik konstruktori
+   Chap: sozlamalar · markaz: 3D · o'ng: xulosa. Mobilda sozlamalar pastdan chiqadigan panelga aylanadi.
+   ========================================================= */
+.container--wide { max-width: 1480px; }
+.cfg-hero { padding: 40px 0 28px; }
+.cfg { padding: 28px 0 80px; }
+
+.cfg-layout { display: grid; grid-template-columns: 352px minmax(0, 1fr) 340px; gap: 24px; align-items: start; }
+
+/* ---------- Sozlamalar paneli ---------- */
+.cfg-panel {
+  position: sticky; top: calc(var(--header-h) + 16px); max-height: calc(100vh - var(--header-h) - 32px); overflow-y: auto;
+  padding: 20px; border-radius: var(--radius-lg); background: var(--surface); border: 1px solid var(--border);
+  scrollbar-width: thin;
+}
+.cfg-panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.cfg-panel h2 { font-size: 18px; margin: 0; }
+.cfg-sheet-close { display: none; }
+.cfg-legend { font-size: 12.5px; color: var(--muted); margin: 0 0 14px; line-height: 1.5; }
+.cfg-tag {
+  display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 10.5px; font-weight: 800; letter-spacing: .04em;
+  background: var(--gold-soft); color: var(--gold-strong); white-space: nowrap;
+}
+.cfg-group { padding: 16px 0; border-top: 1px solid var(--border); }
+.cfg-group:first-of-type { border-top: 0; padding-top: 4px; }
+.cfg-group > h3 { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; font-weight: 800; }
+.cfg-grid { display: grid; gap: 10px; }
+.cfg-grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.cfg-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+/* Variant kartalari */
+.cfg-card {
+  position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 10px 8px 12px; text-align: center;
+  border-radius: 14px; border: 1.5px solid var(--border); background: var(--surface-2);
+  transition: border-color .2s, background-color .2s, transform .2s var(--ease), box-shadow .2s;
+}
+.cfg-card:hover { border-color: var(--border-strong); transform: translateY(-1px); }
+.cfg-card.is-selected { border-color: var(--gold); background: color-mix(in srgb, var(--gold) 10%, var(--surface)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 22%, transparent); }
+.cfg-card.is-disabled { opacity: .4; cursor: not-allowed; pointer-events: none; }
+.cfg-card-name { font-size: 12.5px; font-weight: 700; line-height: 1.25; color: var(--text); }
+.cfg-card-sub { font-size: 11px; color: var(--muted); line-height: 1.3; }
+.cfg-card svg.cfg-mini { width: 100%; max-width: 74px; height: auto; border-radius: 8px; }
+.cfg-card .cfg-tag { position: absolute; top: 6px; right: 6px; font-size: 9.5px; padding: 1px 6px; }
+
+/* Rang namunalari */
+.cfg-swatches { display: flex; flex-wrap: wrap; gap: 10px; }
+.cfg-swatch {
+  position: relative; width: 44px; height: 44px; border-radius: 50%; border: 2px solid transparent; padding: 0;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .18), 0 2px 6px rgba(0, 0, 0, .2);
+  transition: transform .2s var(--ease), box-shadow .2s;
+}
+.cfg-swatch:hover { transform: scale(1.08); }
+.cfg-swatch.is-selected { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--gold), inset 0 0 0 1px rgba(0, 0, 0, .18); }
+.cfg-swatch.is-wood { background-image: repeating-linear-gradient(94deg, rgba(0,0,0,.14) 0 1px, transparent 1px 5px), repeating-linear-gradient(88deg, rgba(255,255,255,.08) 0 2px, transparent 2px 9px); }
+.cfg-sw-wrap { display: grid; justify-items: center; gap: 4px; width: 58px; }
+.cfg-sw-name { font-size: 11px; color: var(--muted); text-align: center; line-height: 1.2; }
+.cfg-sw-wrap .cfg-tag { font-size: 9px; padding: 0 5px; }
+.cfg-sw-wrap.is-disabled { opacity: .4; pointer-events: none; }
+
+/* Chiplar va segment */
+.cfg-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.cfg-chip {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 999px;
+  border: 1.5px solid var(--border); background: var(--surface-2); font-size: 13.5px; font-weight: 700; color: var(--text-soft);
+  transition: border-color .2s, background-color .2s, color .2s;
+}
+.cfg-chip:hover { border-color: var(--border-strong); }
+.cfg-chip.is-selected { background: var(--text); color: var(--bg); border-color: var(--text); }
+.cfg-chip.is-disabled { opacity: .4; pointer-events: none; }
+.cfg-chip .cfg-tag { font-size: 9px; padding: 0 5px; }
+.cfg-chip.is-selected .cfg-tag { background: rgba(255, 255, 255, .18); color: inherit; }
+
+/* O'lcham */
+.cfg-size { display: grid; gap: 14px; margin-top: 14px; }
+.cfg-size-row { display: grid; gap: 6px; }
+.cfg-size-row label { display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 700; color: var(--text-soft); }
+.cfg-size-row label span { color: var(--muted); font-weight: 600; }
+.cfg-size-inputs { display: grid; grid-template-columns: 92px 1fr; gap: 12px; align-items: center; }
+.cfg-size-inputs .input { min-height: 42px; padding: 8px 12px; font-size: 15px; font-weight: 700; text-align: center; }
+.cfg-range { width: 100%; accent-color: var(--gold); height: 28px; }
+.cfg-note { font-size: 12.5px; color: var(--muted); line-height: 1.5; margin: 0; }
+.cfg-note b { color: var(--gold-strong); }
+
+/* ---------- Markaz: 3D ko'rinish ---------- */
+.cfg-stage { position: sticky; top: calc(var(--header-h) + 16px); display: grid; gap: 14px; }
+.cfg-viewport {
+  position: relative; height: clamp(520px, calc(100vh - var(--header-h) - 150px), 820px); border-radius: 28px; overflow: hidden;
+  background: radial-gradient(90% 70% at 50% 35%, #232326, #0d0d0f 75%); border: 1px solid rgba(255, 255, 255, .06); box-shadow: var(--shadow-lg);
+}
+.cfg-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; outline: none; }
+.cfg-canvas:active { cursor: grabbing; }
+.cfg-canvas:focus-visible { outline: 2px solid var(--gold); outline-offset: -4px; border-radius: 28px; }
+.cfg-vignette { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(0, 0, 0, .45)); }
+.cfg-loading { position: absolute; inset: 0; z-index: 4; display: grid; place-content: center; justify-items: center; gap: 14px; color: #cfc9be; font-weight: 600; background: radial-gradient(90% 70% at 50% 35%, #232326, #0d0d0f 75%); transition: opacity .5s, visibility .5s; }
+.cfg-loading.is-done { opacity: 0; visibility: hidden; pointer-events: none; }
+.cfg-spinner { width: 44px; height: 44px; border-radius: 50%; border: 2px solid rgba(201, 166, 107, .2); border-top-color: #c9a66b; animation: cfg-spin 1s linear infinite; }
+@keyframes cfg-spin { to { transform: rotate(360deg); } }
+.cfg-fallback { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; padding: 28px 28px 70px; color: #cfc9be; text-align: center; gap: 10px; align-content: center; }
+.cfg-fallback svg { height: min(100%, 520px); width: auto; max-width: 100%; filter: drop-shadow(0 24px 30px rgba(0, 0, 0, .55)); }
+.cfg-fallback p { margin: 0; font-size: 13px; color: #a39d93; max-width: 44ch; }
+.cfg-viewbar {
+  position: absolute; left: 50%; bottom: 52px; z-index: 3; transform: translateX(-50%); display: flex; gap: 4px; padding: 5px;
+  border-radius: 999px; background: rgba(14, 14, 15, .6); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, .1);
+}
+.cfg-viewbar button { padding: 8px 15px; border-radius: 999px; font-size: 13px; font-weight: 700; color: #cfc9be; transition: background-color .2s, color .2s; }
+.cfg-viewbar button:hover { background: rgba(255, 255, 255, .1); color: #fff; }
+.cfg-viewbar button.is-active { background: #f3efe8; color: #111; }
+.cfg-hint { position: absolute; left: 0; right: 0; bottom: 14px; z-index: 3; margin: 0; padding: 0 16px; text-align: center; font-size: 12px; color: #8f897f; pointer-events: none; }
+.cfg-tools { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.cfg-tools .btn { min-height: 42px; }
+
+/* ---------- O'ng: xulosa ---------- */
+.cfg-summary {
+  position: sticky; top: calc(var(--header-h) + 16px); max-height: calc(100vh - var(--header-h) - 32px); overflow-y: auto;
+  padding: 22px; border-radius: var(--radius-lg); background: var(--surface); border: 1px solid var(--border); scrollbar-width: thin;
+}
+.cfg-sum-title { font-size: 20px; margin: 0 0 4px; }
+.cfg-sum-code { font-size: 12px; color: var(--muted); margin: 0 0 16px; letter-spacing: .04em; }
+.cfg-sum-code code { font-family: ui-monospace, Consolas, monospace; color: var(--gold-strong); font-weight: 700; }
+.cfg-rows { margin: 0; display: grid; gap: 0; }
+.cfg-rows > div { display: flex; justify-content: space-between; gap: 14px; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+.cfg-rows dt { color: var(--muted); font-weight: 600; flex: none; }
+.cfg-rows dd { margin: 0; font-weight: 700; text-align: right; }
+.cfg-qty { display: flex; align-items: center; justify-content: space-between; margin: 16px 0 4px; font-weight: 700; font-size: 14px; }
+.cfg-qty .qty { height: 44px; }
+.cfg-price { margin: 14px 0 0; padding: 16px; border-radius: 16px; background: var(--surface-2); border: 1px solid var(--border); }
+.cfg-price small { display: block; font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 800; margin-bottom: 6px; }
+.cfg-price strong { font-size: 26px; font-weight: 800; letter-spacing: -.02em; }
+.cfg-price .request { font-size: 18px; font-weight: 800; }
+.cfg-price p { font-size: 12.5px; color: var(--muted); margin: 8px 0 0; line-height: 1.5; }
+.cfg-price details { margin-top: 10px; font-size: 13px; }
+.cfg-price summary { cursor: pointer; font-weight: 700; color: var(--gold-strong); }
+.cfg-price ul { list-style: none; padding: 8px 0 0; margin: 0; display: grid; gap: 4px; }
+.cfg-price li { display: flex; justify-content: space-between; gap: 10px; color: var(--text-soft); }
+.cfg-summary .btn--block { margin-top: 14px; min-height: 54px; font-size: 16px; }
+.cfg-disclaimer { display: flex; gap: 10px; margin: 14px 0 0; padding: 12px 14px; border-radius: 12px; border: 1px dashed var(--border-strong); font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+.cfg-disclaimer .icon { color: var(--gold-strong); flex: none; margin-top: 2px; width: 18px; height: 18px; }
+
+/* ---------- Buyurtma oynasi ---------- */
+.cfg-modal { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: 18px; background: rgba(8, 8, 10, .6); overflow-y: auto; }
+.cfg-modal[hidden] { display: none; }
+.cfg-modal-card { width: min(520px, 100%); max-height: calc(100vh - 36px); overflow-y: auto; padding: 24px; border-radius: 22px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-lg); }
+.cfg-modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.cfg-modal-head h2 { font-size: 22px; margin: 0; }
+.cfg-modal .cfg-rows { margin-bottom: 16px; max-height: 190px; overflow-y: auto; }
+.cfg-done { text-align: center; padding: 8px 0 4px; }
+.cfg-done .empty-icon { width: 72px; height: 72px; margin: 0 auto 16px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in srgb, var(--success) 14%, transparent); color: var(--success); }
+
+/* ---------- Mobil va planshet ---------- */
+.cfg-sheet-open, .cfg-sheet-backdrop { display: none; }
+@media (max-width: 1240px) {
+  .cfg-layout { grid-template-columns: 320px minmax(0, 1fr); }
+  .cfg-summary { position: static; max-height: none; grid-column: 1 / -1; }
+}
+@media (max-width: 900px) {
+  .cfg { padding-top: 16px; }
+  .cfg-layout { grid-template-columns: 1fr; gap: 16px; }
+  .cfg-stage { top: calc(var(--header-h) + 8px); z-index: 20; }
+  .cfg-viewport { height: min(54vh, 520px); min-height: 360px; border-radius: 22px; }
+  .cfg-summary { grid-column: auto; }
+  .cfg-hint { display: none; }
+  .cfg-viewbar { bottom: 12px; }
+  .cfg-viewbar button { padding: 8px 12px; font-size: 12.5px; }
+  .cfg-tools .btn { flex: 1 1 calc(50% - 8px); padding: 0 10px; font-size: 13px; }
+
+  /* Sozlamalar — pastdan chiqadigan panel */
+  .cfg-panel {
+    position: fixed; left: 0; right: 0; bottom: 0; top: auto; z-index: 70; max-height: 56vh; border-radius: 24px 24px 0 0; padding: 16px 16px 24px;
+    transform: translateY(105%); visibility: hidden; transition: transform .35s var(--ease), visibility .35s; box-shadow: 0 -20px 50px rgba(0, 0, 0, .35);
+  }
+  body.cfg-sheet-on .cfg-panel { transform: none; visibility: visible; }
+  .cfg-sheet-close { display: inline-grid; }
+  .cfg-sheet-open {
+    position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 60; transform: translateX(-50%); display: inline-flex;
+    min-height: 52px; padding: 0 26px; box-shadow: 0 14px 34px -10px rgba(0, 0, 0, .55);
+  }
+  body.cfg-sheet-on .cfg-sheet-open { display: none; }
+  .cfg-sheet-backdrop { position: fixed; inset: 0; z-index: 65; background: rgba(0, 0, 0, .28); opacity: 0; visibility: hidden; transition: opacity .3s, visibility .3s; display: block; }
+  body.cfg-sheet-on .cfg-sheet-backdrop { opacity: 1; visibility: visible; }
+  /* back-to-top tugmasi "Sozlash" tugmasi bilan to'qnashmasin */
+  .to-top { bottom: calc(86px + env(safe-area-inset-bottom, 0px)); }
+  body { padding-bottom: 0; }
+}
+@media (max-width: 520px) {
+  .cfg-card svg.cfg-mini { max-width: 62px; }
+  .cfg-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .cfg-modal { padding: 0; place-items: end center; }
+  .cfg-modal-card { border-radius: 22px 22px 0 0; max-height: 94vh; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cfg-spinner { animation-duration: 3s; }
+  .cfg-panel { transition: none; }
+}
+
+html.cfg-modal-open { overflow: hidden; }

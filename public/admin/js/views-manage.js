@@ -270,6 +270,30 @@
   /* =====================================================
      SOZLAMALAR
      ===================================================== */
+  /** 3D konstruktor narx qoidalari: bo'sh maydon = "narx noma'lum" (mijozga "Narx so'raladi" ko'rsatiladi) */
+  function cfgPricesHTML(raw, dis) {
+    if (!window.YD_CFG) return "";
+    var rules = window.YD_CFG.sanitizeRules(raw || "").rules;
+    return '<p class="section-title" style="margin-top:8px">3D konstruktor narxlari</p>' +
+      '<p class="muted" style="font-size:13px;margin:0 0 8px">Faqat siz kiritgan narxlar ishlatiladi. Narx hisoblanishi uchun tanlangan har bir qism uchun qiymat kerak; <b>bo\'sh qoldirilsa</b> mijozga «Narx so\'raladi» ko\'rsatiladi (narx taxmin qilinmaydi). Standart o\'lchamdagi 1 dona uchun so\'mda yozing; qo\'shimcha bo\'lmasa <b>0</b> kiriting.</p>' +
+      window.YD_CFG.PRICE_FIELDS.map(function (g) {
+        return '<fieldset class="cfgp"><legend>' + esc(g.label) + '</legend><div class="form-grid">' + g.items.map(function (it) {
+          var v = rules[g.group] && rules[g.group][it.key] !== undefined ? rules[g.group][it.key] : "";
+          return '<div class="field"><label for="cfgp-' + g.group + '-' + it.key + '">' + esc(it.label) + '</label><input class="input" inputmode="numeric" data-cfgp="' + g.group + '.' + it.key + '" id="cfgp-' + g.group + '-' + it.key + '" value="' + esc(v) + '"' + dis + ' placeholder="Narx noma\'lum"></div>';
+        }).join("") + "</div></fieldset>";
+      }).join("");
+  }
+  function collectCfgPrices(form) {
+    var rules = {}, error = "";
+    [].slice.call(form.querySelectorAll("[data-cfgp]")).forEach(function (el) {
+      var v = el.value.replace(/\s/g, ""); if (v === "") return;
+      if (!/^\d{1,10}$/.test(v) || Number(v) > 1000000000) { error = "Konstruktor narxi noto'g'ri: «" + el.value + "». Faqat butun son kiriting."; return; }
+      var p = el.getAttribute("data-cfgp").split(".");
+      (rules[p[0]] = rules[p[0]] || {})[p[1]] = Number(v);
+    });
+    return { rules: rules, error: error };
+  }
+
   A.views.settings = {
     title: "Sozlamalar", icon: "settings", perm: "settings.read",
     render: function (root) {
@@ -291,7 +315,7 @@
           inp("footer_about", "Footer qisqa matni", { full: true, max: 300 }) +
           inp("delivery_terms", "Yetkazib berish shartlari", { full: true, area: true, hint: "«Biz haqimizda» sahifasida ko'rinadi. Faqat tasdiqlangan ma'lumotni kiriting." }) +
           inp("warranty_info", "Kafolat haqidagi ma'lumot", { full: true, area: true, hint: "Faqat haqiqiy, rasman mavjud kafolat shartlarini yozing." }) +
-          '</div><div class="alert alert--error" id="sErr" hidden></div>' + (canW ? '<div><button class="btn btn--gold" type="submit" id="sSave">Saqlash</button></div>' : '<div class="alert alert--info">' + A.icon("info") + "Sozlamalarni faqat Super Admin o'zgartira oladi.</div>") + "</form>" +
+          '</div>' + cfgPricesHTML(s.cfg_prices, dis) + '<div class="alert alert--error" id="sErr" hidden></div>' + (canW ? '<div><button class="btn btn--gold" type="submit" id="sSave">Saqlash</button></div>' : '<div class="alert alert--info">' + A.icon("info") + "Sozlamalarni faqat Super Admin o'zgartira oladi.</div>") + "</form>" +
           '<div class="stack"><div class="card card-pad stack"><p class="section-title">Telegram bildirishnomalari</p>' +
           '<div class="row-between"><div><b>Holat</b><div class="muted" style="font-size:13px">Server muhit o\'zgaruvchilari</div></div>' + (tg.configured ? A.chip("ok", "Sozlangan") : tg.dryRun ? A.chip("low", "Sinov rejimi") : A.chip("bad", "Sozlanmagan")) + "</div>" +
           '<div class="row-between"><label for="s-tg" style="font-weight:700">Yangi buyurtma haqida xabar yuborish</label><span class="switch"><input type="checkbox" id="s-tg"' + (s.telegram_enabled !== "0" ? " checked" : "") + (canW ? "" : " disabled") + '><span></span></span></div>' +
@@ -313,6 +337,9 @@
             e.preventDefault();
             var fd = form.elements, body = { logo: logo };
             ["store_name", "phone", "email", "address", "work_hours", "hero_subtitle", "footer_about", "delivery_terms", "warranty_info"].forEach(function (k) { body[k] = fd[k].value; });
+            var cp = collectCfgPrices(form);
+            if (cp.error) { var eb = $("#sErr", root); eb.textContent = cp.error; eb.hidden = false; return; }
+            body.cfg_prices = JSON.stringify(cp.rules);
             var btn = $("#sSave", root); if (btn.disabled) return; A.setBusy(btn, true); $("#sErr", root).hidden = true;
             A.put("/settings", body).then(function () { A.toast("Sozlamalar saqlandi"); }).catch(function (err) { var b = $("#sErr", root); b.textContent = err.message; b.hidden = false; }).then(function () { A.setBusy(btn, false); });
           });

@@ -231,44 +231,63 @@ ul { margin: 0; padding: 0; list-style: none; }
 body.menu-open .drawer { transform: none; visibility: visible; }
 body.menu-open .drawer-backdrop { opacity: 1; visibility: visible; }
 
-/* ---------- Hero ---------- */
-.hero { position: relative; padding: 48px 0 96px; overflow: hidden; }
-.hero::before {
-  content: ""; position: absolute; top: -20%; right: -10%; width: 60%; height: 120%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--gold) 22%, transparent), transparent 70%);
-  pointer-events: none;
+/* ---------- Hero (video-banner, assets/js/hero-video.js) ---------- */
+.hero { position: relative; padding: 24px 0 88px; overflow: hidden; }
+.hero-banner {
+  position: relative; isolation: isolate; overflow: hidden;
+  min-height: 540px; height: min(78svh, 720px);
+  border-radius: 28px; background: #121213; color: #f5f2ec;
+  box-shadow: var(--shadow-lg);
+  display: flex; align-items: center;
 }
-.hero-grid { position: relative; display: grid; grid-template-columns: 1.05fr .95fr; gap: 56px; align-items: center; }
-.hero h1 { margin-bottom: 20px; }
-.hero h1 em { font-style: normal; color: var(--gold); }
-.hero .lead { max-width: 500px; margin-bottom: 32px; }
+.hero-media { position: absolute; inset: 0; z-index: -2; }
+.hero-poster, .hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 62% center; }
+.hero-video { opacity: 0; transition: opacity 1.2s var(--ease); }
+.hero-banner.is-playing .hero-video { opacity: 1; }
+/* matn o‘qilishi uchun qorong‘i gradient (video va poster ustida) */
+.hero-banner::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(10, 10, 11, .86) 0%, rgba(10, 10, 11, .62) 38%, rgba(10, 10, 11, .08) 72%),
+    linear-gradient(0deg, rgba(10, 10, 11, .55), transparent 40%);
+}
+/* yuklanish: pastki chetda ingichka oltin chiziq yuguradi */
+.hero-loading {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 2px; overflow: hidden;
+  opacity: 0; transition: opacity .4s;
+}
+.hero-loading::after {
+  content: ""; position: absolute; top: 0; bottom: 0; width: 30%;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  animation: hero-load 1.4s ease-in-out infinite;
+}
+.hero-banner.is-loading .hero-loading { opacity: 1; }
+@keyframes hero-load { from { left: -30%; } to { left: 100%; } }
+.hero-banner.is-loading .hero-poster { animation: hero-breathe 6s ease-in-out infinite alternate; }
+@keyframes hero-breathe { to { transform: scale(1.04); } }
+
+.hero-content { position: relative; max-width: 600px; padding: 56px clamp(24px, 5vw, 64px); }
+.hero-content .eyebrow { color: #d9b980; }
+.hero h1 { margin-bottom: 20px; color: #fff; text-wrap: balance; }
+.hero h1 em { font-style: normal; color: #d9b980; }
+.hero .lead { max-width: 480px; margin-bottom: 32px; color: rgba(245, 242, 236, .82); }
 .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
-.hero-points { display: flex; gap: 28px; flex-wrap: wrap; margin-top: 44px; padding-top: 28px; border-top: 1px solid var(--border); }
+.hero-toggle {
+  position: absolute; right: 20px; bottom: 20px; width: 44px; height: 44px;
+  display: grid; place-items: center; border-radius: 50%; cursor: pointer;
+  color: #f5f2ec; background: rgba(15, 15, 16, .5); border: 1px solid rgba(255, 255, 255, .25);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  transition: background-color .25s, border-color .25s;
+}
+.hero-toggle[hidden] { display: none; }
+.hero-toggle:hover { background: rgba(15, 15, 16, .75); border-color: #f5f2ec; }
+.hero-toggle:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.hero-toggle .icon { width: 18px; height: 18px; }
+.hero-toggle .icon-play, .hero-toggle.is-paused .icon-pause { display: none; }
+.hero-toggle.is-paused .icon-play { display: block; fill: currentColor; }
+.hero-points { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; margin-top: 28px; }
 .hero-points li { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 14px; color: var(--text-soft); }
 .hero-points .icon { color: var(--gold); }
-
-.hero-visual { position: relative; display: flex; justify-content: center; }
-.hero-frame {
-  position: relative; width: min(100%, 440px); aspect-ratio: 4 / 5;
-  border-radius: 28px; overflow: hidden;
-  background: linear-gradient(160deg, #3a3835, #1b1a19);
-  box-shadow: var(--shadow-lg);
-}
-.hero-frame img { width: 100%; height: 100%; object-fit: cover; }
-.hero-tag {
-  position: absolute; display: flex; align-items: center; gap: 12px;
-  padding: 12px 16px; border-radius: 16px;
-  background: color-mix(in srgb, var(--surface) 88%, transparent);
-  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-  border: 1px solid var(--border); box-shadow: var(--shadow);
-  font-size: 13px; line-height: 1.35;
-  animation: float 6s ease-in-out infinite;
-}
-.hero-tag strong { display: block; font-size: 15px; }
-.hero-tag .dot { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: var(--gold-soft); color: var(--gold-strong); }
-.hero-tag--a { left: -4%; bottom: 14%; }
-.hero-tag--b { right: -2%; top: 10%; animation-delay: -3s; }
-@keyframes float { 50% { transform: translateY(-10px); } }
 
 /* ---------- Category cards ---------- */
 .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
@@ -869,10 +888,8 @@ body.menu-open .to-top, body.filters-open .to-top { opacity: 0; visibility: hidd
   .nav { gap: 12px; }
   .nav-actions { margin-left: auto; gap: 8px; }
   .section { padding: 72px 0; }
-  .hero { padding: 24px 0 72px; }
-  .hero-grid, .split, .detail, .cart-layout, .contact-layout { grid-template-columns: 1fr; gap: 40px; }
-  .hero-visual { order: -1; }
-  .hero-frame { width: min(100%, 380px); }
+  .hero { padding: 16px 0 64px; }
+  .split, .detail, .cart-layout, .contact-layout { grid-template-columns: 1fr; gap: 40px; }
   .cat-grid { grid-template-columns: repeat(2, 1fr); }
   .product-grid, .product-grid--3 { grid-template-columns: repeat(2, 1fr); }
   .testimonials, .about-grid { grid-template-columns: 1fr 1fr; }
@@ -902,11 +919,7 @@ body.menu-open .to-top, body.filters-open .to-top { opacity: 0; visibility: hidd
   .section-head { margin-bottom: 28px; }
   .lead { font-size: 16.5px; }
   .hero-actions .btn { flex: 1 1 100%; }
-  .hero-points { gap: 14px 22px; margin-top: 32px; }
-  .hero-tag { padding: 10px 12px; font-size: 12px; }
-  .hero-tag .dot { width: 32px; height: 32px; }
-  .hero-tag--a { left: 0; }
-  .hero-tag--b { right: 0; }
+  .hero-points { gap: 14px 22px; margin-top: 24px; justify-content: flex-start; }
   .cat-grid { gap: 12px; }
   .cat-card { min-height: 240px; padding: 16px; border-radius: 18px; }
   .cat-card h3 { font-size: 18px; }
@@ -949,6 +962,16 @@ body.menu-open .to-top, body.filters-open .to-top { opacity: 0; visibility: hidd
   .nav-actions .theme-toggle { display: none; }
 }
 
+/* Hero: tik telefon ekrani — 9:16 kompozitsiya, matn pastda */
+@media (max-width: 768px) {
+  .hero-banner { height: min(82svh, 760px); min-height: 520px; border-radius: 22px; align-items: flex-end; }
+  .hero-poster, .hero-video { object-position: 75% center; }
+  .hero-banner::before { background: linear-gradient(0deg, rgba(10, 10, 11, .92) 0%, rgba(10, 10, 11, .6) 42%, rgba(10, 10, 11, .05) 75%); }
+  .hero-content { padding: 28px 22px 32px; }
+  .hero-toggle { top: 16px; right: 16px; bottom: auto; }
+}
+@media (min-width: 769px) and (max-height: 620px) { .hero-banner { height: auto; min-height: 460px; } }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
   .reveal { opacity: 1; transform: none; }
@@ -959,5 +982,4 @@ body.menu-open .to-top, body.filters-open .to-top { opacity: 0; visibility: hidd
 @media (hover: none) {
   .product-card:hover, .feature:hover, .btn:hover { transform: none; }
   .product-card:hover .product-media img, .cat-card:hover img { transform: none; }
-  .hero-tag { animation: none; }
 }

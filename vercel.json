@@ -10,7 +10,7 @@
   "functions": {
     "api/*.js": {
       "maxDuration": 15,
-      "includeFiles": "{lib/**,public/assets/js/products.js}"
+      "includeFiles": "{lib/**,public/assets/js/products.js,public/assets/js/configurator-data.js}"
     }
   },
   "headers": [
@@ -19,6 +19,12 @@
       "headers": [
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    },
+    {
+      "source": "/assets/video/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800" }
       ]
     },
     {
