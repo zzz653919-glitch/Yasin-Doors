@@ -25,7 +25,7 @@
   var lastY = window.scrollY, scrollingUp = false;
 
   // Parallax qo‘llanadigan rasmlar: [selektor, kuch (px)]
-  // Vitrina slayderi (.vs-*) ataylab ro‘yxatda yo‘q — uning o‘tish animatsiyalari va swipe boshqaruvi buzilmasin.
+  // 3D carousel (.dc-*) ataylab ro‘yxatda yo‘q — uning transformlari va drag boshqaruvi buzilmasin.
   var PARALLAX = [
     [".hero-frame img", 28],
     [".cat-card img", 18],
@@ -138,7 +138,7 @@
     if (enabled) {
       PARALLAX.forEach(function (pair) {
         document.querySelectorAll(pair[0]).forEach(function (img) {
-          if (img.closest(".vs")) return;
+          if (img.closest(".dc")) return;
           img.classList.add("has-parallax");
           next.push({ el: img, box: img.parentElement, strength: pair[1], last: null });
         });

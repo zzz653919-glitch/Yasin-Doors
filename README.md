@@ -181,7 +181,7 @@ Baza ulanmagan bo'lsa: ochiq sayt statik katalog bilan ishlayveradi, buyurtmalar
 | Ranglar va dizayn | `public/assets/css/style.css`, `public/admin/admin.css` (`:root`) |
 | Loading ekran | `public/assets/js/loader.js`, `public/assets/css/loader.css` |
 | Scroll tizimi | `public/assets/js/scroll.js` |
-| «Premium MDF eshiklar vitrinasi» (avtomatik slayder: interval, kadr o'lchami, o'tish effektlari) | `public/assets/js/showcase.js`, `public/assets/js/pages/home.js` (`interval`, `MAX_SLIDES`), uslublar — `style.css` → `.vs-*` (`--vs-w`, `--vs-dur`). Vitrinaga faqat katalogdagi haqiqiy mahsulotlar va ularning rasmlari olinadi (avval «Mashhur»/«Yangi» belgilanganlar) |
+| Bosh sahifa carousel | `public/assets/js/carousel.js`, `public/assets/js/pages/home.js` |
 
 ### Ishga tushirishdan oldin to'ldirilishi kerak
 
