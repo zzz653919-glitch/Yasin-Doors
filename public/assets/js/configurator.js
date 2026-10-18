@@ -197,10 +197,15 @@
       '<dl class="cfg-rows">' + rows.map(function (r) { return "<div><dt>" + esc(r.label) + "</dt><dd>" + esc(r.value) + "</dd></div>"; }).join("") + "</dl>" +
       '<div class="cfg-qty"><span id="cfgQtyLabel">Soni</span><div class="qty" role="group" aria-labelledby="cfgQtyLabel"><button type="button" data-qty="-1" aria-label="Kamaytirish">−</button><input type="number" id="cfgQty" min="1" max="' + C.LIMITS.qtyMax + '" value="' + cfg.qty + '" inputmode="numeric" aria-label="Soni"><button type="button" data-qty="1" aria-label="Ko‘paytirish">+</button></div></div>';
     if (priced) {
-      html += '<div class="cfg-price"><small>Narxi' + (cfg.qty > 1 ? " (" + cfg.qty + " dona)" : "") + "</small><strong>" + money(price.total) + "</strong>" +
-        (cfg.qty > 1 ? "<p>1 dona: " + money(price.unit) + "</p>" : "") +
-        "<details><summary>Narx tarkibi</summary><ul>" + price.lines.map(function (l) { return "<li><span>" + esc(l.label) + "</span><b>" + money(l.amount) + "</b></li>"; }).join("") + "</ul></details>" +
-        "<p>Yakuniy summa buyurtma tasdiqlanganda menejer tomonidan tekshiriladi.</p></div>";
+      var baseL = price.lines.filter(function (l) { return l.kind === "base"; }), extraL = price.lines.filter(function (l) { return l.kind !== "base"; });
+      var extraSum = extraL.reduce(function (s, l) { return s + l.amount; }, 0);
+      html += '<div class="cfg-price"><small>Narx hisob-kitobi (1 dona)</small>' +
+        '<ul class="cfg-lines">' + baseL.map(function (l) { return '<li class="is-base"><span>Asosiy narx · ' + esc(l.label.replace(/^Model: /, "")) + "</span><b>" + money(l.amount) + "</b></li>"; }).join("") +
+        (extraL.length ? '<li class="is-head"><span>Qo‘shimcha xarajatlar</span><b>' + money(extraSum) + "</b></li>" : "") +
+        extraL.map(function (l) { return '<li class="is-extra"><span>' + esc(l.label) + "</span><b>" + (l.amount ? "+ " + money(l.amount) : "qo‘shimchasiz") + "</b></li>"; }).join("") + "</ul>" +
+        (cfg.qty > 1 ? '<p class="cfg-unit">1 dona: ' + money(price.unit) + " × " + cfg.qty + " dona</p>" : "") +
+        '<small class="cfg-total-label">Yakuniy narx' + (cfg.qty > 1 ? " (" + cfg.qty + " dona)" : "") + "</small><strong>" + money(price.total) + "</strong>" +
+        "<p>Narx tasdiqlangan qoidalar bo‘yicha hisoblandi; buyurtma yuborilganda server qayta tekshiradi.</p></div>";
     } else {
       html += '<div class="cfg-price"><small>Narxi</small><div class="request">Narx so‘raladi</div>' +
         "<p>Bu konfiguratsiya uchun narx hali tasdiqlanmagan. Buyurtma yuboring — menejer narxni aniqlab, siz bilan bog‘lanadi.</p></div>";
@@ -336,6 +341,12 @@
   }
 
   /* ---------- Buyurtma oynasi ---------- */
+  /** Narx qoidalarini serverdan qayta o'qish (admin narxni o'zgartirgan bo'lishi mumkin) */
+  function refreshRules() {
+    return fetch(YD.apiUrl("/api/catalog"), { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (d) {
+      if (d && d.settings) state.rules = C.sanitizeRules(d.settings.cfg_prices || "").rules;
+    }).catch(function () { /* mavjud qoidalar qoladi */ });
+  }
   var lastFocus = null;
   function openModal() {
     var cfg = state.cfg, price = C.calcPrice(cfg, state.rules), priced = price.status === "priced";
@@ -343,7 +354,7 @@
     var rows = C.describe(cfg).map(function (r) { return "<div><dt>" + esc(r.label) + "</dt><dd>" + esc(r.value) + "</dd></div>"; }).join("");
     $("cfgModalTitle").textContent = priced ? "Buyurtma berish" : "Narxni so‘rash";
     $("cfgModalBody").innerHTML =
-      '<dl class="cfg-rows">' + rows + "<div><dt>Soni</dt><dd>" + cfg.qty + " dona</dd></div><div><dt>Narxi</dt><dd>" + (priced ? money(price.total) : "Menejer aniqlaydi") + "</dd></div></dl>" +
+      '<dl class="cfg-rows">' + rows + "<div><dt>Soni</dt><dd>" + cfg.qty + " dona</dd></div><div><dt>Yakuniy narx</dt><dd id=\"cfgModalPrice\"><b>" + (priced ? money(price.total) : "Menejer aniqlaydi") + "</b></dd></div></dl>" +
       '<form id="cfgOrderForm" novalidate><div class="form-grid">' +
       '<div class="field"><label for="cfg-name">Ismingiz <span class="req">*</span></label><input class="input" id="cfg-name" name="name" autocomplete="name" maxlength="80"><span class="error" id="name-error">Ismingizni kiriting (kamida 2 ta harf).</span></div>' +
       '<div class="field"><label for="cfg-phone">Telefon raqami <span class="req">*</span></label><input class="input" id="cfg-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="+998 90 123 45 67"><span class="error" id="phone-error">Telefon raqamini to‘g‘ri kiriting.</span></div>' +
@@ -393,6 +404,8 @@
       var sig = C.encode(state.cfg) + "|" + payload.customer.phone;
       if (!state.attemptKey || sig !== state.attemptSig) { state.attemptKey = randomKey(); state.attemptSig = sig; }
       payload.idempotencyKey = state.attemptKey;
+      var pr = C.calcPrice(state.cfg, state.rules);
+      payload.expectedTotal = pr.status === "priced" ? pr.total : null;   // server narxi boshqacha bo'lsa 409 qaytaradi
       try {   // 3D konfiguratsiya rasmi (old tomondan) — ishlab chiqarishga yordam beradi; olinmasa buyurtma baribir yuboriladi
         if (state.mode === "3d" && state.scene) payload.snapshot = state.scene.snapshot({ width: 720, height: 900, type: "image/jpeg", quality: 0.82, view: "front" });
       } catch (err) { /* rasmsiz davom etamiz */ }
@@ -403,13 +416,21 @@
         $("cfgModalBody").innerHTML = '<div class="cfg-done"><div class="empty-icon"><svg class="icon" aria-hidden="true" style="width:34px;height:34px"><use href="#i-check"></use></svg></div>' +
           "<h3>Buyurtmangiz qabul qilindi</h3>" +
           '<div class="order-no">№ ' + esc(res.orderId || "—") + "</div>" +
+          '<dl class="cfg-rows" style="text-align:left;margin:12px 0">' + C.describe(payload.config).map(function (r) { return "<div><dt>" + esc(r.label) + "</dt><dd>" + esc(r.value) + "</dd></div>"; }).join("") + "<div><dt>Soni</dt><dd>" + payload.config.qty + " dona</dd></div><div><dt>Yakuniy narx</dt><dd><b>" + (res.priced ? money(res.total) : "Menejer aniqlaydi") + "</b></dd></div></dl>" +
           '<p class="muted">Konfiguratsiya kodi: <b>' + esc(res.code || C.shortCode(state.cfg)) + "</b>.<br>Menejerimiz " + esc(payload.customer.phone) + " raqami orqali bog‘lanib, " + (res.priced ? "buyurtmani" : "narx va ishlab chiqarish tafsilotlarini") + " tasdiqlaydi.</p>" +
           '<button class="btn btn--gold" type="button" id="cfgDone" style="margin-top:12px">Yopish</button></div>';
         $("cfgDone").addEventListener("click", closeModal);
         $("cfgDone").focus();
         state.attemptKey = null;
       }).catch(function (err) {
-        YDForm.showAlert(alertEl, "error", (err.message || "Buyurtmani yuborib bo‘lmadi.") + (YD.config.phone ? " Yoki qo‘ng‘iroq qiling: " + YD.config.phone : ""));
+        if (err.status === 409) {
+          refreshRules().then(function () {
+            renderSummary();
+            var np = C.calcPrice(state.cfg, state.rules), pe = $("cfgModalPrice");
+            if (pe) pe.textContent = np.status === "priced" ? money(np.total) : "Menejer aniqlaydi";
+          });
+        }   // narx o'zgargan — yangisini yuklab, mijoz qayta tasdiqlaydi
+        YDForm.showAlert(alertEl, "error", (err.message || "Buyurtmani yuborib bo‘lmadi.") + (err.status === 409 || !YD.config.phone ? "" : " Yoki qo‘ng‘iroq qiling: " + YD.config.phone));
         btn.disabled = false; btn.textContent = C.calcPrice(state.cfg, state.rules).status === "priced" ? "Buyurtmani yuborish" : "So‘rov yuborish";
       }).then(function () { state.sending = false; });
     });

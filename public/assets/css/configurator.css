@@ -194,3 +194,12 @@
 }
 
 html.cfg-modal-open { overflow: hidden; }
+
+/* Narx hisob-kitobi paneli */
+.cfg-lines { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; font-size: 13px; }
+.cfg-lines li { display: flex; justify-content: space-between; gap: 12px; }
+.cfg-lines li b { white-space: nowrap; font-weight: 700; }
+.cfg-lines .is-head { margin-top: 4px; padding-top: 8px; border-top: 1px dashed var(--line, rgba(128,128,128,.35)); font-weight: 700; }
+.cfg-lines .is-extra { padding-left: 10px; opacity: .85; }
+.cfg-unit { margin: 8px 0 0; font-size: 13px; }
+.cfg-total-label { display: block; margin-top: 12px; }

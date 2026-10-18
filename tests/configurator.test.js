@@ -49,7 +49,7 @@ const FULL_RULES = {
   frame: { none: 0, same: 200000, white: 180000, black: 180000 },
   decor: { gold: 40000, silver: 35000 },
   glass: { frosted: 100000, clear: 120000 },
-  size: { custom: 250000 }
+  size: { custom: 250000, extra_sqm: 500000 }
 };
 const customer = { name: "Sinov Mijoz", phone: "+998 90 123 45 67", address: "Toshkent, Sinov ko'chasi 1" };
 const key = () => require("crypto").randomBytes(12).toString("hex");
@@ -106,9 +106,27 @@ test("narx dvigateli: qoida yo'q bo'lsa taxmin qilmaydi, to'liq bo'lsa hisoblayd
   assert.equal(full.unit, full.lines.reduce((s, l) => s + l.amount, 0));
   // nostandart o'lcham — qoida yo'q bo'lsa so'rov
   const custom = C.normalize({ ...C.defaults(), w: 850 });
-  const rules = JSON.parse(JSON.stringify(FULL_RULES)); delete rules.size;
+  const rules = JSON.parse(JSON.stringify(FULL_RULES)); delete rules.size.custom;
   assert.equal(C.calcPrice(custom, rules).status, "request");
   assert.equal(C.calcPrice(custom, FULL_RULES).status, "priced");
+});
+
+test("o'lcham narxi: standartdan oshgan m² bo'yicha; kichik eshikka chegirma yo'q; ixtiyoriy xarajat bir marta", () => {
+  const std = C.calcPrice(C.normalize({ ...C.defaults() }), FULL_RULES);
+  assert.ok(!std.lines.some(l => /o‘lcham/i.test(l.label)));                       // standart o'lcham — o'lcham qo'shimchasi yo'q
+  const big = C.normalize({ ...C.defaults(), w: 900, h: 2100 });                    // 1.89 m² → 0.29 m² ortiq
+  const pb = C.calcPrice(big, FULL_RULES);
+  const sq = pb.lines.find(l => /Katta o‘lcham/.test(l.label));
+  assert.equal(sq.amount, Math.round(500000 * 0.29));
+  assert.equal(pb.unit, std.unit + 250000 + sq.amount);                             // nostandart + m² qo'shimchasi, boshqa hech narsa
+  const small = C.calcPrice(C.normalize({ ...C.defaults(), w: 700, h: 1900 }), FULL_RULES);
+  assert.ok(!small.lines.some(l => /Katta/.test(l.label)));
+  assert.equal(small.unit, std.unit + 250000);
+  const noSqm = JSON.parse(JSON.stringify(FULL_RULES)); delete noSqm.size.extra_sqm;
+  assert.equal(C.calcPrice(big, noSqm).status, "request");
+  const fee = C.calcPrice(C.defaults(), { ...FULL_RULES, other: { fee: 15000 } });
+  assert.equal(fee.unit, std.unit + 15000);
+  assert.equal(fee.lines.filter(l => l.label === "Boshqa xarajat").length, 1);
 });
 
 test("sanitizeRules: noma'lum kalit va noto'g'ri son rad etiladi", () => {
@@ -169,6 +187,27 @@ test("buyurtma: to'liq qoidalar bilan narx serverda hisoblanadi; takroriy kalit 
   const list = await call("GET", "/api/admin/orders?q=" + encodeURIComponent(a.json.orderId), { ...boss });
   assert.equal(list.json.total, 1);
   assert.equal(list.json.items[0].total, expected.total);
+});
+
+test("buyurtma: mijoz ko'rgan narx server narxidan farq qilsa 409; eski buyurtma narxi o'zgarmaydi", async () => {
+  assert.equal((await call("PUT", "/api/admin/settings", { body: { cfg_prices: JSON.stringify(FULL_RULES) }, ...boss })).status, 200);
+  const cfg = C.normalize({ ...C.defaults(), model: "lines" });
+  const price1 = C.calcPrice(cfg, FULL_RULES).total;
+  const ok = await call("POST", "/api/configurator/order", { body: { customer, config: cfg, expectedTotal: price1, idempotencyKey: key() }, ip: "10.2.6.1" });
+  assert.equal(ok.status, 200); assert.equal(ok.json.total, price1);
+  const stale = await call("POST", "/api/configurator/order", { body: { customer, config: cfg, expectedTotal: price1 - 1, idempotencyKey: key() }, ip: "10.2.6.2" });
+  assert.equal(stale.status, 409);
+  const notPriced = await call("POST", "/api/configurator/order", { body: { customer, config: cfg, expectedTotal: null, idempotencyKey: key() }, ip: "10.2.6.3" });
+  assert.equal(notPriced.status, 409);
+  // admin narxni o'zgartiradi — eski buyurtma saqlangan narxda qoladi
+  const changed = JSON.parse(JSON.stringify(FULL_RULES)); changed.base.lines = 9999999;
+  assert.equal((await call("PUT", "/api/admin/settings", { body: { cfg_prices: JSON.stringify(changed) }, ...boss })).status, 200);
+  const old = (await call("GET", "/api/admin/orders?q=" + encodeURIComponent(ok.json.orderId), { ...boss })).json.items[0];
+  assert.equal(old.total, price1);
+  assert.equal(old.items[0].price, price1);
+  const fresh = await call("POST", "/api/configurator/order", { body: { customer, config: cfg, expectedTotal: C.calcPrice(cfg, changed).total, idempotencyKey: key() }, ip: "10.2.6.4" });
+  assert.equal(fresh.status, 200); assert.equal(fresh.json.total, C.calcPrice(cfg, changed).total);
+  await call("PUT", "/api/admin/settings", { body: { cfg_prices: "" }, ...boss });
 });
 
 test("3D rasm saqlanadi va buyurtmaga bog'lanadi; yaroqsiz rasm buyurtmani to'xtatmaydi", async () => {

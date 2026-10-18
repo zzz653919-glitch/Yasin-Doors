@@ -209,8 +209,14 @@
     { group: "frame",   label: "Eshik romi qo‘shimchasi",     items: names(FRAMES) },
     { group: "decor",   label: "Dekor qo‘shimchasi",          items: [{ key: "gold", label: DECORS.gold.name }, { key: "silver", label: DECORS.silver.name }] },
     { group: "glass",   label: "Shisha turi qo‘shimchasi",    items: names(GLASS_TYPES) },
-    { group: "size",    label: "Nostandart o‘lcham qo‘shimchasi", items: [{ key: "custom", label: "Nostandart o‘lcham" }] }
+    { group: "size",    label: "O‘lcham bo‘yicha narx", items: [
+      { key: "custom", label: "Nostandart o‘lcham uchun qo‘shimcha (bir martalik)" },
+      { key: "extra_sqm", label: "Standart (0,8 × 2,0 m = 1,6 m²) dan oshgan har 1 m² uchun" }
+    ] },
+    // Ixtiyoriy: bo'sh bo'lsa hisobga olinmaydi (narxni "so'rov"ga o'tkazmaydi)
+    { group: "other",   label: "Boshqa tasdiqlangan xarajat (ixtiyoriy)", optional: true, items: [{ key: "fee", label: "Har bir dona uchun qo‘shimcha xarajat (masalan, qadoqlash)" }] }
   ];
+  var STD_AREA_MM2 = 800 * 2000;   // "standart" o'lcham maydoni — o'lcham narxi shundan oshgan qismiga qo'llanadi
   var MAX_PRICE = 1000000000;
 
   function priceNum(v) {
@@ -246,8 +252,8 @@
    */
   function calcPrice(c, rules) {
     var lines = [], missing = [], m = MODELS[c.model];
-    function add(label, amount) { if (amount === null || amount === undefined) missing.push(label); else lines.push({ label: label, amount: amount }); }
-    add("Model: " + m.name, rule(rules, "base", c.model));
+    function add(label, amount, kind) { if (amount === null || amount === undefined) missing.push(label); else lines.push({ label: label, amount: amount, kind: kind || "extra" }); }
+    add("Model: " + m.name, rule(rules, "base", c.model), "base");
     add("Qoplama: " + COATINGS[c.coating].name, rule(rules, "coating", c.coating));
     if (COLORS[c.color].wood) add("Yog‘och rang: " + COLORS[c.color].name, rule(rules, "color", "wood"));
     add("Tutqich: " + HANDLE_SHAPES[c.handle].name, rule(rules, "handle", c.handle));
@@ -256,6 +262,13 @@
     if (c.decor !== "none") add("Dekor: " + DECORS[c.decor].name, rule(rules, "decor", c.decor));
     if (m.glass) add("Shisha: " + GLASS_TYPES[c.glass].name, rule(rules, "glass", c.glass));
     if (!isStandardSize(c)) add("Nostandart o‘lcham", rule(rules, "size", "custom"));
+    var over = c.w * c.h - STD_AREA_MM2;             // standartdan katta maydon uchun m² bo'yicha (kichik eshikka chegirma yo'q)
+    if (over > 0) {
+      var perSqm = rule(rules, "size", "extra_sqm");
+      add("Katta o‘lcham (+" + (over / 1e6).toFixed(2).replace(".", ",") + " m²)", perSqm === null ? null : Math.round(perSqm * over / 1e6));
+    }
+    var fee = rule(rules, "other", "fee");           // ixtiyoriy: kiritilmagan bo'lsa hisobga olinmaydi
+    if (fee) add("Boshqa xarajat", fee);
     if (missing.length) return { status: "request", unit: null, total: null, lines: lines, missing: missing };
     var unit = lines.reduce(function (s, l) { return s + l.amount; }, 0);
     return { status: "priced", unit: unit, total: unit * c.qty, lines: lines, missing: [] };
