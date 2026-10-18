@@ -231,7 +231,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 body.menu-open .drawer { transform: none; visibility: visible; }
 body.menu-open .drawer-backdrop { opacity: 1; visibility: visible; }
 
-/* ---------- Hero (video-banner, assets/js/hero-video.js) ---------- */
+/* ---------- Hero ---------- */
 .hero { position: relative; padding: 24px 0 88px; overflow: hidden; }
 .hero-banner {
   position: relative; isolation: isolate; overflow: hidden;
