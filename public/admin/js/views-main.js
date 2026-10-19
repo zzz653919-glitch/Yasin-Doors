@@ -54,6 +54,7 @@
           card("box", "Jami mahsulotlar", fmt.num(s.total_products), "Sotuvda: " + s.active_products, false, "#/products") +
           card("warehouse", "Ombordagi mahsulotlar", fmt.num(s.stock_units) + "<small>dona</small>", s.low_stock ? s.low_stock + " ta kam qolgan" : "Hammasi yetarli", s.low_stock > 0, "#/inventory") +
           card("userplus", "Yangi mijozlar", fmt.num(s.new_customers), "So'nggi 7 kun · jami " + s.total_customers, false, "#/customers") +
+          card("users", "Ro'yxatdan o'tgan foydalanuvchilar", fmt.num(s.total_accounts), "Bugun: " + s.today_accounts + " · 7 kun: " + s.week_accounts, false, A.can("accounts.read") ? "#/accounts" : null) +
           card("money", "Umumiy savdo (to'langan)", fmt.num(s.revenue) + "<small>so'm</small>", "Kutilayotgan (to'lanmagan): " + fmt.money(s.pending_amount), false, "#/orders?payment=unpaid") +
           card("alert", "Bajarilmagan buyurtmalar", fmt.num(s.open_orders), "Yangi, qabul qilingan, tayyorlanayotgan, yo'lda", s.new_orders > 0, "#/orders?status=new") +
           card("trend", "O'rtacha chek", fmt.num(s.avg_order) + "<small>so'm</small>", "To'langan buyurtmalar: " + s.paid_orders, false) +
@@ -101,6 +102,11 @@
           });
         }
       });
+      // Statistika (jumladan yangi foydalanuvchilar) avtomatik yangilanadi
+      var dashTimer = setInterval(function () {
+        if (!root.isConnected) { clearInterval(dashTimer); return; }
+        if (document.visibilityState === "visible" && !document.querySelector(".modal")) load();
+      }, 30000);
       load();
     }
   };

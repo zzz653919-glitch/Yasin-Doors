@@ -306,3 +306,66 @@ test("SQL injection urinishi: login va qidiruv xavfsiz", async () => {
   assert.equal(rr.status, 422);
   assert.ok(await db.get("SELECT 1 AS x FROM accounts LIMIT 1"));
 });
+
+/* ---------- Admin integratsiyasi: tarix, faollik, saralash, profil, o'chirish, statistika ---------- */
+test("kirish tarixi: muvaffaqiyatli/muvaffaqiyatsiz yoziladi, identifikator niqoblangan, parol yozilmaydi", async () => {
+  await db.run("DELETE FROM login_attempts");
+  await call("POST", "/api/account/login", { body: { identifier: "second@example.com", password: "Maxfiy-Xato-777" }, ip: "10.2.0.1" });
+  await call("POST", "/api/account/login", { body: { identifier: "yoq-odam@example.com", password: "Maxfiy-Xato-888" }, ip: "10.2.0.1" });
+  const ok = await call("POST", "/api/account/login", { body: { identifier: "second@example.com", password: "Sinov-8421-Kalit" }, ip: "10.2.0.2" });
+  assert.equal(ok.status, 200);
+  const rows = await db.all("SELECT * FROM account_login_log ORDER BY id");
+  const dump = JSON.stringify(rows);
+  assert.ok(!dump.includes("Maxfiy-Xato") && !dump.includes("Sinov-8421"), "parol logda yo'q");
+  assert.ok(!dump.includes("second@example.com") && !dump.includes("yoq-odam@example.com"), "to'liq email logda yo'q");
+  assert.ok(rows.some(r => r.reason === "bad_password" && r.success === 0 && r.identifier === "s***@example.com"));
+  assert.ok(rows.some(r => r.reason === "unknown_account" && r.account_id === null));
+  assert.ok(rows.some(r => r.reason === "ok" && r.success === 1));
+  const acc = await db.get("SELECT last_login_at, last_seen_at FROM accounts WHERE email = ?", ["second@example.com"]);
+  assert.ok(acc.last_login_at && acc.last_seen_at);
+});
+
+test("oxirgi faollik: sessiya ishlatilganda yangilanadi", async () => {
+  const l = await call("POST", "/api/account/login", { body: { identifier: "second@example.com", password: "Sinov-8421-Kalit" }, ip: "10.2.1.1" });
+  await db.run("UPDATE accounts SET last_seen_at = ? WHERE email = ?", [new Date(Date.now() - 3600e3).toISOString(), "second@example.com"]);
+  await call("GET", "/api/account/me", { cookie: cookieOf(l) });
+  await new Promise(r => setTimeout(r, 100));
+  const a = await db.get("SELECT last_seen_at FROM accounts WHERE email = ?", ["second@example.com"]);
+  assert.ok(Date.now() - new Date(a.last_seen_at).getTime() < 60000);
+});
+
+test("admin: saralash, profil, statistika, o'chirish (buyurtmalar saqlanadi), ruxsatlar", async () => {
+  const op = await staff("op2", "operator"), mgr = await staff("mgr2", "manager"), sa = await staff("boss2", "super_admin");
+  const list = await call("GET", "/api/admin/accounts?sort=name&dir=asc", authed(mgr));
+  assert.equal(list.status, 200);
+  assert.ok(list.json.stats.total >= 2 && list.json.stats.today >= 2);
+  const names = list.json.items.map(i => i.first_name.toLowerCase());
+  assert.deepEqual(names, names.slice().sort((a, b) => a.localeCompare(b)));
+  assert.equal((await call("GET", "/api/admin/accounts?sort=1;DROP TABLE accounts&dir=x", authed(mgr))).status, 200); // yaroqsiz saralash e'tiborsiz
+
+  const target = list.json.items.find(a => a.email === "alisher@example.com");
+  const prof = await call("GET", `/api/admin/accounts/${target.id}`, authed(mgr));
+  assert.equal(prof.status, 200);
+  assert.equal(JSON.stringify(prof.json).includes("password_hash"), false);
+  assert.ok(prof.json.logins.length >= 1 && prof.json.orders.length === 1);
+  // ruxsatlar
+  assert.equal((await call("GET", `/api/admin/accounts/${target.id}`, authed(op))).status, 403);
+  assert.equal((await call("GET", `/api/admin/accounts/${target.id}`, { cookie: user.cookie })).status, 401);
+  assert.equal((await call("DELETE", `/api/admin/accounts/${target.id}`, authed(mgr))).status, 403);
+  // dashboard statistikasi real bazadan
+  const dash = await call("GET", "/api/admin/dashboard", authed(op));
+  assert.equal(dash.json.stats.total_accounts, list.json.stats.total);
+
+  await call("POST", "/api/admin/auth/reauth", Object.assign({ body: { password: "Sinov-8421-Kalit" } }, authed(sa)));
+  const del = await call("DELETE", `/api/admin/accounts/${target.id}`, authed(sa));
+  assert.equal(del.status, 200);
+  assert.equal(await db.get("SELECT 1 AS x FROM accounts WHERE id = ?", [target.id]), null);
+  assert.equal(Number((await db.get("SELECT COUNT(*) AS n FROM account_login_log WHERE account_id = ?", [target.id])).n), 0);
+  const o = await db.get("SELECT account_id FROM orders WHERE name = ? LIMIT 1", ["Алишер"]);
+  assert.ok(o, "buyurtma saqlangan"); 
+  assert.equal((await call("GET", `/api/admin/accounts/${target.id}`, authed(mgr))).status, 404);
+  const after = await call("GET", "/api/admin/accounts", authed(mgr));
+  assert.equal(after.json.stats.total, list.json.stats.total - 1);
+  const audit = await db.get("SELECT detail FROM audit_log WHERE action = 'account.delete'");
+  assert.ok(!audit.detail || !audit.detail.includes("alisher"));
+});

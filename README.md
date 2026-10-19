@@ -160,6 +160,8 @@ Sayt mijozlari uchun alohida akkaunt tizimi (xodimlar/admin tizimidan **alohida*
 
 **Bog'lanishlar:** sevimlilar akkauntga bog'lanadi (kirganda lokal va server ro'yxati birlashadi, chiqqanda qurilmadan tozalanadi). Kirgan mijozning buyurtmasi (oddiy va 3D konstruktor) serverda sessiya orqali `account_id` bilan saqlanadi va profilda ko'rinadi; mehmon buyurtmasi avvalgidek ishlaydi. **Savat** hozircha qurilmada (localStorage) qoladi — akkauntga saqlanmaydi.
 
+**Admin integratsiyasi:** «Sayt foydalanuvchilari» bo'limi real bazadan: statistika kartalari (jami, bugun, 7 kun, hozir saytda), qidiruv, holat filtri, ustun bo'yicha saralash, profil oynasi (ma'lumotlar, buyurtmalar, kirish tarixi), bloklash va akkauntni o'chirish (faqat Super Admin, parol tasdig'i bilan; buyurtmalar saqlanadi). Bo'lim va Dashboard har 30 soniyada avtomatik yangilanadi; Dashboard'da «Ro'yxatdan o'tgan foydalanuvchilar» kartasi bor. Kirish urinishlari `account_login_log` jadvalida (muvaffaqiyatli/muvaffaqiyatsiz, IP, brauzer; email/telefon niqoblangan, parol yozilmaydi, 90 kundan keyin tozalanadi). «Oxirgi faollik» — sessiya oxirgi ishlatilgan vaqt (5 daqiqa aniqlikda). Migratsiya v6: `accounts.last_seen_at`.
+
 **Eslatma:** `privacy.html` va `terms.html` matnlari tizim haqiqatan qiladigan ishlarni tasvirlaydigan qisqa shablon — nashrdan oldin egasi/yurist ko'rib chiqsin.
 
 ## Telegram bildirishnomalari
