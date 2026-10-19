@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ru" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Регистрация — YasinDoors</title>
+  <meta name="description" content="Создайте аккаунт YasinDoors.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#f7f5f1">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/account.css">
+  <link rel="stylesheet" href="assets/css/loader.css">
+  <script src="assets/js/theme-init.js"></script>
+  <script src="assets/js/loader.js"></script>
+</head>
+<body data-page="register">
+  <div data-include="header"></div>
+
+  <main>
+    <section class="auth-page">
+      <div class="container">
+        <div class="auth-wrap auth-wrap--wide">
+          <div class="card auth-card">
+            <div class="auth-head">
+              <span class="eyebrow">Новый аккаунт</span>
+              <h1>Регистрация</h1>
+              <p>Сохраняйте избранное и следите за статусом заказов в одном месте.</p>
+            </div>
+            <form class="auth-form" data-auth-form="register" novalidate>
+        <div class="row2">
+          <div class="field">
+            <label for="first_name">Имя</label>
+            <input class="input" id="first_name" name="first_name" type="text" autocomplete="given-name" maxlength="40" placeholder="Алишер" required>
+          </div>
+          <div class="field">
+            <label for="last_name">Фамилия</label>
+            <input class="input" id="last_name" name="last_name" type="text" autocomplete="family-name" maxlength="40" placeholder="Каримов" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input class="input" id="email" name="email" type="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254" placeholder="name@example.com" required>
+        </div>
+        <div class="field">
+          <label for="phone">Телефон</label>
+          <input class="input" id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="+998 90 123 45 67" required>
+        </div>
+        <div class="field">
+          <label for="password">Пароль</label>
+          <div class="pw-wrap">
+            <input class="input" id="password" name="password" type="password" autocomplete="new-password" maxlength="128" placeholder="••••••••" required>
+            <button class="pw-toggle" type="button" data-pw-toggle aria-pressed="false" aria-label="Показать пароль"><svg class="icon" aria-hidden="true"><use href="#i-eye"></use></svg><span>Показать пароль</span></button>
+          </div>
+        </div>
+        <div class="pw-meter" data-pw-meter data-score="0" aria-live="polite">
+          <div class="pw-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          <div class="pw-meter-label" data-pw-label></div>
+          <ul class="pw-rules"><li data-rule="len">8+ символов</li><li data-rule="letter">Буквы</li><li data-rule="digit">Цифры</li></ul>
+        </div>
+        <div class="field">
+          <label for="password2">Подтвердите пароль</label>
+          <div class="pw-wrap">
+            <input class="input" id="password2" name="password2" type="password" autocomplete="new-password" maxlength="128" placeholder="••••••••" required>
+            <button class="pw-toggle" type="button" data-pw-toggle aria-pressed="false" aria-label="Показать пароль"><svg class="icon" aria-hidden="true"><use href="#i-eye"></use></svg><span>Показать пароль</span></button>
+          </div>
+        </div>
+        <div class="field">
+          <label class="checkbox"><input type="checkbox" name="consent" id="consent"><span>Я принимаю <a href="privacy.html" target="_blank" rel="noopener">политику конфиденциальности</a> и <a href="terms.html" target="_blank" rel="noopener">условия использования</a></span></label>
+        </div>
+        <div class="hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+        <div class="form-alert" aria-live="polite"></div>
+        <button class="btn btn--gold btn--block" type="submit">Создать аккаунт</button>
+        <p class="auth-switch">Уже есть аккаунт? <a href="login.html" data-keep-next>Войти</a></p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="footer"></div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/account.js"></script>
+  <script src="assets/js/scroll.js"></script>
+  <script src="assets/js/form-utils.js"></script>
+  <script src="assets/js/auth-ui.js"></script>
+  <script src="assets/js/pages/auth.js"></script>
+</body>
+</html>

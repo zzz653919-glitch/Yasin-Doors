@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ru" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Личный кабинет — YasinDoors</title>
+  <meta name="description" content="Личный кабинет YasinDoors: профиль, избранное и заказы.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#f7f5f1">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/account.css">
+  <link rel="stylesheet" href="assets/css/loader.css">
+  <script src="assets/js/theme-init.js"></script>
+  <script src="assets/js/loader.js"></script>
+</head>
+<body data-page="profile" data-protected="1">
+  <div data-include="header"></div>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="index.html">Bosh sahifa</a><span>/</span><span aria-current="page">Личный кабинет</span></nav>
+        <h1 class="title-lg">Личный кабинет</h1>
+        <p id="profileSub">Ваши данные, избранное и история заказов.</p>
+      </div>
+    </section>
+    <section class="section section--tight">
+      <div class="container">
+        <div class="profile-layout" id="profileRoot" hidden>
+          <aside class="card profile-side" aria-label="Разделы кабинета">
+            <div class="profile-who"><span class="avatar" id="pAvatar"></span><div><strong id="pName"></strong><span id="pEmail"></span></div></div>
+            <button class="profile-tab" type="button" data-tab="profile"><svg class="icon" aria-hidden="true"><use href="#i-user"></use></svg>Профиль</button>
+            <button class="profile-tab" type="button" data-tab="favorites"><svg class="icon" aria-hidden="true"><use href="#i-heart"></use></svg>Избранное</button>
+            <button class="profile-tab" type="button" data-tab="orders"><svg class="icon" aria-hidden="true"><use href="#i-box"></use></svg>Заказы</button>
+            <button class="profile-tab profile-tab--out" type="button" data-account-logout><svg class="icon" aria-hidden="true"><use href="#i-logout"></use></svg>Выйти из аккаунта</button>
+          </aside>
+
+          <div class="profile-main">
+            <div class="card profile-panel" data-panel="profile">
+              <h2>Личные данные</h2>
+              <p class="sub">Эти данные подставляются при оформлении заказа.</p>
+              <form class="auth-form" id="profileForm" data-profile-form novalidate>
+                <div class="row2">
+                  <div class="field"><label for="first_name">Имя</label><input class="input" id="first_name" name="first_name" type="text" autocomplete="given-name" maxlength="40"></div>
+                  <div class="field"><label for="last_name">Фамилия</label><input class="input" id="last_name" name="last_name" type="text" autocomplete="family-name" maxlength="40"></div>
+                </div>
+                <div class="field"><label for="email">Email</label><input class="input" id="email" name="email" type="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254"></div>
+                <div class="field"><label for="phone">Телефон</label><input class="input" id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="20"></div>
+                <div class="field" id="curPwField" hidden>
+                  <label for="current_password">Текущий пароль</label>
+                  <div class="pw-wrap">
+                    <input class="input" id="current_password" name="current_password" type="password" autocomplete="current-password" maxlength="128">
+                    <button class="pw-toggle" type="button" data-pw-toggle aria-pressed="false" aria-label="Показать пароль"><svg class="icon" aria-hidden="true"><use href="#i-eye"></use></svg><span>Показать пароль</span></button>
+                  </div>
+                  <span class="hint">Для смены email или телефона подтвердите себя паролем.</span>
+                </div>
+                <div class="form-alert" aria-live="polite"></div>
+                <div class="profile-actions"><button class="btn btn--gold" type="submit">Сохранить изменения</button></div>
+              </form>
+            </div>
+
+            <div class="card profile-panel" data-panel="profile">
+              <h2>Смена пароля</h2>
+              <p class="sub">После смены вы останетесь в аккаунте только на этом устройстве.</p>
+              <form class="auth-form" id="passwordForm" data-profile-form novalidate>
+                <div class="field">
+                  <label for="pw_current">Текущий пароль</label>
+                  <div class="pw-wrap">
+                    <input class="input" id="pw_current" name="current_password" type="password" autocomplete="current-password" maxlength="128">
+                    <button class="pw-toggle" type="button" data-pw-toggle aria-pressed="false" aria-label="Показать пароль"><svg class="icon" aria-hidden="true"><use href="#i-eye"></use></svg><span>Показать пароль</span></button>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="pw_new">Новый пароль</label>
+                  <div class="pw-wrap">
+                    <input class="input" id="pw_new" name="new_password" type="password" autocomplete="new-password" maxlength="128">
+                    <button class="pw-toggle" type="button" data-pw-toggle aria-pressed="false" aria-label="Показать пароль"><svg class="icon" aria-hidden="true"><use href="#i-eye"></use></svg><span>Показать пароль</span></button>
+                  </div>
+                </div>
+                <div class="pw-meter" data-pw-meter data-score="0" aria-live="polite">
+                  <div class="pw-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+                  <div class="pw-meter-label" data-pw-label></div>
+                  <ul class="pw-rules"><li data-rule="len">8+ символов</li><li data-rule="letter">Буквы</li><li data-rule="digit">Цифры</li></ul>
+                </div>
+                <div class="field">
+                  <label for="pw_new2">Повторите новый пароль</label>
+                  <div class="pw-wrap">
+                    <input class="input" id="pw_new2" name="new_password2" type="password" autocomplete="new-password" maxlength="128">
+                    <button class="pw-toggle" type="button" data-pw-toggle aria-pressed="false" aria-label="Показать пароль"><svg class="icon" aria-hidden="true"><use href="#i-eye"></use></svg><span>Показать пароль</span></button>
+                  </div>
+                </div>
+                <div class="form-alert" aria-live="polite"></div>
+                <div class="profile-actions"><button class="btn btn--gold" type="submit">Изменить пароль</button></div>
+              </form>
+            </div>
+
+            <div class="card profile-panel" data-panel="favorites" hidden>
+              <h2>Избранное</h2>
+              <p class="sub" id="favSub">Модели, которые вы сохранили.</p>
+              <div id="favBox"></div>
+            </div>
+
+            <div class="card profile-panel" data-panel="orders" hidden>
+              <h2>История заказов</h2>
+              <p class="sub">Заказы, оформленные из вашего аккаунта.</p>
+              <div id="ordersBox"></div>
+            </div>
+          </div>
+        </div>
+        <div id="profileGate" class="auth-state" style="padding:48px 0"><p class="muted">Загрузка…</p></div>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="footer"></div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/account.js"></script>
+  <script src="assets/js/scroll.js"></script>
+  <script src="assets/js/form-utils.js"></script>
+  <script src="assets/js/auth-ui.js"></script>
+  <script src="assets/js/pages/profile.js"></script>
+</body>
+</html>

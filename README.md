@@ -144,6 +144,24 @@ Mijoz model, naqsh, rang, qoplama, tutqich, ochilish tomoni, o'lcham, rom va dek
 
 Buyurtma `POST /api/configurator/order`: konfiguratsiya serverda qat'iy tekshiriladi (`configurator-data.js` mijoz va serverda umumiy), idempotentlik kaliti, tezlik cheklovi, honeypot; 3D rasm (ixtiyoriy) `images` jadvaliga, konfiguratsiya `order_items.config` ga saqlanadi; Telegram xabarida barcha tanlovlar va narx holati bor. Baza ulanmagan rejimda faqat Telegram'ga yuboriladi. Three.js `public/assets/vendor/three/` da lokal (MIT, CDN yo'q).
 
+## Mijoz akkauntlari (Вход / Регистрация)
+
+Sayt mijozlari uchun alohida akkaunt tizimi (xodimlar/admin tizimidan **alohida**: boshqa jadval `accounts`, boshqa cookie `yd_acc`; mijoz akkauntida rol yo'q, shuning uchun frontend orqali admin bo'lib bo'lmaydi). Interfeys rus tilida.
+
+**Sahifalar:** `login.html`, `register.html`, `forgot-password.html`, `reset-password.html`, `profile.html` (profil, parol o'zgartirish, sevimlilar, buyurtmalar), `privacy.html`, `terms.html`. Navbar'da «Вход / Регистрация», kirgach profil menyusi. Frontend: `assets/js/account.js` (holat, navbar, sevimlilar sinxroni), `auth-ui.js`, `pages/auth.js`, `pages/profile.js`, `assets/css/account.css`.
+
+**API (`lib/routes-account.js`):** `GET /api/account/me`, `POST register | login | logout | forgot | reset | reset/check | password`, `PUT profile`, `GET/PUT favorites`, `GET orders`. Admin: `GET /api/admin/accounts`, `PUT /api/admin/accounts/:id/status` (bloklash; faqat Super Admin, parol tasdig'i bilan). Admin panelda «Sayt foydalanuvchilari» bo'limi (Manager ko'ra oladi, Operator — yo'q).
+
+**Jadvallar** (`lib/db.js`, avtomatik yaratiladi/migratsiya qilinadi): `accounts`, `account_sessions`, `password_resets`, `account_favorites`; `orders.account_id` ustuni (migratsiya v5).
+
+**Xavfsizlik:** scrypt xesh; sessiya tokeni `HttpOnly` + `SameSite=Strict` (+ HTTPS'da `Secure`), bazada faqat SHA-256; CSRF tokeni + Origin tekshiruvi; kirishda 15 daqiqada 5 ta xato (akkaunt) / 10 ta (IP) → 429, ro'yxatdan o'tish va tiklashga ham limit; login xabari akkaunt bor-yo'qligini bildirmaydi; email/telefon o'zgartirish va parol almashtirish joriy parolni talab qiladi, parol o'zgarganda boshqa sessiyalar tugaydi; bloklangan akkaunt sessiyasi darhol o'chadi; parametrlangan SQL.
+
+**Parolni tiklash:** havola bir martalik, 1 soat amal qiladi (bazada faqat xeshi), URL fragmentida (`#t=...`) yuboriladi, ishlatilgach barcha sessiyalar tugaydi. Email yuborish uchun `.env` da `RESEND_API_KEY`, `MAIL_FROM`, `APP_URL` kerak (qarang `.env.example`). Sozlanmagan bo'lsa tiklash sahifasi aniq xabar beradi va tugma o'chiriladi. Lokal sinov: `MAIL_DRY_RUN=true` — havola server konsoliga chiqadi.
+
+**Bog'lanishlar:** sevimlilar akkauntga bog'lanadi (kirganda lokal va server ro'yxati birlashadi, chiqqanda qurilmadan tozalanadi). Kirgan mijozning buyurtmasi (oddiy va 3D konstruktor) serverda sessiya orqali `account_id` bilan saqlanadi va profilda ko'rinadi; mehmon buyurtmasi avvalgidek ishlaydi. **Savat** hozircha qurilmada (localStorage) qoladi — akkauntga saqlanmaydi.
+
+**Eslatma:** `privacy.html` va `terms.html` matnlari tizim haqiqatan qiladigan ishlarni tasvirlaydigan qisqa shablon — nashrdan oldin egasi/yurist ko'rib chiqsin.
+
 ## Telegram bildirishnomalari
 
 Token va chat ID **faqat serverda** (muhit o'zgaruvchilari); brauzerga hech qachon chiqmaydi. Yangi buyurtma kelganda xabarda: buyurtma raqami, mijoz, telefon, manzil, mahsulotlar va umumiy summa. Sozlanmagan bo'lsa, qolgan hamma funksiyalar ishlayveradi; admin panel (Sozlamalar) yo'riqnoma va «Sinov xabari» tugmasini ko'rsatadi.

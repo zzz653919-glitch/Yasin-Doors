@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ru" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Вход — YasinDoors</title>
+  <meta name="description" content="Вход в личный кабинет YasinDoors.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#f7f5f1">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/account.css">
+  <link rel="stylesheet" href="assets/css/loader.css">
+  <script src="assets/js/theme-init.js"></script>
+  <script src="assets/js/loader.js"></script>
+</head>
+<body data-page="login">
+  <div data-include="header"></div>
+
+  <main>
+    <section class="auth-page">
+      <div class="container">
+        <div class="auth-wrap">
+          <div class="card auth-card">
+            <div class="auth-head">
+              <span class="eyebrow">Личный кабинет</span>
+              <h1>Вход</h1>
+              <p>Войдите, чтобы видеть свои заказы и избранные модели.</p>
+            </div>
+            <form class="auth-form" data-auth-form="login" novalidate>
+        <div class="field">
+          <label for="identifier">Email или телефон</label>
+          <input class="input" id="identifier" name="identifier" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="254" placeholder="name@example.com или +998 90 123 45 67" required>
+        </div>
+        <div class="field">
+          <label for="password">Пароль</label>
+          <div class="pw-wrap">
+            <input class="input" id="password" name="password" type="password" autocomplete="current-password" maxlength="128" placeholder="••••••••" required>
+            <button class="pw-toggle" type="button" data-pw-toggle aria-pressed="false" aria-label="Показать пароль"><svg class="icon" aria-hidden="true"><use href="#i-eye"></use></svg><span>Показать пароль</span></button>
+          </div>
+        </div>
+        <div class="auth-row">
+          <label class="checkbox"><input type="checkbox" name="remember"> Запомнить меня</label>
+          <a href="forgot-password.html">Забыли пароль?</a>
+        </div>
+        <div class="form-alert" aria-live="polite"></div>
+        <button class="btn btn--gold btn--block" type="submit">Войти</button>
+        <p class="auth-switch">Нет аккаунта? <a href="register.html" data-keep-next>Зарегистрироваться</a></p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="footer"></div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/account.js"></script>
+  <script src="assets/js/scroll.js"></script>
+  <script src="assets/js/form-utils.js"></script>
+  <script src="assets/js/auth-ui.js"></script>
+  <script src="assets/js/pages/auth.js"></script>
+</body>
+</html>
