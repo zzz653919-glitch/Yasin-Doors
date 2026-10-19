@@ -71,7 +71,7 @@
       var q = query.q || "", status = "", sort = "created_at", dir = "desc", items = [], canW = A.can("accounts.write");
       var REASON = { ok: "Muvaffaqiyatli", register: "Ro'yxatdan o'tish", bad_password: "Noto'g'ri parol", unknown_account: "Akkaunt topilmadi", blocked: "Bloklangan akkaunt", rate_limited: "Urinishlar chegarasi" };
       var COLS = [["name", "Foydalanuvchi"], [null, "Telefon"], [null, "Holat"], ["orders_count", "Buyurtmalar"], ["created_at", "Ro'yxatdan o'tgan"], ["last_login_at", "Oxirgi kirish"], ["last_seen_at", "Oxirgi faollik"]];
-      root.innerHTML = '<div class="page-head"><div><h1>Sayt foydalanuvchilari</h1><p>Saytda ro\'yxatdan o\'tgan mijozlar (real bazadan). Parollar xeshlangan holda saqlanadi va hech qayerda ko\'rsatilmaydi.' + (canW ? "" : " Holatni faqat Super Admin o'zgartira oladi.") + '</p></div></div><div id="aStats"></div><div class="card"><div class="toolbar"><input class="input grow" id="aq" type="search" placeholder="Ism, email yoki telefon bo\'yicha qidirish…" value="' + esc(q) + '" aria-label="Qidirish"><select class="select" id="as" aria-label="Holat"><option value="">Barcha holatlar</option><option value="active">Faol</option><option value="blocked">Bloklangan</option></select></div><div id="aTable">' + A.skeleton() + "</div></div>";
+      root.innerHTML = '<div class="page-head"><div><h1>Sayt foydalanuvchilari</h1><p>Saytda ro\'yxatdan o\'tgan mijozlar (real bazadan). Parollar xeshlangan holda saqlanadi va hech qayerda ko\'rsatilmaydi.' + (canW ? "" : " Holatni faqat Super Admin o'zgartira oladi.") + '</p></div></div><div id="aStats"></div><div class="card"><div class="toolbar"><input class="input grow" id="aq" type="search" placeholder="Ism, email yoki telefon bo\'yicha qidirish…" value="' + esc(q) + '" aria-label="Qidirish"><select class="select" id="as" aria-label="Holat"><option value="">Barcha holatlar</option><option value="active">Faol</option><option value="blocked">Bloklangan</option></select><select class="select" id="asort" aria-label="Saralash"><option value="created_at:desc">Yangilari avval</option><option value="created_at:asc">Eskilari avval</option><option value="name:asc">Ism: A–Z</option><option value="last_login_at:desc">Oxirgi kirish</option><option value="last_seen_at:desc">Oxirgi faollik</option><option value="orders_count:desc">Buyurtmalar soni</option></select></div><div id="aTable">' + A.skeleton() + "</div></div>";
 
       function ago(iso) {
         if (!iso) return "—";
@@ -145,12 +145,14 @@
 
       $("#aq", root).addEventListener("input", A.debounce(function (e) { q = e.target.value.trim(); load(); }, 250));
       $("#as", root).addEventListener("change", function (e) { status = e.target.value; load(); });
+      $("#asort", root).addEventListener("change", function (e) { var p = e.target.value.split(":"); sort = p[0]; dir = p[1]; load(); });
       root.addEventListener("click", function (e) {
         if (e.target.closest("[data-act=reload]")) { load(); return; }
         var th = e.target.closest("[data-sort]");
         if (th) {
           var k = th.getAttribute("data-sort");
           if (sort === k) dir = dir === "asc" ? "desc" : "asc"; else { sort = k; dir = k === "name" || k === "email" ? "asc" : "desc"; }
+          var sel = $("#asort", root); if (sel) sel.value = sort + ":" + dir;
           load(); return;
         }
         var row = e.target.closest("[data-open]");

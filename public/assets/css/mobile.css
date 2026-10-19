@@ -1,0 +1,166 @@
+/* =========================================================
+   YasinDoors — mobil / planshet qatlami (≤960px).
+   Faqat shu kenglikda yuklanadi (<link media>), shuning uchun desktop o‘zgarmaydi.
+   style.css va account.css ustiga yoziladi: premium ranglar (qora, oq, grafit, bej, oltin) shu tokenlardan.
+   ========================================================= */
+
+@media (max-width: 960px) {
+  :root { --header-h: 58px; --bn-h: 64px; --gutter: 16px; }
+  html { -webkit-tap-highlight-color: transparent; }
+  body { padding-bottom: calc(var(--bn-h) + env(safe-area-inset-bottom, 0px)); }
+  .container { padding: 0 var(--gutter); }
+  a, button, label, summary { touch-action: manipulation; }
+
+  /* ---------- Yuqori navbar: ixcham, sticky ---------- */
+  .nav { gap: 10px; }
+  .nav-actions { gap: 8px; }
+  /* Sevimlilar, savat va profil pastki panelda — yuqorida faqat mavzu va menyu qoladi */
+  .nav-actions > a.icon-btn[href="favorites.html"],
+  .nav-actions > a.icon-btn[href="cart.html"],
+  .auth-slot { display: none; }
+  .site-header.is-scrolled { background: color-mix(in srgb, var(--bg) 86%, transparent); }
+  .logo { font-size: 19px; }
+  .logo-mark { width: 34px; height: 34px; }
+  .icon-btn, .menu-toggle { width: 42px; height: 42px; }
+  .drawer { padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
+  .drawer a.drawer-link { min-height: 54px; }
+
+  /* ---------- Pastki navigatsiya ---------- */
+  .bottom-nav {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 55;
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px;
+    padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
+    background: color-mix(in srgb, var(--surface) 90%, transparent);
+    -webkit-backdrop-filter: saturate(1.6) blur(18px); backdrop-filter: saturate(1.6) blur(18px);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -10px 30px -20px rgba(0, 0, 0, .35);
+  }
+  .bn-item {
+    position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+    min-height: 52px; border-radius: 14px; font-size: 10.5px; font-weight: 700; letter-spacing: .01em; color: var(--muted);
+    transition: color .2s, background-color .2s, transform .15s var(--ease);
+  }
+  .bn-item:active { transform: scale(.92); background: var(--surface-2); }
+  .bn-item.is-active { color: var(--text); }
+  .bn-item.is-active::before {
+    content: ""; position: absolute; top: -6px; left: 50%; width: 24px; height: 3px; margin-left: -12px;
+    border-radius: 0 0 4px 4px; background: var(--gold);
+  }
+  .bn-item.is-active .icon { color: var(--gold-strong); stroke-width: 2.1; }
+  .bn-ico { position: relative; display: grid; place-items: center; }
+  .bn-ico .icon { width: 23px; height: 23px; transition: transform .25s var(--ease); }
+  .bn-item.is-active .bn-ico .icon { transform: translateY(-1px); }
+  .bn-ico .count {
+    position: absolute; top: -6px; right: -10px; min-width: 17px; height: 17px; padding: 0 5px; border-radius: 999px;
+    background: var(--gold); color: #161411; font-size: 10px; font-weight: 800; line-height: 17px; text-align: center;
+    transform: scale(0); transition: transform .3s var(--ease);
+  }
+  .bn-ico .count.is-visible { transform: scale(1); }
+  .bn-ico .count.bump { animation: bump .4s var(--ease); }
+  /* Klaviatura ochiq (maydon fokusda) bo‘lsa panel yo‘l qo‘ymasin */
+  body:has(input:focus, textarea:focus, select:focus) .bottom-nav { display: none; }
+  /* 3D konstruktorning o‘z pastki paneli bor */
+  body[data-page="configurator"] .bottom-nav { display: none; }
+  body[data-page="configurator"] { padding-bottom: 0; }
+
+  .toast-wrap { bottom: calc(var(--bn-h) + 14px + env(safe-area-inset-bottom, 0px)); }
+  .to-top { right: 14px; bottom: calc(var(--bn-h) + 14px + env(safe-area-inset-bottom, 0px)); width: 46px; height: 46px; }
+  body[data-page="configurator"] .to-top { bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
+
+  /* ---------- Masofalar: ortiqcha bo‘sh joy yo‘q ---------- */
+  .section { padding: 44px 0; }
+  .section--tight { padding: 30px 0; }
+  .section-head { margin-bottom: 22px; gap: 12px; }
+  .page-hero { padding: 24px 0 18px; }
+  .page-hero .breadcrumb { margin-bottom: 10px; font-size: 13px; }
+  .page-hero p { font-size: 15px; }
+  .title-lg { font-size: clamp(26px, 7.4vw, 36px); line-height: 1.12; }
+  .title-md { font-size: clamp(21px, 5.6vw, 26px); }
+  .lead { font-size: 16px; }
+
+  /* ---------- Bosh sahifa: hero ---------- */
+  .hero-banner::before { background: linear-gradient(0deg, rgba(10, 10, 11, .96) 0%, rgba(10, 10, 11, .84) 38%, rgba(10, 10, 11, .25) 62%, rgba(10, 10, 11, 0) 80%); }
+  .hero-content { padding: 24px 20px 26px; }
+
+  /* ---------- Katalog: 2 ustun, qulay kartochkalar ---------- */
+  .product-grid, .product-grid--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .product-media { aspect-ratio: 4 / 5; }
+  .product-card:active { transform: scale(.985); }
+  .product-title { line-height: 1.25; }
+  .product-meta { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fav-btn { width: 40px; height: 40px; }
+  .add-btn { flex: 0 0 42px !important; width: 42px; }
+  .catalog-toolbar {
+    position: sticky; top: calc(var(--header-h) - 10px); z-index: 30; gap: 8px;
+    margin: 0 calc(var(--gutter) * -1) 12px; padding: 10px var(--gutter);
+    background: color-mix(in srgb, var(--bg) 90%, transparent);
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  }
+  .catalog-toolbar .search { flex: 1 1 100%; }
+  .catalog-toolbar .input, .catalog-toolbar .select { min-height: 46px; font-size: 16px; }
+  .chip { min-height: 40px; }
+  .filters { border-radius: 24px 24px 0 0; padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px)); }
+  .filters::before { content: ""; display: block; width: 40px; height: 4px; margin: -4px auto 14px; border-radius: 4px; background: var(--border-strong); }
+
+  /* ---------- Mahsulot sahifasi: yopishqoq xarid paneli ---------- */
+  .detail-media { border-radius: 22px; }
+  .detail-buy {
+    position: sticky; bottom: calc(var(--bn-h) + env(safe-area-inset-bottom, 0px) + 8px); z-index: 20;
+    display: grid; grid-template-columns: 1fr 52px; gap: 8px; margin: 22px -6px 0; padding: 10px;
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+    border: 1px solid var(--border); border-radius: 22px; box-shadow: var(--shadow);
+  }
+  .detail-buy .btn { flex: initial; grid-column: 1; min-height: 48px; }
+  .detail-buy .fav-btn { grid-column: 2; grid-row: 1 / span 2; width: 52px; height: 100%; border-radius: 16px; }
+
+  /* Setka ustunlari tarkib ichidan kengayib ketmasin (320px da ham gorizontal scroll bo‘lmasin) */
+  .split, .detail, .cart-layout, .contact-layout, .cart-list { grid-template-columns: minmax(0, 1fr); }
+  .cart-item > div, .summary-item > div { min-width: 0; }
+  .cart-item-controls { gap: 10px; }
+
+  /* ---------- Qo‘shimcha: tugmalarga yengil javob ---------- */
+  .btn:active { transform: scale(.97); box-shadow: none; }
+  .icon-btn:active, .fav-btn:active, .chip:active { transform: scale(.92); }
+  .btn { min-height: 48px; }
+  .btn--sm { min-height: 42px; }
+
+  /* ---------- Footer: ixcham ---------- */
+  .site-footer { padding: 40px 0 20px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 26px 18px; }
+  .footer-grid > :first-child, .footer-grid > :last-child { grid-column: 1 / -1; }
+  .footer-bottom { margin-top: 28px; padding-top: 18px; font-size: 13px; }
+}
+
+@media (max-width: 640px) {
+  .container { padding: 0 var(--gutter); }
+  .section { padding: 38px 0; }
+  .logo { font-size: 18px; }
+  .cart-item { border-radius: 18px; }
+  .form-grid { gap: 14px; }
+  .card { padding: 18px; border-radius: 20px; }
+  .input, .select, .textarea { font-size: 16px; } /* iOS fokusda kattalashtirmasin */
+}
+
+/* Bosh sahifa: afzalliklar ixcham 2 ustunli kartochkalar (uzun bir ustun o‘rniga) */
+@media (max-width: 640px) {
+  .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .feature { padding: 16px; border-radius: 18px; }
+  .feature h3 { font-size: 15.5px; }
+  .feature p { font-size: 13.5px; line-height: 1.5; }
+}
+
+/* Juda tor ekranlar (≤339px): mahsulotlar bitta ustunda */
+@media (max-width: 339px) {
+  .product-grid, .product-grid--3 { grid-template-columns: minmax(0, 1fr); }
+  .product-media { aspect-ratio: 1 / 1; }
+  .bn-item { font-size: 9.5px; }
+  .logo span:last-child { font-size: 17px; }
+  .feature-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Planshet (641–960px): kengroq setka, ichki panellar */
+@media (min-width: 641px) and (max-width: 960px) {
+  .product-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .bottom-nav { padding-left: 15%; padding-right: 15%; }
+}

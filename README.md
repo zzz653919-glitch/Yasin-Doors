@@ -166,6 +166,10 @@ Sayt mijozlari uchun alohida akkaunt tizimi (xodimlar/admin tizimidan **alohida*
 
 **Eslatma:** `privacy.html` va `terms.html` matnlari tizim haqiqatan qiladigan ishlarni tasvirlaydigan qisqa shablon — nashrdan oldin egasi/yurist ko'rib chiqsin.
 
+## Mobil versiya
+
+`assets/css/mobile.css` faqat ≤960px da yuklanadi (`<link media>`), shuning uchun desktop o'zgarmaydi. Tarkibi: ixcham sticky navbar (logo, mavzu, menyu), **pastki navigatsiya paneli** (Bosh sahifa, Katalog, Sevimlilar, Savat, Profil — faol sahifa va sonlar bilan; `app.js` dagi `BOTTOM_NAV`), 2 ustunli mahsulot kartochkalari (≤339px da 1 ustun), yopishqoq qidiruv/saralash paneli, pastdan chiqadigan filtr oynasi, mahsulot sahifasida pastki panel ustida yopishqoq «Savatga» paneli, yuklanishda skeleton kartochkalar, tugmalarga bosilganda yengil javob, `prefers-reduced-motion` hurmat qilinadi. 3D konstruktor sahifasida pastki panel yashirin (o'zining paneli bor). Admin panelda jadvallar telefonda kartochkaga aylanadi, modal oynalar pastdan chiqadi. 320/360/390/430/768px da gorizontal scroll yo'qligi tekshirilgan.
+
 ## Telegram bildirishnomalari
 
 Token va chat ID **faqat serverda** (muhit o'zgaruvchilari); brauzerga hech qachon chiqmaydi. Yangi buyurtma kelganda xabarda: buyurtma raqami, mijoz, telefon, manzil, mahsulotlar va umumiy summa. Sozlanmagan bo'lsa, qolgan hamma funksiyalar ishlayveradi; admin panel (Sozlamalar) yo'riqnoma va «Sinov xabari» tugmasini ko'rsatadi.
