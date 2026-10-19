@@ -63,6 +63,52 @@
   };
 
   /* =====================================================
+     SAYT FOYDALANUVCHILARI (mijoz akkauntlari)
+     ===================================================== */
+  A.views.accounts = {
+    title: "Sayt foydalanuvchilari", icon: "users", perm: "accounts.read",
+    render: function (root, query) {
+      var q = query.q || "", status = "", items = [], canW = A.can("accounts.write");
+      root.innerHTML = '<div class="page-head"><div><h1>Sayt foydalanuvchilari</h1><p>Saytda ro\'yxatdan o\'tgan mijozlar. Parollar xeshlangan holda saqlanadi va bu yerda ko\'rinmaydi.' + (canW ? "" : " Holatni faqat Super Admin o\'zgartira oladi.") + '</p></div></div><div class="card"><div class="toolbar"><input class="input grow" id="aq" type="search" placeholder="Ism, email yoki telefon bo\'yicha qidirish…" value="' + esc(q) + '" aria-label="Qidirish"><select class="select" id="as" aria-label="Holat"><option value="">Barcha holatlar</option><option value="active">Faol</option><option value="blocked">Bloklangan</option></select></div><div id="aTable">' + A.skeleton() + "</div></div>";
+
+      function load() {
+        return A.get("/accounts" + A.qs({ q: q, status: status })).then(function (r) {
+          if (!root.isConnected) return;
+          items = r.items; paint();
+        }).catch(function (e) { $("#aTable", root).innerHTML = A.emptyState("alert", "Yuklab bo'lmadi", e.message, '<button class="btn btn--gold" data-act="reload">Qayta urinish</button>'); });
+      }
+      function paint() {
+        if (!items.length) { $("#aTable", root).innerHTML = (q || status) ? A.emptyState("search", "Foydalanuvchi topilmadi", "Boshqa so'rov bilan qidirib ko'ring.") : A.emptyState("users", "Hozircha ro'yxatdan o'tganlar yo'q", "Mijozlar saytda ro'yxatdan o'tganda shu yerda ko'rinadi."); return; }
+        $("#aTable", root).innerHTML = '<div class="table-wrap"><table class="tbl"><thead><tr><th>Foydalanuvchi</th><th>Telefon</th><th>Holat</th><th class="right">Buyurtmalar</th><th>Ro\'yxatdan o\'tgan</th><th>Oxirgi kirish</th>' + (canW ? "<th></th>" : "") + "</tr></thead><tbody>" +
+          items.map(function (a) {
+            return "<tr><td><div class=\"cell-main\">" + esc(a.first_name + " " + a.last_name) + '</div><div class="cell-sub">' + esc(a.email) + "</div></td><td class=\"nowrap\">" + esc(fmt.phone(a.phone)) + "</td><td>" + (a.status === "active" ? A.chip("ok", "Faol") : A.chip("bad", "Bloklangan")) + '</td><td class="right mono">' + a.orders_count + "</td><td>" + fmt.date(a.created_at, false) + "</td><td>" + fmt.date(a.last_login_at) + "</td>" +
+              (canW ? '<td><button class="btn btn--sm ' + (a.status === "active" ? "btn--ghost" : "btn--gold") + '" data-toggle="' + a.id + '">' + (a.status === "active" ? "Bloklash" : "Faollashtirish") + "</button></td>" : "") + "</tr>";
+          }).join("") + "</tbody></table></div>";
+      }
+      $("#aq", root).addEventListener("input", A.debounce(function (e) { q = e.target.value.trim(); load(); }, 250));
+      $("#as", root).addEventListener("change", function (e) { status = e.target.value; load(); });
+      root.addEventListener("click", function (e) {
+        if (e.target.closest("[data-act=reload]")) { load(); return; }
+        var btn = e.target.closest("[data-toggle]");
+        if (!btn) return;
+        var a = items.filter(function (x) { return String(x.id) === btn.getAttribute("data-toggle"); })[0];
+        if (!a) return;
+        var block = a.status === "active";
+        A.confirm({
+          title: block ? "Akkauntni bloklash" : "Akkauntni faollashtirish", danger: block, confirmLabel: block ? "Bloklash" : "Faollashtirish",
+          text: block ? esc(a.email) + " akkauntini bloklaysizmi? Foydalanuvchi darhol tizimdan chiqariladi va qayta kira olmaydi." : esc(a.email) + " akkauntini qayta faollashtirasizmi?"
+        }).then(function (ok) {
+          if (!ok) return;
+          A.put("/accounts/" + a.id + "/status", { status: block ? "blocked" : "active" }).then(function () {
+            A.toast(block ? "Akkaunt bloklandi" : "Akkaunt faollashtirildi"); load();
+          }).catch(A.fail);
+        });
+      });
+      load();
+    }
+  };
+
+  /* =====================================================
      KATEGORIYALAR
      ===================================================== */
   A.openCategoryForm = function (cat, onSaved) {

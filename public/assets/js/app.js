@@ -238,6 +238,11 @@
     '<symbol id="i-chat"viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></symbol>' +
     '<symbol id="i-telegram" viewBox="0 0 24 24"><path d="M21 4L3 11l6 2 2 6 3-4 5 4 2-15z"/><path d="M9 13l8-6"/></symbol>' +
     '<symbol id="i-instagram" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.3 6.7h.01"/></symbol>' +
+    '<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20.5a8 8 0 0 1 16 0"/></symbol>' +
+    '<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>' +
+    '<symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c6.4 0 10 6 10 6a17 17 0 0 1-3.2 3.9M6.5 7.6C3.6 9.4 2 12 2 12s3.6 7 10 7c1.7 0 3.2-.4 4.5-1M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>' +
+    '<symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4M16 8l4 4-4 4M20 12H9"/></symbol>' +
+    '<symbol id="i-box" viewBox="0 0 24 24"><path d="M3 7.5L12 3l9 4.5v9L12 21l-9-4.5v-9z"/><path d="M3 7.5l9 4.5 9-4.5M12 12v9"/></symbol>' +
     '<symbol id="i-door" viewBox="0 0 18 22"><path d="M2 21V2.5a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1V21" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M0.5 21h17" stroke="currentColor" stroke-width="1.8"/><circle cx="12.3" cy="11.5" r="1.3" fill="currentColor"/></symbol>' +
     '</svg>';
 
@@ -274,13 +279,15 @@
       '<button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Rejimni almashtirish (yorug‘ / qorong‘i)">' + icon("sun", "i-sun") + icon("moon", "i-moon") + "</button>" +
       '<a class="icon-btn" href="favorites.html" aria-label="Sevimlilar">' + icon("heart") + '<span class="count" data-fav-count>0</span></a>' +
       '<a class="icon-btn" href="cart.html" aria-label="Savat">' + icon("bag") + '<span class="count" data-cart-count>0</span></a>' +
-      '<a class="btn btn--sm hide-mobile" href="products.html">Katalog</a>' +
+      '<div class="auth-slot" data-auth-slot></div>' +
+      '<a class="btn btn--sm hide-mobile nav-catalog" href="products.html">Katalog</a>' +
       '<button class="icon-btn menu-toggle" type="button" data-menu-open aria-label="Menyuni ochish" aria-expanded="false" aria-controls="mobileDrawer">' + icon("menu") + "</button>" +
       "</div></div></header>" +
       '<div class="drawer-backdrop" data-overlay></div>' +
       '<aside class="drawer" id="mobileDrawer" aria-label="Mobil menyu" aria-hidden="true">' +
       '<div class="drawer-head">' + logoHTML() +
       '<button class="icon-btn" type="button" data-menu-close aria-label="Menyuni yopish">' + icon("close") + "</button></div>" +
+      '<div class="drawer-auth" data-auth-drawer></div>' +
       drawerLinks +
       '<div class="drawer-foot">' +
       '<button class="btn btn--outline btn--block" type="button" data-theme-toggle>' + icon("moon") + " Rejimni almashtirish</button>" +

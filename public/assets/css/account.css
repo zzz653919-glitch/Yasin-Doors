@@ -1,0 +1,216 @@
+/* =========================================================
+   YasinDoors — akkaunt: navbar menyusi, Вход / Регистрация formalari, profil
+   Ranglar va o‘lchamlar style.css dagi tokenlardan (yorug‘/qorong‘i rejim avtomatik)
+   ========================================================= */
+
+/* ---------- Navbar: kirish / profil ---------- */
+.auth-slot { display: flex; align-items: center; gap: 10px; }
+.auth-link {
+  padding: 8px 12px; border-radius: 999px; font-size: 15px; font-weight: 700; color: var(--text-soft);
+  transition: color .2s, background-color .2s;
+}
+.auth-link:hover { color: var(--text); background: var(--surface-2); }
+.auth-icon { display: none; }
+
+.avatar {
+  display: inline-grid; place-items: center; width: 100%; height: 100%; border-radius: 50%;
+  background: var(--text); color: var(--bg); font-weight: 800; font-size: 15px;
+}
+.user-btn { padding: 3px; }
+.user-menu { position: relative; }
+.user-dropdown {
+  position: absolute; right: 0; top: calc(100% + 12px); z-index: 70; width: 270px; padding: 8px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 18px; box-shadow: var(--shadow-lg);
+  animation: dd-in .22s var(--ease) both; transform-origin: top right;
+}
+.user-dropdown[hidden] { display: none; }
+@keyframes dd-in { from { opacity: 0; transform: translateY(-6px) scale(.97); } }
+.user-dd-head { display: grid; gap: 2px; padding: 12px 12px 14px; margin-bottom: 6px; border-bottom: 1px solid var(--border); }
+.user-dd-head strong { font-size: 15px; }
+.user-dd-head span { font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+.user-dropdown a, .user-dropdown button {
+  display: flex; align-items: center; gap: 12px; width: 100%; padding: 11px 12px; border-radius: 12px;
+  font-size: 15px; font-weight: 600; text-align: left; color: var(--text-soft);
+  transition: background-color .2s, color .2s;
+}
+.user-dropdown a:hover, .user-dropdown button:hover { background: var(--surface-2); color: var(--text); }
+.user-dropdown .icon { width: 18px; height: 18px; flex: none; }
+
+.drawer-auth { display: grid; gap: 10px; margin-bottom: 8px; }
+.drawer-user { display: flex; align-items: center; gap: 14px; padding: 4px 0 6px; }
+.drawer-user .avatar { width: 46px; height: 46px; flex: none; font-size: 18px; }
+.drawer-user div { display: grid; min-width: 0; }
+.drawer-user strong { font-size: 16px; }
+.drawer-user span:not(.avatar) { font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+.drawer-auth-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.drawer-auth-actions .btn { padding: 0 8px; }
+
+/* Navbar siqilib qolmasligi uchun: avval "Katalog" tugmasi (menyuda bor), keyin matnli kirish tugmalari yashiriladi */
+.nav-links a { white-space: nowrap; }
+@media (max-width: 1320px) { .nav-catalog { display: none; } }
+@media (max-width: 1140px) {
+  .auth-link, .auth-register { display: none; }
+  .auth-icon { display: inline-grid; }
+}
+@media (max-width: 960px) {
+  .auth-link, .auth-register { display: none; }
+  .auth-icon { display: inline-grid; }
+}
+
+/* ---------- Auth sahifalari ---------- */
+.auth-page { min-height: calc(100vh - var(--header-h) - 120px); display: grid; align-items: center; padding: 56px 0 88px; }
+.auth-wrap { width: 100%; max-width: 520px; margin: 0 auto; }
+.auth-wrap--wide { max-width: 600px; }
+.auth-card {
+  padding: 40px; border-radius: 28px; box-shadow: var(--shadow);
+  animation: auth-in .55s var(--ease) both;
+}
+@keyframes auth-in { from { opacity: 0; transform: translateY(14px); } }
+.auth-head { margin-bottom: 28px; }
+.auth-head .eyebrow {
+  display: inline-flex; align-items: center; gap: 8px; margin-bottom: 14px; padding: 6px 12px; border-radius: 999px;
+  background: var(--gold-soft); color: var(--gold-strong); font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+}
+.auth-head h1 { font-size: clamp(26px, 4vw, 34px); margin: 0 0 8px; }
+.auth-head p { margin: 0; color: var(--muted); }
+.auth-form { display: grid; gap: 20px; }
+.auth-form .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.auth-form .field .error { margin-top: -2px; }
+.auth-form .hint { font-size: 13px; color: var(--muted); }
+.auth-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.auth-row a, .auth-switch a, .auth-form .checkbox a { color: var(--gold-strong); font-weight: 700; border-bottom: 1px solid transparent; transition: border-color .2s; }
+.auth-row a:hover, .auth-switch a:hover, .auth-form .checkbox a:hover { border-bottom-color: currentColor; }
+.auth-switch { text-align: center; margin: 4px 0 0; color: var(--muted); font-size: 15px; }
+.auth-form .checkbox { font-size: 14.5px; line-height: 1.5; }
+
+/* Xato / muvaffaqiyat holatlari */
+.field.has-error .input { border-color: var(--danger); box-shadow: 0 0 0 4px color-mix(in srgb, var(--danger) 12%, transparent); }
+.field.is-valid .input { border-color: color-mix(in srgb, var(--success) 60%, var(--border-strong)); }
+.field.has-error .error { animation: err-in .25s var(--ease) both; }
+@keyframes err-in { from { opacity: 0; transform: translateY(-3px); } }
+.auth-form .form-alert { margin: 0; }
+.auth-form .form-alert[role] { scroll-margin-top: 100px; }
+
+/* Parol maydoni + "Показать пароль" */
+.pw-wrap { position: relative; }
+.pw-wrap .input { padding-right: 132px; }
+.pw-toggle {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 999px;
+  font-size: 13px; font-weight: 700; color: var(--muted); transition: color .2s, background-color .2s;
+}
+.pw-toggle:hover { color: var(--text); background: var(--surface-2); }
+.pw-toggle .icon { width: 18px; height: 18px; }
+.pw-toggle:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+
+/* Parol kuchi */
+.pw-meter { display: grid; gap: 10px; }
+.pw-bars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.pw-bars i { height: 5px; border-radius: 4px; background: var(--border-strong); transition: background-color .3s var(--ease); }
+.pw-meter[data-score="1"] .pw-bars i:nth-child(-n+1) { background: var(--danger); }
+.pw-meter[data-score="2"] .pw-bars i:nth-child(-n+2) { background: #d19a2b; }
+.pw-meter[data-score="3"] .pw-bars i:nth-child(-n+3) { background: #7fae52; }
+.pw-meter[data-score="4"] .pw-bars i { background: var(--success); }
+.pw-meter-label { font-size: 13px; color: var(--muted); min-height: 1.4em; }
+.pw-rules { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0; padding: 0; list-style: none; font-size: 13px; color: var(--muted); }
+.pw-rules li { display: inline-flex; align-items: center; gap: 6px; transition: color .2s; }
+.pw-rules li::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--border-strong); transition: background-color .2s; }
+.pw-rules li.is-ok { color: var(--success); }
+.pw-rules li.is-ok::before { background: var(--success); }
+
+/* Yuklanish va holat ekranlari */
+.btn .spin {
+  width: 18px; height: 18px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.btn.is-loading { pointer-events: none; opacity: .85; }
+.auth-state { text-align: center; padding: 8px 0 0; }
+.auth-state .empty-icon {
+  width: 76px; height: 76px; margin: 0 auto 22px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--gold-soft); color: var(--gold-strong); animation: pop-in .5s var(--ease) both;
+}
+.auth-state .empty-icon .icon { width: 34px; height: 34px; }
+.auth-state.is-error .empty-icon { background: color-mix(in srgb, var(--danger) 12%, transparent); color: var(--danger); }
+.auth-state.is-success .empty-icon { background: color-mix(in srgb, var(--success) 14%, transparent); color: var(--success); }
+@keyframes pop-in { from { opacity: 0; transform: scale(.6); } }
+.auth-state h1, .auth-state h2 { font-size: 26px; margin: 0 0 10px; }
+.auth-state p { color: var(--muted); margin: 0 auto 24px; max-width: 380px; }
+.auth-state .btn { min-width: 200px; }
+
+/* Maxfiylik / shartlar sahifalari */
+.doc { max-width: 760px; }
+.doc h2 { font-size: 22px; margin: 36px 0 12px; }
+.doc p, .doc li { color: var(--text-soft); }
+.doc ul { padding-left: 22px; display: grid; gap: 6px; }
+
+/* ---------- Profil ---------- */
+.profile-layout { display: grid; grid-template-columns: 260px 1fr; gap: 32px; align-items: start; }
+.profile-side { position: sticky; top: calc(var(--header-h) + 20px); display: grid; gap: 6px; padding: 14px; }
+.profile-who { display: flex; align-items: center; gap: 14px; padding: 8px 8px 16px; margin-bottom: 6px; border-bottom: 1px solid var(--border); }
+.profile-who .avatar { width: 52px; height: 52px; flex: none; font-size: 20px; }
+.profile-who div { display: grid; min-width: 0; }
+.profile-who strong { font-size: 16px; overflow-wrap: anywhere; }
+.profile-who span:not(.avatar) { font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+.profile-tab {
+  display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; border-radius: 14px;
+  font-size: 15px; font-weight: 700; color: var(--text-soft); text-align: left; transition: background-color .2s, color .2s;
+}
+.profile-tab .icon { width: 19px; height: 19px; flex: none; }
+.profile-tab:hover { background: var(--surface-2); color: var(--text); }
+.profile-tab.is-active { background: var(--text); color: var(--bg); }
+.profile-tab--out { margin-top: 8px; color: var(--danger); }
+.profile-tab--out:hover { background: color-mix(in srgb, var(--danger) 10%, transparent); color: var(--danger); }
+.profile-main { display: grid; gap: 24px; min-width: 0; }
+.profile-panel { animation: auth-in .4s var(--ease) both; }
+.profile-panel[hidden] { display: none; }
+.profile-panel h2 { font-size: 24px; margin: 0 0 6px; }
+.profile-panel > p.sub { margin: 0 0 24px; color: var(--muted); }
+.profile-panel .auth-form { max-width: 560px; }
+.profile-panel hr { border: 0; border-top: 1px solid var(--border); margin: 8px 0; }
+.profile-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.profile-fav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+.profile-skeleton { height: 120px; border-radius: 18px; background: linear-gradient(90deg, var(--surface-2), var(--bg-soft), var(--surface-2)); background-size: 200% 100%; animation: sk 1.2s linear infinite; }
+@keyframes sk { to { background-position: -200% 0; } }
+
+/* Buyurtmalar tarixi */
+.order-list { display: grid; gap: 16px; }
+.order-card { padding: 22px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface-2); }
+.order-card-head { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+.order-card-head strong { font-size: 17px; }
+.order-card-head .when { font-size: 13px; color: var(--muted); }
+.order-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+.o-chip { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 999px; font-size: 12.5px; font-weight: 700; background: var(--surface); border: 1px solid var(--border); }
+.o-chip--new { color: #a87a1f; border-color: #e5cf9d; }
+.o-chip--accepted, .o-chip--preparing, .o-chip--delivering { color: #2c6aa8; border-color: #b6cfe8; }
+.o-chip--completed, .o-chip--paid { color: var(--success); border-color: color-mix(in srgb, var(--success) 40%, var(--border)); }
+.o-chip--cancelled, .o-chip--refunded { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 40%, var(--border)); }
+.order-lines { display: grid; gap: 8px; margin: 0 0 14px; padding: 0; list-style: none; }
+.order-lines li { display: flex; justify-content: space-between; gap: 12px; font-size: 14.5px; color: var(--text-soft); }
+.order-lines li span:last-child { white-space: nowrap; color: var(--text); font-weight: 600; }
+.order-total { display: flex; justify-content: space-between; padding-top: 14px; border-top: 1px solid var(--border); font-weight: 800; }
+
+@media (max-width: 960px) {
+  .profile-layout { grid-template-columns: 1fr; gap: 20px; }
+  .profile-side { position: static; grid-template-columns: repeat(2, 1fr); }
+  .profile-who { grid-column: 1 / -1; }
+  .profile-tab--out { margin-top: 0; }
+}
+@media (max-width: 640px) {
+  .auth-page { padding: 28px 0 56px; align-items: start; }
+  .auth-card { padding: 26px 20px; border-radius: 22px; }
+  .auth-form .row2 { grid-template-columns: 1fr; }
+  .pw-wrap .input { padding-right: 56px; }
+  .pw-toggle span { display: none; }
+  .pw-toggle { padding: 10px; }
+  .profile-side { grid-template-columns: 1fr; }
+  .profile-fav-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .order-card { padding: 16px; }
+  .user-dropdown { right: -48px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .auth-card, .profile-panel, .user-dropdown, .auth-state .empty-icon { animation: none; }
+  .btn .spin { animation-duration: 1.6s; }
+}
+
+[hidden] { display: none !important; }
