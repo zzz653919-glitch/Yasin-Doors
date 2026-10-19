@@ -123,6 +123,8 @@ const server = http.createServer(async (req, res) => {
   serveStatic(req, res, pathname);
 });
 
+require("./lib/bootstrap-admin").bootstrapAdmin();
+
 server.listen(PORT, () => {
   const dbMode = require("./lib/db").isConfigured() ? "baza: " + (process.env.DATABASE_URL ? "DATABASE_URL" : "lokal fayl data/yasindoors.db") : "baza: YO'Q";
   console.log(`Admin panel: http://localhost:${PORT}/admin/  |  ${dbMode}`);

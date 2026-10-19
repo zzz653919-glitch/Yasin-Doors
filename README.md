@@ -68,6 +68,8 @@ npm run create-admin
 ```
 Ishlab chiqarish (Turso) bazasi uchun buyruqni shu bazaning `DATABASE_URL` va `DATABASE_AUTH_TOKEN` qiymatlari bilan ishga tushiring (PowerShell: `$env:DATABASE_URL="libsql://..."; $env:DATABASE_AUTH_TOKEN="..."; npm run create-admin`).
 
+**1b) `.env` orqali (lokal, avtomatik)** — `.env` ga `ADMIN_USERNAME`, `ADMIN_NAME`, `ADMIN_PASSWORD` yozing; `npm run dev` birinchi ishga tushganda (administrator yo'q bo'lsa) super admin shu ma'lumotlar bilan yaratiladi. Yaratilgach `ADMIN_PASSWORD` qatorini o'chiring.
+
 **2) Brauzer orqali (bir martalik)** — serverda uzun tasodifiy `SETUP_TOKEN` belgilang, `/admin/` sahifasi birinchi administrator formasini ko'rsatadi. Administrator yaratilgach u o'chadi; `SETUP_TOKEN` ni olib tashlang.
 
 Parol siyosati: kamida 10 belgi, harf va raqam.
