@@ -4,6 +4,9 @@
   "buildCommand": null,
   "outputDirectory": "public",
   "cleanUrls": false,
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api?__p=$1" }
+  ],
   "redirects": [
     { "source": "/admin", "destination": "/admin/", "permanent": false }
   ],

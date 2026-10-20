@@ -104,7 +104,7 @@
         if (opts.blob && res.ok) return res.blob();
         return res.json().catch(function () { return null; }).then(function (data) {
           if (res.ok) return data;
-          var err = new Error((data && data.error) || "So'rovda xatolik (" + res.status + ")");
+          var err = new Error((data && typeof data.error === "string" && data.error) || (data && data.error && data.error.message) || "So'rovda xatolik (" + res.status + ")");
           err.status = res.status; err.data = data || {};
           throw err;
         });
