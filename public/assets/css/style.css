@@ -982,3 +982,16 @@ body.menu-open .to-top, body.filters-open .to-top { opacity: 0; visibility: hidd
   .product-card:hover, .feature:hover, .btn:hover { transform: none; }
   .product-card:hover .product-media img, .cat-card:hover img { transform: none; }
 }
+
+/* ---------- Skeleton (yuklanish holati) ---------- */
+.sk { background: linear-gradient(90deg, var(--surface-2) 25%, var(--bg-soft) 50%, var(--surface-2) 75%); background-size: 200% 100%; animation: sk-shimmer 1.3s linear infinite; }
+.product-card.is-skeleton { pointer-events: none; }
+.product-card.is-skeleton .product-media { aspect-ratio: 4 / 5; }
+.sk-line { height: 14px; border-radius: 8px; margin-bottom: 10px; }
+.sk-line--m { width: 60%; margin-bottom: 0; }
+.sk-line--s { width: 40%; }
+@keyframes sk-shimmer { to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .sk { animation: none; } }
+
+/* Pastki mobil navigatsiya faqat ≤960px da (mobile.css) ko‘rinadi */
+.bottom-nav { display: none; }

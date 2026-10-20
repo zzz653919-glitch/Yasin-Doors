@@ -78,6 +78,7 @@
     readyCbs.splice(0).forEach(function (cb) {
       try { cb(); } catch (e) { setTimeout(function () { throw e; }); }
     });
+    document.querySelectorAll("[aria-busy=true]").forEach(function (el) { el.removeAttribute("aria-busy"); });
   }
   // Admin sozlamalaridagi matnlar, logotip va aloqa ma’lumotlarini sahifaga qo‘llash
   function applySite() {
@@ -238,6 +239,8 @@
     '<symbol id="i-chat"viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></symbol>' +
     '<symbol id="i-telegram" viewBox="0 0 24 24"><path d="M21 4L3 11l6 2 2 6 3-4 5 4 2-15z"/><path d="M9 13l8-6"/></symbol>' +
     '<symbol id="i-instagram" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.3 6.7h.01"/></symbol>' +
+    '<symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7"/><path d="M6 9.5V20h12V9.5M10 20v-5.5h4V20"/></symbol>' +
+    '<symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>' +
     '<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20.5a8 8 0 0 1 16 0"/></symbol>' +
     '<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>' +
     '<symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c6.4 0 10 6 10 6a17 17 0 0 1-3.2 3.9M6.5 7.6C3.6 9.4 2 12 2 12s3.6 7 10 7c1.7 0 3.2-.4 4.5-1M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>' +
@@ -325,6 +328,29 @@
       '<div class="footer-bottom"><span>© ' + new Date().getFullYear() + " " + esc(SITE.store_name || "YasinDoors") + ". Barcha huquqlar himoyalangan.</span>" +
       (CATALOG_SOURCE === "db" ? "" : "<span>Saytdagi narxlar namunaviy va o‘zgarishi mumkin.</span>") + "</div>" +
       "</div></footer>";
+  }
+
+  /* ---------- Pastki mobil navigatsiya (≤960px da CSS ko‘rsatadi) ---------- */
+  var BOTTOM_NAV = [
+    { href: "index.html", label: "Bosh sahifa", icon: "home", pages: ["home"] },
+    { href: "products.html", label: "Katalog", icon: "grid", pages: ["products"] },
+    { href: "favorites.html", label: "Sevimlilar", icon: "heart", pages: ["favorites"], count: "fav" },
+    { href: "cart.html", label: "Savat", icon: "bag", pages: ["cart", "checkout"], count: "cart" },
+    { href: "profile.html", label: "Profil", icon: "user", pages: ["profile", "login", "register", "forgot", "reset"] }
+  ];
+  function bottomNavHTML(page) {
+    return '<nav class="bottom-nav" aria-label="Pastki menyu">' + BOTTOM_NAV.map(function (n) {
+      var on = n.pages.indexOf(page) !== -1;
+      return '<a class="bn-item' + (on ? " is-active" : "") + '" href="' + n.href + '"' + (on ? ' aria-current="page"' : "") + ">" +
+        '<span class="bn-ico">' + icon(n.icon) + (n.count ? '<span class="count" data-' + n.count + '-count>0</span>' : "") + "</span>" +
+        "<span>" + n.label + "</span></a>";
+    }).join("") + "</nav>";
+  }
+
+  /* ---------- Yuklanish skeletonlari: katalog kelguncha mahsulot setkasi bo‘sh turmasin ---------- */
+  function skeletonCards(n) {
+    var one = '<article class="product-card is-skeleton" aria-hidden="true"><div class="product-media sk"></div><div class="product-body"><div class="sk sk-line"></div><div class="sk sk-line sk-line--s"></div><div class="sk sk-line sk-line--m"></div></div></article>';
+    return new Array(n + 1).join(one);
   }
 
   /* ---------- Tema ---------- */
@@ -488,6 +514,12 @@
     var footerSlot = document.querySelector("[data-include='footer']");
     if (headerSlot) headerSlot.outerHTML = headerHTML(page);
     if (footerSlot) footerSlot.outerHTML = footerHTML();
+
+    document.body.insertAdjacentHTML("beforeend", bottomNavHTML(page));
+    ["productGrid", "favGrid"].forEach(function (id) {
+      var g = document.getElementById(id);
+      if (g && !g.children.length && !catalogDone) { g.setAttribute("aria-busy", "true"); g.innerHTML = skeletonCards(id === "productGrid" ? 6 : 4); }
+    });
 
     // Navbar holati, progress chizig‘i va boshqa scroll effektlari — assets/js/scroll.js
 

@@ -111,8 +111,8 @@ YD.whenReady(function () {
     YD.toast(p.name + " (" + state.size + ") savatga qo‘shildi", { href: "cart.html", label: "Savatga o‘tish" });
   });
   document.getElementById("buyNow").addEventListener("click", function () {
-    YD.store.addToCart(p.id, state.size, state.qty);
-    window.location.href = "checkout.html";
+    YD.store.addToCart(p.id, state.size, state.qty);   // savat saqlanadi — kirgandan keyin checkout’da shu mahsulot turadi
+    YD.account.gate("checkout.html", function () { window.location.href = "checkout.html"; });
   });
 
   // Rasmni sichqoncha ostida kattalashtirish

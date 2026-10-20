@@ -66,45 +66,104 @@
      SAYT FOYDALANUVCHILARI (mijoz akkauntlari)
      ===================================================== */
   A.views.accounts = {
-    title: "Sayt foydalanuvchilari", icon: "users", perm: "accounts.read",
+    title: "Пользователи", icon: "users", perm: "accounts.read",
     render: function (root, query) {
-      var q = query.q || "", status = "", items = [], canW = A.can("accounts.write");
-      root.innerHTML = '<div class="page-head"><div><h1>Sayt foydalanuvchilari</h1><p>Saytda ro\'yxatdan o\'tgan mijozlar. Parollar xeshlangan holda saqlanadi va bu yerda ko\'rinmaydi.' + (canW ? "" : " Holatni faqat Super Admin o\'zgartira oladi.") + '</p></div></div><div class="card"><div class="toolbar"><input class="input grow" id="aq" type="search" placeholder="Ism, email yoki telefon bo\'yicha qidirish…" value="' + esc(q) + '" aria-label="Qidirish"><select class="select" id="as" aria-label="Holat"><option value="">Barcha holatlar</option><option value="active">Faol</option><option value="blocked">Bloklangan</option></select></div><div id="aTable">' + A.skeleton() + "</div></div>";
+      var q = query.q || "", status = "", sort = "created_at", dir = "desc", items = [], canW = A.can("accounts.write");
+      var REASON = { ok: "Muvaffaqiyatli", register: "Ro'yxatdan o'tish", bad_password: "Noto'g'ri parol", unknown_account: "Akkaunt topilmadi", blocked: "Bloklangan akkaunt", rate_limited: "Urinishlar chegarasi" };
+      var COLS = [["name", "Foydalanuvchi"], [null, "Telefon"], [null, "Holat"], ["orders_count", "Buyurtmalar"], ["created_at", "Ro'yxatdan o'tgan"], ["last_login_at", "Oxirgi kirish"], ["last_seen_at", "Oxirgi faollik"]];
+      root.innerHTML = '<div class="page-head"><div><h1>Пользователи</h1><p>Saytda ro\'yxatdan o\'tgan mijozlar (real bazadan). Parollar xeshlangan holda saqlanadi va hech qayerda ko\'rsatilmaydi.' + (canW ? "" : " Holatni faqat Super Admin o'zgartira oladi.") + '</p></div></div><div id="aStats"></div><div class="card"><div class="toolbar"><input class="input grow" id="aq" type="search" placeholder="Ism, email yoki telefon bo\'yicha qidirish…" value="' + esc(q) + '" aria-label="Qidirish"><select class="select" id="as" aria-label="Holat"><option value="">Barcha holatlar</option><option value="active">Faol</option><option value="blocked">Bloklangan</option></select><select class="select" id="asort" aria-label="Saralash"><option value="created_at:desc">Yangilari avval</option><option value="created_at:asc">Eskilari avval</option><option value="name:asc">Ism: A–Z</option><option value="last_login_at:desc">Oxirgi kirish</option><option value="last_seen_at:desc">Oxirgi faollik</option><option value="orders_count:desc">Buyurtmalar soni</option></select></div><div id="aTable">' + A.skeleton() + "</div></div>";
 
-      function load() {
-        return A.get("/accounts" + A.qs({ q: q, status: status })).then(function (r) {
+      function ago(iso) {
+        if (!iso) return "—";
+        var m = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+        if (m < 2) return "hozir";
+        if (m < 60) return m + " daqiqa oldin";
+        if (m < 1440) return Math.floor(m / 60) + " soat oldin";
+        return fmt.date(iso, false);
+      }
+      function load(quiet) {
+        return A.get("/accounts" + A.qs({ q: q, status: status, sort: sort, dir: dir })).then(function (r) {
           if (!root.isConnected) return;
-          items = r.items; paint();
-        }).catch(function (e) { $("#aTable", root).innerHTML = A.emptyState("alert", "Yuklab bo'lmadi", e.message, '<button class="btn btn--gold" data-act="reload">Qayta urinish</button>'); });
+          items = r.items;
+          var s = r.stats;
+          $("#aStats", root).innerHTML = '<div class="grid stats" style="margin-bottom:16px">' +
+            '<div class="card stat"><div class="top"><span>Jami foydalanuvchilar</span><span class="ico">' + A.icon("users") + '</span></div><div class="val">' + fmt.num(s.total) + '</div><div class="sub">Bloklangan: ' + s.blocked + "</div></div>" +
+            '<div class="card stat"><div class="top"><span>Bugun ro\'yxatdan o\'tgan</span><span class="ico">' + A.icon("userplus") + '</span></div><div class="val">' + fmt.num(s.today) + '</div><div class="sub">Toshkent vaqti bo\'yicha</div></div>' +
+            '<div class="card stat"><div class="top"><span>So\'nggi 7 kun</span><span class="ico">' + A.icon("trend") + '</span></div><div class="val">' + fmt.num(s.week) + '</div><div class="sub">Yangi foydalanuvchilar</div></div>' +
+            '<div class="card stat"><div class="top"><span>Hozir saytda</span><span class="ico">' + A.icon("clock") + '</span></div><div class="val">' + fmt.num(s.online) + '</div><div class="sub">So\'nggi 15 daqiqada faol</div></div></div>';
+          paint();
+        }).catch(function (e) { if (!quiet) $("#aTable", root).innerHTML = A.emptyState("alert", "Yuklab bo'lmadi", e.message, '<button class="btn btn--gold" data-act="reload">Qayta urinish</button>'); });
       }
       function paint() {
         if (!items.length) { $("#aTable", root).innerHTML = (q || status) ? A.emptyState("search", "Foydalanuvchi topilmadi", "Boshqa so'rov bilan qidirib ko'ring.") : A.emptyState("users", "Hozircha ro'yxatdan o'tganlar yo'q", "Mijozlar saytda ro'yxatdan o'tganda shu yerda ko'rinadi."); return; }
-        $("#aTable", root).innerHTML = '<div class="table-wrap"><table class="tbl"><thead><tr><th>Foydalanuvchi</th><th>Telefon</th><th>Holat</th><th class="right">Buyurtmalar</th><th>Ro\'yxatdan o\'tgan</th><th>Oxirgi kirish</th>' + (canW ? "<th></th>" : "") + "</tr></thead><tbody>" +
+        $("#aTable", root).innerHTML = '<div class="table-wrap"><table class="tbl"><thead><tr>' + COLS.map(function (c) {
+          if (!c[0]) return "<th>" + c[1] + "</th>";
+          return '<th><button class="th-sort" type="button" data-sort="' + c[0] + '" style="font:inherit;color:inherit;font-weight:inherit;background:none;border:0;padding:0;cursor:pointer">' + c[1] + (sort === c[0] ? (dir === "asc" ? " ▲" : " ▼") : "") + "</button></th>";
+        }).join("") + "</tr></thead><tbody>" +
           items.map(function (a) {
-            return "<tr><td><div class=\"cell-main\">" + esc(a.first_name + " " + a.last_name) + '</div><div class="cell-sub">' + esc(a.email) + "</div></td><td class=\"nowrap\">" + esc(fmt.phone(a.phone)) + "</td><td>" + (a.status === "active" ? A.chip("ok", "Faol") : A.chip("bad", "Bloklangan")) + '</td><td class="right mono">' + a.orders_count + "</td><td>" + fmt.date(a.created_at, false) + "</td><td>" + fmt.date(a.last_login_at) + "</td>" +
-              (canW ? '<td><button class="btn btn--sm ' + (a.status === "active" ? "btn--ghost" : "btn--gold") + '" data-toggle="' + a.id + '">' + (a.status === "active" ? "Bloklash" : "Faollashtirish") + "</button></td>" : "") + "</tr>";
+            return '<tr class="clickable" data-open="' + a.id + '"><td><div class="cell-main">' + esc(a.first_name + " " + a.last_name) + '</div><div class="cell-sub">' + esc(a.email) + '</div></td><td class="nowrap">' + esc(fmt.phone(a.phone)) + "</td><td>" + (a.status === "active" ? A.chip("ok", "Faol") : A.chip("bad", "Bloklangan")) + '</td><td class="right mono">' + a.orders_count + "</td><td>" + fmt.date(a.created_at) + "</td><td>" + fmt.date(a.last_login_at) + "</td><td>" + esc(ago(a.last_seen_at)) + "</td></tr>";
           }).join("") + "</tbody></table></div>";
       }
+
+      function openProfile(id) {
+        A.get("/accounts/" + id).then(function (r) {
+          var a = r.item, blocked = a.status === "blocked";
+          var logins = r.logins.length ? '<div class="table-wrap"><table class="items-tbl"><thead><tr><th>Vaqt</th><th>Natija</th><th>IP</th></tr></thead><tbody>' + r.logins.map(function (l) {
+            return "<tr><td>" + fmt.date(l.at) + "</td><td>" + (l.success ? A.chip("ok", REASON[l.reason] || l.reason) : A.chip("bad", REASON[l.reason] || l.reason)) + '</td><td class="mono">' + esc(l.ip || "—") + "</td></tr>";
+          }).join("") + "</tbody></table></div>" : '<p class="muted">Kirish tarixi yo\'q</p>';
+          var orders = r.orders.length ? '<table class="items-tbl"><thead><tr><th>Buyurtma</th><th>Holat</th><th class="right">Summa</th></tr></thead><tbody>' + r.orders.map(function (o) {
+            return '<tr><td><a href="#/orders?open=' + o.id + '" data-close-modal class="text-link"><b>' + esc(o.number) + "</b></a><br><small class=\"muted\">" + fmt.date(o.created_at) + "</small></td><td>" + A.statusChip(o.status) + '</td><td class="right mono nowrap">' + fmt.money(o.total) + "</td></tr>";
+          }).join("") + "</tbody></table>" : '<p class="muted">Buyurtmalar yo\'q</p>';
+          function row(k, v) { return '<div class="kv"><span class="muted">' + k + "</span><b>" + v + "</b></div>"; }
+          var actions = [{ label: "Yopish", cls: "btn--ghost", onClick: function (api) { api.close(); } }];
+          if (canW) {
+            actions.push({ label: "Akkauntni o'chirish", cls: "btn--danger", onClick: function (api) {
+              A.confirm({ title: "Akkauntni o'chirish", danger: true, confirmLabel: "O'chirish", text: esc(a.email) + " akkaunti, sevimlilari va kirish tarixi butunlay o'chiriladi. Buyurtmalar saqlanadi. Bu amalni qaytarib bo'lmaydi." }).then(function (ok) {
+                if (!ok) return;
+                A.del("/accounts/" + a.id).then(function () { api.close(); A.toast("Akkaunt o'chirildi"); load(); }).catch(A.fail);
+              });
+            } });
+            actions.push({ label: blocked ? "Faollashtirish" : "Bloklash", cls: blocked ? "btn--gold" : "btn--ghost", onClick: function (api) {
+              A.put("/accounts/" + a.id + "/status", { status: blocked ? "active" : "blocked" }).then(function () {
+                api.close(); A.toast(blocked ? "Akkaunt faollashtirildi" : "Akkaunt bloklandi"); load();
+              }).catch(A.fail);
+            } });
+          }
+          var m = A.modal({
+            title: a.first_name + " " + a.last_name, size: "lg",
+            body: '<div class="order-grid"><div class="stack">' +
+              row("Email", esc(a.email)) + row("Telefon", esc(fmt.phone(a.phone))) + row("Holat", blocked ? "Bloklangan" : "Faol") +
+              row("Ro'yxatdan o'tgan", fmt.date(a.created_at)) + row("Shartlarga rozilik", fmt.date(a.consent_at)) +
+              row("Oxirgi kirish", fmt.date(a.last_login_at)) + row("Oxirgi faollik", esc(ago(a.last_seen_at))) +
+              row("Sevimlilar", r.favorites + " ta") + row("Xato urinishlar (7 kun)", String(r.failed_week)) +
+              '</div><div class="stack"><div><p class="section-title">Buyurtmalar</p>' + orders + '</div><div><p class="section-title">Kirish tarixi</p>' + logins + "</div></div></div>",
+            actions: actions
+          });
+          m.el.addEventListener("click", function (e) { if (e.target.closest("[data-close-modal]")) m.close(); });
+        }).catch(A.fail);
+      }
+
       $("#aq", root).addEventListener("input", A.debounce(function (e) { q = e.target.value.trim(); load(); }, 250));
       $("#as", root).addEventListener("change", function (e) { status = e.target.value; load(); });
+      $("#asort", root).addEventListener("change", function (e) { var p = e.target.value.split(":"); sort = p[0]; dir = p[1]; load(); });
       root.addEventListener("click", function (e) {
         if (e.target.closest("[data-act=reload]")) { load(); return; }
-        var btn = e.target.closest("[data-toggle]");
-        if (!btn) return;
-        var a = items.filter(function (x) { return String(x.id) === btn.getAttribute("data-toggle"); })[0];
-        if (!a) return;
-        var block = a.status === "active";
-        A.confirm({
-          title: block ? "Akkauntni bloklash" : "Akkauntni faollashtirish", danger: block, confirmLabel: block ? "Bloklash" : "Faollashtirish",
-          text: block ? esc(a.email) + " akkauntini bloklaysizmi? Foydalanuvchi darhol tizimdan chiqariladi va qayta kira olmaydi." : esc(a.email) + " akkauntini qayta faollashtirasizmi?"
-        }).then(function (ok) {
-          if (!ok) return;
-          A.put("/accounts/" + a.id + "/status", { status: block ? "blocked" : "active" }).then(function () {
-            A.toast(block ? "Akkaunt bloklandi" : "Akkaunt faollashtirildi"); load();
-          }).catch(A.fail);
-        });
+        var th = e.target.closest("[data-sort]");
+        if (th) {
+          var k = th.getAttribute("data-sort");
+          if (sort === k) dir = dir === "asc" ? "desc" : "asc"; else { sort = k; dir = k === "name" || k === "email" ? "asc" : "desc"; }
+          var sel = $("#asort", root); if (sel) sel.value = sort + ":" + dir;
+          load(); return;
+        }
+        var row = e.target.closest("[data-open]");
+        if (row) openProfile(row.getAttribute("data-open"));
       });
-      load();
+      // Yangi ro'yxatdan o'tganlar va faollik avtomatik yangilanadi
+      var timer = setInterval(function () {
+        if (!root.isConnected) { clearInterval(timer); return; }
+        if (document.visibilityState === "visible" && !document.querySelector(".modal")) load(true);
+      }, 30000);
+      load().then(function () { if (query.open) { openProfile(query.open); history.replaceState(null, "", "#/accounts"); } });
     }
   };
 

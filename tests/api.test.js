@@ -21,7 +21,16 @@ const auth = require("../lib/auth");
 const { handle } = require("../lib/router");
 
 /* ---------- Yordamchilar ---------- */
-function call(method, url, { body, cookie, csrf, ip = "10.0.0.1", headers = {} } = {}) {
+/** Buyurtma endpointlari kirgan mijozni talab qiladi: cookie berilmasa umumiy sinov mijozi ishlatiladi ({ guest: true } — mehmon) */
+async function call(method, url, opts = {}) {
+  if (method === "POST" && /^\/api\/(order|configurator\/order)$/.test(url) && !opts.cookie && !opts.guest) {
+    const c = await require("./_customer")();
+    opts = Object.assign({}, opts, { cookie: c.cookie, csrf: c.csrf });
+  }
+  return rawCall(method, url, opts);
+}
+
+function rawCall(method, url, { body, cookie, csrf, ip = "10.0.0.1", headers = {} } = {}) {
   return new Promise(resolve => {
     const req = {
       method, url, body, socket: { remoteAddress: ip },
