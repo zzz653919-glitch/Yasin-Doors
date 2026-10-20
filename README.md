@@ -171,6 +171,32 @@ Sayt mijozlari uchun alohida akkaunt tizimi (xodimlar/admin tizimidan **alohida*
 
 **Eslatma:** `privacy.html` va `terms.html` matnlari tizim haqiqatan qiladigan ishlarni tasvirlaydigan qisqa shablon — nashrdan oldin egasi/yurist ko'rib chiqsin.
 
+## Joylashtirishni tekshirish (ro'yxatdan o'tish va buyurtmalar real bazada)
+
+Ma'lumotlar bazasi: **libSQL** (lokal — `data/yasindoors.db` fayli, Vercel'da — **Turso**). Hammasi bitta serverless API (`api/[...path].js`) → bitta baza; mijoz saytga qaysi havola orqali kirmasin, yozuvlar shu bazaga tushadi. Vercel'da fayl tizimi doimiy emas, shuning uchun **Turso majburiy**.
+
+**Vercel → Settings → Environment Variables:**
+
+| O'zgaruvchi | Majburiy | Izoh |
+|---|---|---|
+| `DATABASE_URL` | ha | `libsql://<baza>-<hisob>.turso.io` |
+| `DATABASE_AUTH_TOKEN` | ha | `turso db tokens create <baza>` |
+| `APP_URL` | tavsiya | `https://sizning-domen` — parolni tiklash havolasi shundan yasaladi |
+| `RESEND_API_KEY`, `MAIL_FROM` | tiklash uchun | sozlanmasa «Забыли пароль?» ishlamaydi (aniq xabar beradi) |
+| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | ixtiyoriy | buyurtma xabarlari; sozlanmasa ham buyurtmalar bazaga yoziladi |
+| `SETUP_TOKEN` | ixtiyoriy | birinchi adminni brauzerdan yaratish uchun (yaratgach olib tashlang) |
+
+`MAIL_DRY_RUN` va `ORDER_DRY_RUN` productionda qo'yilmaydi. Sxema va migratsiyalar birinchi so'rovda avtomatik qo'llanadi.
+
+**Birinchi joylashtirishdan keyin:**
+1. Sozlamalarni tekshirish (Turso qiymatlari bilan): `DATABASE_URL=... DATABASE_AUTH_TOKEN=... npm run check-env` — maxfiy qiymatlarni chiqarmaydi, faqat «sozlangan/yo'q» va jadvallardagi sonlarni ko'rsatadi.
+2. Administrator yaratish: o'sha qiymatlar bilan `npm run create-admin`.
+3. Admin panel → Dashboard → «Namunaviy katalogni import qilish» (yoki o'z mahsulotlaringizni qo'shing). **Katalog bazada bo'lmasa buyurtma qabul qilinmaydi** (sayt faqat namunaviy katalogni ko'rsatadi, narx/mahsulot serverda bazadan tekshiriladi).
+4. Saytni tekshirish (faqat o'qish, baza o'zgarmaydi): `npm run smoke -- https://sizning-domen` — `/api/health` (baza ulanishi), buyurtma autentifikatsiyasiz rad etilishi, admin API himoyasi, sarlavhalar.
+5. Qo'lda sinov: saytda ro'yxatdan o'ting va buyurtma bering → admin panelda «Пользователи» va «Заказы» bo'limlarida paydo bo'ladi (ro'yxatlar 20–30 soniyada o'zi yangilanadi). Sahifani yangilang/qayta kiring — ma'lumotlar bazada saqlangan.
+
+**Admin panel:** «Пользователи» — qidiruv, saralash, profil (buyurtmalar va kirish tarixi bilan); «Заказы» — sana/holat/to'lov filtrlari, mijoz (ism, telefon, email, manzil), mahsulotlar (nomi, narxi, soni), jami summa, holatni yangilash (Новый → В обработке → Готовится → Доставляется → Завершён / Отменён; ombor shunga mos avtomatik yuritiladi) va tarix. Buyurtmadagi email buyurtma vaqtida saqlanadi (migratsiya v7).
+
 ## Mobil versiya
 
 `assets/css/mobile.css` faqat ≤960px da yuklanadi (`<link media>`), shuning uchun desktop o'zgarmaydi. Tarkibi: ixcham sticky navbar (logo, mavzu, menyu), **pastki navigatsiya paneli** (Bosh sahifa, Katalog, Sevimlilar, Savat, Profil — faol sahifa va sonlar bilan; `app.js` dagi `BOTTOM_NAV`), 2 ustunli mahsulot kartochkalari (≤339px da 1 ustun), yopishqoq qidiruv/saralash paneli, pastdan chiqadigan filtr oynasi, mahsulot sahifasida pastki panel ustida yopishqoq «Savatga» paneli, yuklanishda skeleton kartochkalar, tugmalarga bosilganda yengil javob, `prefers-reduced-motion` hurmat qilinadi. 3D konstruktor sahifasida pastki panel yashirin (o'zining paneli bor). Admin panelda jadvallar telefonda kartochkaga aylanadi, modal oynalar pastdan chiqadi. 320/360/390/430/768px da gorizontal scroll yo'qligi tekshirilgan.

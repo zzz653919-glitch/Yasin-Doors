@@ -444,7 +444,7 @@
       var m = A.modal({
         title: "Buyurtma " + o.number, size: "lg", persistent: true,
         body: '<div class="order-grid"><div class="stack">' +
-          '<div><p class="section-title">Mijoz</p><dl class="kv"><dt>Ism</dt><dd>' + esc(o.name) + "</dd><dt>Telefon</dt><dd><a href=\"tel:" + esc(o.phone) + '" class="text-link">' + esc(fmt.phone(o.phone)) + "</a></dd><dt>Manzil</dt><dd>" + esc(o.address) + "</dd><dt>O'rnatish</dt><dd>" + (o.install ? "Kerak" : "Kerak emas") + "</dd><dt>Mijoz izohi</dt><dd>" + (o.comment ? esc(o.comment) : '<span class="muted">—</span>') + "</dd><dt>Sana</dt><dd>" + fmt.date(o.created_at) + "</dd></dl></div>" +
+          '<div><p class="section-title">Mijoz</p><dl class="kv"><dt>Ism</dt><dd>' + esc(o.name) + "</dd><dt>Email</dt><dd>" + (o.email ? '<a href="mailto:' + esc(o.email) + '" class="text-link">' + esc(o.email) + "</a>" : '<span class="muted">—</span>') + (o.account_id && A.can("accounts.read") ? ' <a class="text-link" href="#/accounts?open=' + o.account_id + '" data-close-modal>(профиль)</a>' : "") + "</dd><dt>Telefon</dt><dd><a href=\"tel:" + esc(o.phone) + '" class="text-link">' + esc(fmt.phone(o.phone)) + "</a></dd><dt>Manzil</dt><dd>" + esc(o.address) + "</dd><dt>O'rnatish</dt><dd>" + (o.install ? "Kerak" : "Kerak emas") + "</dd><dt>Mijoz izohi</dt><dd>" + (o.comment ? esc(o.comment) : '<span class="muted">—</span>') + "</dd><dt>Sana</dt><dd>" + fmt.date(o.created_at) + "</dd></dl></div>" +
           '<div><p class="section-title">Mahsulotlar</p><table class="items-tbl"><thead><tr><th>Eshik</th><th>O\'lcham</th><th class="right">Soni</th><th class="right">Summa</th></tr></thead><tbody>' +
           o.items.map(function (i) {
             var price = i.config && !i.config.priced && !i.price ? '<span class="muted">Narx so\'raladi</span>' : fmt.money(i.price * i.qty);
@@ -486,11 +486,11 @@
   };
 
   A.views.orders = {
-    title: "Buyurtmalar", icon: "cart", perm: "orders.read",
+    title: "Заказы", icon: "cart", perm: "orders.read",
     render: function (root, query) {
       var f = { q: query.q || "", status: query.status || "", payment: query.payment || "", from: "", to: "", customer: query.customer || "", page: 1 };
       var data = { items: [], total: 0 };
-      root.innerHTML = '<div class="page-head"><div><h1>Buyurtmalar</h1><p>Saytdan kelgan barcha buyurtmalar, ularning holati va tarixi.</p></div><div class="head-actions">' +
+      root.innerHTML = '<div class="page-head"><div><h1>Заказы</h1><p>Saytdan kelgan barcha buyurtmalar, ularning holati va tarixi. Ro\'yxat avtomatik yangilanadi.</p></div><div class="head-actions">' +
         (A.can("orders.export") ? '<button class="btn btn--ghost" data-act="export">' + A.icon("download") + "CSV eksport</button>" : "") + '</div></div><div class="card"><div class="toolbar">' +
         '<input class="input grow" id="oq" type="search" placeholder="Raqam, mijoz yoki telefon…" value="' + esc(f.q) + '" aria-label="Qidirish">' +
         '<select class="select" id="ost" aria-label="Holat"><option value="">Barcha holatlar</option>' + Object.keys(A.STATUS).map(function (k) { return '<option value="' + k + '">' + esc(A.STATUS[k]) + "</option>"; }).join("") + "</select>" +
@@ -553,6 +553,17 @@
           A.download("/admin/orders/export" + qs, "yasindoors-buyurtmalar.csv").then(function () { A.toast("CSV fayl yuklab olindi"); }).catch(A.fail).then(function () { A.setBusy(act, false); act.innerHTML = A.icon("download") + "CSV eksport"; });
         }
       });
+      // Yangi buyurtmalar avtomatik ko'rinadi (xavfsiz polling: tab ko'rinib turganda va oyna yopiq bo'lganda)
+      var poll = setInterval(function () {
+        if (!root.isConnected) { clearInterval(poll); return; }
+        if (document.visibilityState !== "visible" || document.querySelector(".modal")) return;
+        var prev = data.total;
+        A.get("/orders" + A.qs(f)).then(function (r) {
+          if (!root.isConnected) return;
+          data = r; paint();
+          if (r.total > prev && f.page === 1) A.toast("Новый заказ: +" + (r.total - prev));
+        }).catch(function () { /* jimgina: keyingi urinishda */ });
+      }, 20000);
       load().then(function () {
         if (query.open) {
           A.openOrder(query.open, load);

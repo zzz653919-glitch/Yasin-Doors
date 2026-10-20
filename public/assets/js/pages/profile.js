@@ -184,7 +184,7 @@
   document.addEventListener("yd:change", function () { renderFavs(false); });
 
   /* ---------- Заказы ---------- */
-  var STATUS = { new: "Новый", accepted: "Принят", preparing: "Готовится", delivering: "Доставляется", completed: "Выполнен", cancelled: "Отменён" };
+  var STATUS = { new: "Новый", accepted: "В обработке", preparing: "Готовится", delivering: "Доставляется", completed: "Завершён", cancelled: "Отменён" };
   var PAY = { unpaid: "Не оплачен", paid: "Оплачен", refunded: "Возврат" };
   function money(n) { return String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " сум"; }
   function when(iso) {

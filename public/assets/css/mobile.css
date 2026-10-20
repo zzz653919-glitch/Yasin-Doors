@@ -57,8 +57,10 @@
   }
   .bn-ico .count.is-visible { transform: scale(1); }
   .bn-ico .count.bump { animation: bump .4s var(--ease); }
-  /* Klaviatura ochiq (maydon fokusda) bo‘lsa panel yo‘l qo‘ymasin */
-  body:has(input:focus, textarea:focus, select:focus) .bottom-nav { display: none; }
+  /* Klaviatura ochiq (matn maydoni fokusda) bo‘lsa panel pastga yashirinadi. Fokus ketganda panel 0.35s kechikib qaytadi:
+     aks holda tugmani bosish paytida panel barmoq ostiga chiqib, bosishni yutib yuborardi. */
+  .bottom-nav { transition: transform .25s var(--ease) .35s; }
+  body:has(input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):focus, textarea:focus, select:focus) .bottom-nav { transform: translateY(110%); transition-delay: 0s; }
   /* 3D konstruktorning o‘z pastki paneli bor */
   body[data-page="configurator"] .bottom-nav { display: none; }
   body[data-page="configurator"] { padding-bottom: 0; }
