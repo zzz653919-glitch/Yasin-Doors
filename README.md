@@ -42,7 +42,9 @@ npm run create-admin        # birinchi Super Admin (pastga qarang)
 npm run dev                 # http://localhost:3000   ·   admin: http://localhost:3000/admin/
 ```
 
-Lokal baza `data/yasindoors.db` fayli (hisob kerak emas, gitignore'da). Testlar: `npm test`.
+Lokal baza `data/yasindoors.db` fayli (hisob kerak emas, gitignore'da). Testlar: `npm test` (backend). Brauzer (E2E) testlari: `npm i --no-save playwright` so'ng `npm run test:e2e` — 7 kenglikda overflow, pastki panel, sevimlilar izolyatsiyasi, savat/checkout, CSP.
+
+`TRUST_PROXY=true` faqat server ishonchli proksi ortida bo'lsa qo'yiladi (Vercel'da avtomatik); aks holda `X-Forwarded-For` e'tiborsiz qoldiriladi (IP bo'yicha cheklovlarni soxtalashtirib bo'lmasin).
 
 ## Ma'lumotlar bazasi
 

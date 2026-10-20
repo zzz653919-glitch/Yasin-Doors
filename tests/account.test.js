@@ -369,3 +369,14 @@ test("admin: saralash, profil, statistika, o'chirish (buyurtmalar saqlanadi), ru
   const audit = await db.get("SELECT detail FROM audit_log WHERE action = 'account.delete'");
   assert.ok(!audit.detail || !audit.detail.includes("alisher"));
 });
+
+test("IP cheklovi: X-Forwarded-For soxtalashtirib aylanib o'tib bo'lmaydi (proksi ishonchsiz bo'lsa)", async () => {
+  await db.run("DELETE FROM login_attempts");
+  for (let i = 0; i < 10; i++) {
+    const r = await call("POST", "/api/account/login", { body: { identifier: `spoof${i}@example.com`, password: "Xato-Parol-1" }, ip: "10.9.0.1", headers: { "x-forwarded-for": `1.2.3.${i}` } });
+    assert.equal(r.status, 401);
+  }
+  const blocked = await call("POST", "/api/account/login", { body: { identifier: "spoof99@example.com", password: "Xato-Parol-1" }, ip: "10.9.0.1", headers: { "x-forwarded-for": "5.6.7.8" } });
+  assert.equal(blocked.status, 429, "soxta XFF bilan ham bir xil socket IP bloklanadi");
+  await db.run("DELETE FROM login_attempts");
+});
