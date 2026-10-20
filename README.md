@@ -14,7 +14,7 @@ Faqat MDF eshiklar uchun: ochiq sayt (katalog, savat, sevimlilar, buyurtma) va *
 │   │   favorites.html, cart.html, checkout.html, contact.html, 404.html
 │   ├── assets/ (css, js, img)  Ochiq sayt
 │   └── admin/                  Admin panel (SPA): index.html, admin.css, js/
-├── api/[...path].js           Vercel funksiyasi — barcha /api/* so'rovlari
+├── api/index.js           Vercel funksiyasi — barcha /api/* so'rovlari
 ├── lib/                       Server kodi (brauzerga berilmaydi)
 │   ├── router.js              Marshrutlash, sessiya, CSRF, ruxsatlar, xatolar
 │   ├── routes-public.js       /api/catalog, /api/order, /api/contact, /api/image/:id
@@ -173,7 +173,7 @@ Sayt mijozlari uchun alohida akkaunt tizimi (xodimlar/admin tizimidan **alohida*
 
 ## Joylashtirishni tekshirish (ro'yxatdan o'tish va buyurtmalar real bazada)
 
-Ma'lumotlar bazasi: **libSQL** (lokal — `data/yasindoors.db` fayli, Vercel'da — **Turso**). Hammasi bitta serverless API (`api/[...path].js`) → bitta baza; mijoz saytga qaysi havola orqali kirmasin, yozuvlar shu bazaga tushadi. Vercel'da fayl tizimi doimiy emas, shuning uchun **Turso majburiy**.
+Ma'lumotlar bazasi: **libSQL** (lokal — `data/yasindoors.db` fayli, Vercel'da — **Turso**). Hammasi bitta serverless API (`api/index.js`) → bitta baza; mijoz saytga qaysi havola orqali kirmasin, yozuvlar shu bazaga tushadi. Vercel'da fayl tizimi doimiy emas, shuning uchun **Turso majburiy**.
 
 **Vercel → Settings → Environment Variables:**
 

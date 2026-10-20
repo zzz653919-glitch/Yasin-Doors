@@ -419,3 +419,15 @@ test("buyurtma: bloklangan akkaunt sessiyasi bilan buyurtma berib bo'lmaydi", as
   assert.equal(r.status, 401);
   await db.run("UPDATE accounts SET status = 'active' WHERE email = ?", ["second@example.com"]);
 });
+
+test("Vercel yo'naltirishi: /api?__p=<yo'l> asl yo'lga tengdir (ikki qismli yo'llar ham ishlaydi)", async () => {
+  const a = await call("GET", "/api?__p=admin/status");
+  assert.equal(a.status, 200); assert.equal(a.json.db, true);
+  const b = await call("GET", "/api?__p=account/me&x=1");
+  assert.equal(b.json.authenticated, false);
+  const c = await call("GET", "/api?__p=catalog");
+  assert.equal(c.json.ok, true);
+  const d = await call("GET", "/api?__p=admin/orders");          // himoya yo'lga bog'liq emas: ruxsatsiz 401
+  assert.equal(d.status, 401);
+  assert.equal((await call("GET", "/api?__p=yoq/yol")).status, 404);
+});
