@@ -98,6 +98,7 @@ Parol siyosati: kamida 10 belgi, harf va raqam.
 - **SQL injection:** barcha so'rovlar parametrlangan. **XSS:** admin interfeysida barcha matn ekranlanadi, qat'iy CSP (`script-src 'self'`, inline skript yo'q), `X-Frame-Options: DENY`.
 - **Ruxsatlar:** har bir endpointda serverda tekshiriladi (frontend'da yashirish xavfsizlik hisoblanmaydi).
 - **Audit log:** kirish, mahsulot/buyurtma/ombor/foydalanuvchi/sozlama o'zgarishlari. Parollar va tokenlar yozilmaydi; xato javoblarida ichki ma'lumot yo'q.
+- **Sayt sarlavhalari:** butun saytda qat'iy CSP (`script-src 'self'` + 3D konstruktorning importmap xeshi), `X-Frame-Options: SAMEORIGIN`, `Permissions-Policy` (`vercel.json` va `server.js` da bir xil). Saytga inline skript qo'shmang — CSP bloklaydi. `MAIL_DRY_RUN` ishlab chiqarishda (Vercel/`NODE_ENV=production`) e'tiborsiz qoldiriladi.
 - **Narxlar** serverda bazadan hisoblanadi (brauzerdan kelgan narxga ishonilmaydi). Rasm yuklashda fayl imzosi tekshiriladi. CSV eksportda formula injection'dan himoya.
 - Admin sahifasining HTML qobig'i ommaga ochiq (u faqat kirish formasi), lekin barcha ma'lumotlar himoyalangan API orqali beriladi.
 

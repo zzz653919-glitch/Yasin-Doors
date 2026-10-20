@@ -54,7 +54,15 @@ const ADMIN_HEADERS = {
   "X-Frame-Options": "DENY",
   "Referrer-Policy": "same-origin",
   "X-Robots-Tag": "noindex, nofollow",
-  "Content-Security-Policy": "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"
+  "Content-Security-Policy": "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'sha256-qGs1TcEYN810qGPzzRFXxoX7tkmq/iBgfc5oNdFfxUo='; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"
+};
+
+// Butun sayt uchun xavfsizlik sarlavhalari (vercel.json dagilar bilan bir xil). Saytda inline skript yo'q.
+const SITE_HEADERS = {
+  "X-Frame-Options": "SAMEORIGIN",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=()",
+  "Content-Security-Policy": "default-src 'self'; script-src 'self' 'sha256-qGs1TcEYN810qGPzzRFXxoX7tkmq/iBgfc5oNdFfxUo='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self'; connect-src 'self'; frame-src https:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
 };
 
 function serveStatic(req, res, pathname) {
@@ -72,7 +80,7 @@ function serveStatic(req, res, pathname) {
       // HTML/CSS/JS har doim yangilansin (o‘zgarishlar darhol ko‘rinadi), rasmlar 1 soat keshda
       "Cache-Control": [".html", ".css", ".js"].includes(ext) ? "no-cache" : "public, max-age=3600",
       "X-Content-Type-Options": "nosniff"
-    }, pathname.startsWith("/admin/") ? ADMIN_HEADERS : {});
+    }, SITE_HEADERS, pathname.startsWith("/admin/") ? ADMIN_HEADERS : {});
 
     // Video uchun Range so‘rovlari (Safari/iOS videoni faqat shu bilan ijro etadi, oldinga o‘tkazish ham shunga tayanadi)
     const range = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || "");

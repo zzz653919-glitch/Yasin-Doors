@@ -18,7 +18,16 @@
       "source": "/(.*)",
       "headers": [
         { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), payment=()" },
+        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'sha256-qGs1TcEYN810qGPzzRFXxoX7tkmq/iBgfc5oNdFfxUo='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self'; connect-src 'self'; frame-src https:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'" }
+      ]
+    },
+    {
+      "source": "/assets/(img|vendor)/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800" }
       ]
     },
     {
@@ -34,7 +43,7 @@
         { "key": "Referrer-Policy", "value": "same-origin" },
         { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
         { "key": "Cache-Control", "value": "no-cache" },
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'" }
+        { "key": "Content-Security-Policy", "value": "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'sha256-qGs1TcEYN810qGPzzRFXxoX7tkmq/iBgfc5oNdFfxUo='; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'" }
       ]
     }
   ]

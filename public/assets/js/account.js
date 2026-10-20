@@ -11,6 +11,7 @@
   var esc = YD.esc, icon = YD.icon;
   var HINT_KEY = "yd_acct_hint";   // faqat bosh harf: navbar sakramasligi uchun (maxfiy ma’lumot emas)
   var FAV_KEY = "yd_favs_v1";
+  var FAV_OWNER_KEY = "yd_favs_owner";   // lokal sevimlilar qaysi akkauntniki (boshqa akkaunt ro‘yxatiga aralashib ketmasin)
 
   var state = { ready: false, available: true, mail: false, user: null, csrf: "" };
   var readyCbs = [];
@@ -125,9 +126,14 @@
   // Kirganda: serverdagi va shu qurilmadagi sevimlilar birlashtiriladi
   function syncFavorites() {
     favReady = false;
+    var uid = String(state.user.id);
     request("GET", "/api/account/favorites").then(function (r) {
       var seen = {}, merged = [];
-      r.ids.concat(localFavs()).forEach(function (id) { if (!seen[id]) { seen[id] = 1; merged.push(id); } });
+      // Lokal ro‘yxat boshqa akkauntniki bo‘lsa (sessiya tugagan, chiqilmagan) — qo‘shilmaydi, faqat mehmon ro‘yxati qo‘shiladi
+      var owner = lsGet(FAV_OWNER_KEY);
+      var local = owner && owner !== uid ? [] : localFavs();
+      lsSet(FAV_OWNER_KEY, uid);
+      r.ids.concat(local).forEach(function (id) { if (!seen[id]) { seen[id] = 1; merged.push(id); } });
       lastSynced = JSON.stringify(r.ids);
       if (JSON.stringify(merged) !== JSON.stringify(localFavs())) writeFavs(merged);
       return JSON.stringify(merged) !== lastSynced ? pushFavs(merged) : null;
@@ -137,6 +143,7 @@
   function resetFavorites() {
     clearTimeout(favTimer);
     if (favReady && localFavs().length) writeFavs([]);
+    lsDel(FAV_OWNER_KEY);
     favReady = false; lastSynced = null;
   }
   document.addEventListener("yd:change", function () {
