@@ -98,27 +98,79 @@ async function seed() {
     ok(!String(local).includes(favA) && !server.ids.includes(favA), "A ning sevimlisi B akkauntiga o'tmadi");
     await ctx.close();
 
-    /* 4) Savat va checkout */
+    /* 4) Buyurtma faqat kirgan mijozdan: modal, tugmalar, qaytish, savat saqlanishi, qo'sh yuborish */
+    const GATE = "Для оформления заказа необходимо войти в аккаунт или зарегистрироваться.";
     ctx = await newCtx({ viewport: { width: 1280, height: 900 } }); p = await ctx.newPage();
     const errs = []; p.on("pageerror", e => errs.push(e.message));
     const cat = (await (await p.request.get(B + "/api/catalog")).json()).products;
-    await p.goto(B + "/product-detail.html?id=classic-royal"); await p.waitForTimeout(900);
-    await p.click("#addToCart"); await p.click("#addToCart"); await p.waitForTimeout(300);
-    await p.goto(B + "/cart.html"); await p.waitForTimeout(800);
     const price = cat.find(x => x.id === "classic-royal").price;
-    ok(+(await p.locator(".summary-row.total span").last().innerText()).replace(/\D/g, "") === price * 2, "savat: jami = narx x 2");
-    await p.evaluate(() => localStorage.setItem("yd_cart_v1", "{bad"));
-    await p.reload(); await p.waitForTimeout(600);
-    ok(await p.locator(".empty-state").count() > 0, "savat: buzuq localStorage — bo'sh holat");
-    await p.goto(B + "/product-detail.html?id=classic-royal"); await p.waitForTimeout(800); await p.click("#addToCart");
-    await p.goto(B + "/checkout.html"); await p.waitForTimeout(800);
-    await p.click("#submitBtn"); await p.waitForTimeout(200);
-    ok(await p.locator(".field.has-error").count() >= 3, "checkout: bo'sh forma xato ko'rsatadi");
-    await p.fill("#name", "Тест Покупатель"); await p.fill("#phone", "90 111 22 33"); await p.fill("#address", "Ташкент, ул. 1"); await p.check("#agree");
+    const gateVisible = async () => (await p.locator("#authGate").isVisible()) && (await p.locator("#gateText").innerText()) === GATE;
+
+    // 4.1 Mehmon "Hoziroq buyurtma" -> modal (savat saqlanadi); katalog/savatga qo'shish cheklanmagan
+    await p.goto(B + "/product-detail.html?id=classic-royal"); await p.waitForTimeout(900);
+    await p.click("#addToCart"); await p.waitForTimeout(200);
+    ok(!(await p.locator("#authGate").isVisible().catch(() => false)), "mehmon: savatga qo'shish modal chiqarmaydi");
+    await p.click("#buyNow"); await p.waitForTimeout(500);
+    ok(await gateVisible(), "1) mehmon 'Hoziroq buyurtma' bosdi: aniq matnli modal chiqdi");
+    ok(p.url().includes("product-detail"), "   sahifa o'zgarmadi");
+    const btns = await p.locator("#authGate .gate-actions >> text=/./").allInnerTexts();
+    ok(JSON.stringify(btns) === JSON.stringify(["Войти", "Регистрация", "Отмена"]), "   tugmalar: Войти / Регистрация / Отмена " + JSON.stringify(btns));
+    // 4.2 Отмена yopadi
+    await p.click("#authGate [data-gate-close].btn"); await p.waitForTimeout(250);
+    ok(!(await p.locator("#authGate").isVisible()), "Отмена modalni yopadi");
+    // 4.3 Savat havolasi va checkout
+    await p.goto(B + "/cart.html"); await p.waitForTimeout(800);
+    await p.click("a.btn[href='checkout.html']"); await p.waitForTimeout(400);
+    ok(await gateVisible() && p.url().includes("cart.html"), "savatdan 'Buyurtmani rasmiylashtirish': modal, sahifa o'zgarmadi");
+    await p.keyboard.press("Escape"); await p.waitForTimeout(200);
+    ok(!(await p.locator("#authGate").isVisible()), "Escape modalni yopadi");
+    await p.goto(B + "/checkout.html"); await p.waitForTimeout(1200);
+    ok(await gateVisible(), "checkout sahifasiga to'g'ridan-to'g'ri kirish: modal chiqdi");
+    // 4.4 Войти -> login.html?next=checkout.html
+    await p.click("[data-gate-login]"); await p.waitForURL(/login\.html/);
+    ok(p.url().includes("next=checkout.html"), "2) 'Войти' kirish sahifasini ochdi (?next=checkout.html)");
+    // 4.5 Регистрация -> register
+    await p.goto(B + "/checkout.html"); await p.waitForTimeout(1000);
+    await p.click("[data-gate-register]"); await p.waitForURL(/register\.html/);
+    ok(p.url().includes("next=checkout.html"), "3) 'Регистрация' ro'yxatdan o'tish sahifasini ochdi");
+    // 4.6 Ro'yxatdan o'tgach checkout'ga qaytadi, savat saqlangan, forma to'ldirilgan
+    await p.fill("#first_name", "Заказ"); await p.fill("#last_name", "Тестов"); await p.fill("#email", "e2e-order@example.com"); await p.fill("#phone", "+998 90 555 01 03");
+    await p.fill("#password", PW); await p.fill("#password2", PW); await p.check("#consent");
+    await p.click("button[type=submit]"); await p.waitForURL(/checkout\.html/, { timeout: 8000 }); await p.waitForTimeout(1200);
+    ok(!(await p.locator("#authGate").isVisible().catch(() => false)), "kirgandan keyin modal chiqmaydi");
+    // savatga qo'shish + "Hoziroq buyurtma" mahsulotni ikki marta qo'shgan (avvalgi xatti-harakat): jami = 2 x narx
+    ok((await p.locator("#summaryTotal").innerText()).replace(/\D/g, "") === String(price * 2), "6) ro'yxatdan o'tgach savat saqlangan (jami = 2 x narx)");
+    ok((await p.inputValue("#name")) === "Заказ Тестов", "   ism avtomatik to'ldirildi");
+    // 4.7 Kirgan foydalanuvchi buyurtma beradi, qo'sh bosish = bitta so'rov
+    await p.fill("#address", "Ташкент, ул. 1"); await p.check("#agree");
     let posts = 0; await p.route("**/api/order", async r => { posts++; await new Promise(x => setTimeout(x, 400)); r.continue(); });
     await p.dblclick("#submitBtn"); await p.waitForSelector(".success-box", { timeout: 8000 });
-    ok(posts === 1, "checkout: qo'sh bosish bitta so'rov yuboradi");
-    ok(errs.length === 0, "savat/checkout: JS xato yo'q " + JSON.stringify(errs));
+    ok(posts === 1, "4) kirgan foydalanuvchi buyurtma berdi, qo'sh bosish = 1 ta so'rov");
+    ok((await p.evaluate(() => localStorage.getItem("yd_cart_v1"))) === "[]", "   buyurtmadan keyin savat tozalandi");
+    // 4.8 Kirgan foydalanuvchi "Hoziroq buyurtma" -> to'g'ridan-to'g'ri checkout
+    await p.goto(B + "/product-detail.html?id=classic-royal"); await p.waitForTimeout(900);
+    await p.click("#buyNow"); await p.waitForURL(/checkout\.html/, { timeout: 5000 });
+    ok(!(await p.locator("#authGate").isVisible().catch(() => false)), "kirgan foydalanuvchi: 'Hoziroq buyurtma' modalsiz checkout'ga o'tadi");
+    // 4.9 Backend: autentifikatsiyasiz so'rov rad etiladi (brauzerdan, cookie'siz kontekst)
+    const anon = await (await browser.newContext()).request.post(B + "/api/order", { data: { customer: { name: "Mehmon", phone: "+998901112299", address: "Ташкент, ул. 1" }, items: [{ id: "classic-royal", size: "800 × 2000", qty: 1 }] } });
+    ok(anon.status() === 401 && (await anon.json()).code === "login_required", "5) backend: autentifikatsiyasiz buyurtma 401 login_required");
+    const anonCfg = await (await browser.newContext()).request.post(B + "/api/configurator/order", { data: {} });
+    ok(anonCfg.status() === 401, "   backend: konstruktor buyurtmasi ham 401");
+    ok(errs.length === 0, "JS xato yo'q " + JSON.stringify(errs));
+    await ctx.close();
+
+    // 4.10 Konstruktor: mehmon buyurtma tugmasini bosadi
+    ctx = await newCtx({ viewport: { width: 1280, height: 900 } }); p = await ctx.newPage();
+    await p.goto(B + "/configurator.html?fallback=1"); await p.waitForTimeout(1500);
+    await p.click("#cfgOrder"); await p.waitForTimeout(500);
+    ok(await p.locator("#authGate").isVisible() && !(await p.locator("#cfgModal").isVisible().catch(() => false)), "konstruktor: mehmon uchun buyurtma oynasi o'rniga kirish modali");
+    await ctx.close();
+
+    // 4.11 Telefonda modal ekranga sig'adi
+    ctx = await newCtx({ viewport: { width: 320, height: 640 }, isMobile: true, hasTouch: true }); p = await ctx.newPage();
+    await p.goto(B + "/checkout.html"); await p.waitForTimeout(1200);
+    const box = await p.locator(".gate-card").boundingBox();
+    ok(box && box.x >= 0 && box.x + box.width <= 320 && box.y >= 0 && box.y + box.height <= 640, "320px: modal ekrandan chiqmaydi " + JSON.stringify(box));
     await ctx.close();
 
     /* 5) CSP bilan 3D konstruktor va sahifalar xatosiz yuklanadi */

@@ -242,7 +242,81 @@
   }
   document.addEventListener("yd:auth", prefillCheckout);
 
+  /* ---------- Buyurtma berishdan oldin kirish talab qilinadi ----------
+     gate(next, proceed): tizimga kirgan bo‘lsa proceed() chaqiriladi; kirmagan bo‘lsa modal oyna chiqadi.
+     «Войти» / «Регистрация» ?next=<sahifa> bilan ochiladi — kirgach foydalanuvchi shu sahifaga qaytadi.
+     Savat localStorage’da saqlanadi (kirish uni o‘zgartirmaydi). Server buyurtmani baribir autentifikatsiyasiz rad etadi. */
+  var GATE_TEXT = "Для оформления заказа необходимо войти в аккаунт или зарегистрироваться.";
+  var gateEl = null, gateReturnFocus = null;
+
+  function buildGate() {
+    gateEl = document.createElement("div");
+    gateEl.className = "gate";
+    gateEl.id = "authGate";
+    gateEl.hidden = true;
+    gateEl.setAttribute("role", "dialog");
+    gateEl.setAttribute("aria-modal", "true");
+    gateEl.setAttribute("aria-labelledby", "gateText");
+    gateEl.innerHTML = '<div class="gate-backdrop" data-gate-close></div>' +
+      '<div class="gate-card"><div class="gate-icon">' + icon("user") + "</div>" +
+      '<p class="gate-text" id="gateText"></p>' +
+      '<div class="gate-actions">' +
+      '<a class="btn btn--gold" data-gate-login href="login.html">Войти</a>' +
+      '<a class="btn" data-gate-register href="register.html">Регистрация</a>' +
+      '<button class="btn btn--outline" type="button" data-gate-close>Отмена</button></div></div>';
+    gateEl.querySelector("#gateText").textContent = GATE_TEXT;
+    document.body.appendChild(gateEl);
+    gateEl.addEventListener("click", function (e) { if (e.target.closest("[data-gate-close]")) hideGate(); });
+    gateEl.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") { e.stopPropagation(); hideGate(); return; }
+      if (e.key !== "Tab") return;
+      var f = gateEl.querySelectorAll("a[href], button");
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+  }
+  function showGate(next) {
+    if (!gateEl) buildGate();
+    var q = next ? "?next=" + encodeURIComponent(next) : "";
+    gateEl.querySelector("[data-gate-login]").href = "login.html" + q;
+    gateEl.querySelector("[data-gate-register]").href = "register.html" + q;
+    gateReturnFocus = document.activeElement;
+    gateEl.hidden = false;
+    document.documentElement.classList.add("gate-open");
+    var b = gateEl.querySelector("[data-gate-login]");
+    setTimeout(function () { b.focus(); }, 30);
+  }
+  function hideGate() {
+    if (!gateEl || gateEl.hidden) return;
+    gateEl.hidden = true;
+    document.documentElement.classList.remove("gate-open");
+    if (gateReturnFocus && gateReturnFocus.focus) { try { gateReturnFocus.focus(); } catch (e) { /* e’tiborsiz */ } }
+  }
+  function gate(next, proceed) {
+    function decide() {
+      if (state.user) { if (proceed) proceed(); return true; }
+      showGate(next);
+      return false;
+    }
+    if (state.ready) return decide();
+    onReady(decide);   // holat hali yuklanmagan: aniqlangach qaror qilinadi
+    return false;
+  }
+  // Checkout sahifasiga olib boradigan har qanday havola (savat, footer) kirish talab qiladi
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("a[href]");
+    if (!a || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey) return;
+    if (!/^(\.\/)?checkout\.html(\?.*)?$/.test(a.getAttribute("href"))) return;
+    if (state.ready && state.user) return;
+    e.preventDefault();
+    var href = a.getAttribute("href");
+    gate("checkout.html", function () { window.location.href = href; });
+  });
+
   YD.account = {
+    gate: gate,
+    showGate: showGate,
     state: state,
     request: request,
     onReady: onReady,

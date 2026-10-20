@@ -236,23 +236,25 @@ test("buyurtma: kirgan mijozniki akkauntga bog'lanadi, mehmonniki yo'q; tarix fa
   }
   const sizes = JSON.parse((await db.get("SELECT sizes FROM products WHERE id = ?", [pid])).sizes);
   const order = (extra, cookie) => call("POST", "/api/order", {
-    cookie, ip: "10.1.8." + Math.floor(Math.random() * 200),
+    cookie, csrf: cookie ? user.csrf : undefined, ip: "10.1.8." + Math.floor(Math.random() * 200),
     body: Object.assign({ customer: { name: "Алишер", phone: "+998 90 123 45 67", address: "Ташкент, ул. Тестовая 1" }, items: [{ id: pid, size: sizes[0], qty: 1 }] }, extra)
   });
   const mine = await order({}, user.cookie);
   assert.equal(mine.status, 200);
+  // Mehmon buyurtmasi endi qabul qilinmaydi
   const guest = await order({});
-  assert.equal(guest.status, 200);
-  // Klient yuborgan account_id e'tiborga olinmaydi
-  const spoof = await order({ account_id: 999, accountId: 999 });
+  assert.equal(guest.status, 401);
+  // Klient yuborgan account_id e'tiborga olinmaydi: buyurtma har doim sessiya egasiga bog'lanadi
+  const spoof = await order({ account_id: 999, accountId: 999 }, user.cookie);
   assert.equal(spoof.status, 200);
   const rows = await db.all("SELECT number, account_id FROM orders");
-  assert.equal(rows.find(r => r.number === mine.json.orderId).account_id != null, true);
-  assert.equal(rows.find(r => r.number === guest.json.orderId).account_id, null);
-  assert.equal(rows.find(r => r.number === spoof.json.orderId).account_id, null);
+  const mineId = (await db.get("SELECT id FROM accounts WHERE email = ?", ["alisher@example.com"])).id;
+  assert.equal(rows.find(r => r.number === mine.json.orderId).account_id, mineId);
+  assert.equal(rows.find(r => r.number === spoof.json.orderId).account_id, mineId);
+  assert.equal(rows.some(r => r.account_id === 999), false);
 
   const hist = await call("GET", "/api/account/orders", { cookie: user.cookie });
-  assert.equal(hist.json.items.length, 1); assert.equal(hist.json.items[0].number, mine.json.orderId);
+  assert.equal(hist.json.items.length, 2); assert.ok(hist.json.items.some(i => i.number === mine.json.orderId));
   assert.equal(hist.json.items[0].lines.length, 1);
   const r2 = await call("POST", "/api/account/login", { body: { identifier: "second@example.com", password: "Sinov-8421-Kalit" }, ip: "10.1.8.250" });
   assert.equal((await call("GET", "/api/account/orders", { cookie: cookieOf(r2) })).json.items.length, 0);
@@ -347,7 +349,7 @@ test("admin: saralash, profil, statistika, o'chirish (buyurtmalar saqlanadi), ru
   const prof = await call("GET", `/api/admin/accounts/${target.id}`, authed(mgr));
   assert.equal(prof.status, 200);
   assert.equal(JSON.stringify(prof.json).includes("password_hash"), false);
-  assert.ok(prof.json.logins.length >= 1 && prof.json.orders.length === 1);
+  assert.ok(prof.json.logins.length >= 1 && prof.json.orders.length === 2);
   // ruxsatlar
   assert.equal((await call("GET", `/api/admin/accounts/${target.id}`, authed(op))).status, 403);
   assert.equal((await call("GET", `/api/admin/accounts/${target.id}`, { cookie: user.cookie })).status, 401);
@@ -379,4 +381,41 @@ test("IP cheklovi: X-Forwarded-For soxtalashtirib aylanib o'tib bo'lmaydi (proks
   const blocked = await call("POST", "/api/account/login", { body: { identifier: "spoof99@example.com", password: "Xato-Parol-1" }, ip: "10.9.0.1", headers: { "x-forwarded-for": "5.6.7.8" } });
   assert.equal(blocked.status, 429, "soxta XFF bilan ham bir xil socket IP bloklanadi");
   await db.run("DELETE FROM login_attempts");
+});
+
+/* ---------- Buyurtma faqat kirgan mijozdan ---------- */
+test("buyurtma: autentifikatsiyasiz /api/order va /api/configurator/order rad etiladi (401, login_required)", async () => {
+  const orderBody = { customer: { name: "Mehmon", phone: "+998 90 777 66 55", address: "Ташкент, ул. 1" }, items: [{ id: "classic-royal", size: "800 × 2000", qty: 1 }] };
+  const before = Number((await db.get("SELECT COUNT(*) AS n FROM orders")).n);
+  for (const url of ["/api/order", "/api/configurator/order"]) {
+    const r = await call("POST", url, { body: orderBody, ip: "10.20.0.1" });
+    assert.equal(r.status, 401, url);
+    assert.equal(r.json.code, "login_required");
+    assert.equal(r.json.error, "Для оформления заказа необходимо войти в аккаунт или зарегистрироваться.");
+    // soxta/yaroqsiz cookie ham ishlamaydi
+    const fake = await call("POST", url, { body: orderBody, ip: "10.20.0.2", cookie: "yd_acc=" + "x".repeat(43), csrf: "y" });
+    assert.equal(fake.status, 401, url + " (soxta cookie)");
+    // honeypot ham autentifikatsiyasiz o'tmaydi (sessiyasiz hech narsa bajarilmaydi)
+    assert.equal((await call("POST", url, { body: Object.assign({}, orderBody, { website: "bot" }), ip: "10.20.0.3" })).status, 401);
+  }
+  assert.equal(Number((await db.get("SELECT COUNT(*) AS n FROM orders")).n), before, "hech qanday buyurtma yaratilmadi");
+});
+
+test("buyurtma: kirgan mijoz CSRF tokensiz yoki begona Origin bilan buyurtma bera olmaydi", async () => {
+  const l = await call("POST", "/api/account/login", { body: { identifier: "second@example.com", password: "Sinov-8421-Kalit" }, ip: "10.20.1.1" });
+  const s = { cookie: cookieOf(l), csrf: l.json.csrf };
+  const body = { customer: { name: "Madina", phone: "+998 93 555 11 22", address: "Ташкент, ул. 1" }, items: [{ id: "classic-royal", size: "800 × 2000", qty: 1 }] };
+  const noCsrf = await call("POST", "/api/order", { body, cookie: s.cookie, ip: "10.20.1.2" });
+  assert.equal(noCsrf.status, 403); assert.equal(noCsrf.json.code, "csrf");
+  const foreign = await call("POST", "/api/order", { body, cookie: s.cookie, csrf: s.csrf, headers: { origin: "https://evil.example" }, ip: "10.20.1.3" });
+  assert.equal(foreign.status, 403);
+});
+
+test("buyurtma: bloklangan akkaunt sessiyasi bilan buyurtma berib bo'lmaydi", async () => {
+  const l = await call("POST", "/api/account/login", { body: { identifier: "second@example.com", password: "Sinov-8421-Kalit" }, ip: "10.20.2.1" });
+  const s = { cookie: cookieOf(l), csrf: l.json.csrf };
+  await db.run("UPDATE accounts SET status = 'blocked' WHERE email = ?", ["second@example.com"]);
+  const r = await call("POST", "/api/order", { body: { customer: { name: "M", phone: "+998 93 555 11 22", address: "Ташкент, ул. 1" }, items: [{ id: "classic-royal", size: "800 × 2000", qty: 1 }] }, cookie: s.cookie, csrf: s.csrf, ip: "10.20.2.2" });
+  assert.equal(r.status, 401);
+  await db.run("UPDATE accounts SET status = 'active' WHERE email = ?", ["second@example.com"]);
 });

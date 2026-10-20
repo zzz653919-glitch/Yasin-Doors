@@ -38,6 +38,9 @@ YD.whenReady(function () {
     return true;
   }
 
+  // Buyurtma faqat tizimga kirgan mijozdan: kirmagan bo‘lsa sahifa ochilishi bilan modal chiqadi (savat saqlanib qoladi)
+  YD.account.onReady(function (st) { if (!st.user) YD.account.showGate("checkout.html"); });
+
   if (!renderSummary()) return;
   document.addEventListener("yd:change", renderSummary);
 
@@ -53,6 +56,7 @@ YD.whenReady(function () {
     e.preventDefault();
     if (sending) return;
     YDForm.hideAlert(alertEl);
+    if (!YD.account.state.user) { YD.account.showGate("checkout.html"); return; }
 
     var bad = YDForm.validate(form, rules);
     if (bad) {
@@ -103,6 +107,7 @@ YD.whenReady(function () {
       sending = false;
       submitBtn.disabled = false;
       submitBtn.textContent = "Buyurtmani yuborish";
+      if (err.code === "login_required") { YD.account.showGate("checkout.html"); return; }   // sessiya tugagan
       var phone = YD.config.phone ? " Yoki bizga qo‘ng‘iroq qiling: " + YD.config.phone : "";
       YDForm.showAlert(alertEl, "error", (err.message || "Buyurtmani yuborib bo‘lmadi.") + phone);
     });

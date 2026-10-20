@@ -73,9 +73,13 @@
   function postJSON(path, data) {
     var controller = typeof AbortController !== "undefined" ? new AbortController() : null;
     var timer = setTimeout(function () { if (controller) controller.abort(); }, 15000);
+    var headers = { "Content-Type": "application/json" };
+    // Buyurtma endpointlari kirgan mijozni (cookie) va CSRF tokenini talab qiladi
+    if (YD.account && YD.account.state.csrf) headers["X-CSRF-Token"] = YD.account.state.csrf;
     return fetch(YD.apiUrl(path), {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      headers: headers,
       body: JSON.stringify(data),
       signal: controller ? controller.signal : undefined
     }).then(function (res) {
@@ -84,6 +88,7 @@
         if (!res.ok || !body.ok) {
           var err = new Error(body.error || "Server xatosi (" + res.status + ")");
           err.status = res.status;
+          err.code = body.code || "";
           throw err;
         }
         return body;
