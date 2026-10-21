@@ -325,7 +325,6 @@
       "<li>" + icon("pin") + "<span>" + contactValue(CONFIG.address) + "</span></li>" +
       "<li>" + icon("clock") + "<span>" + contactValue(CONFIG.workHours) + "</span></li>" +
       "</ul></div></div>" +
-      '<div class="footer-wordmark" aria-hidden="true">YasinDoors</div>' +
       '<div class="footer-bottom"><span>© ' + new Date().getFullYear() + " " + esc(SITE.store_name || "YasinDoors") + ". Barcha huquqlar himoyalangan.</span>" +
       (CATALOG_SOURCE === "db" ? "" : "<span>Saytdagi narxlar namunaviy va o‘zgarishi mumkin.</span>") + "</div>" +
       "</div></footer>";
