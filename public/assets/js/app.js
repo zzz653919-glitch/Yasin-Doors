@@ -251,15 +251,15 @@
 
   /* ---------- Navbar va footer ---------- */
   var NAV = [
-    { href: "index.html", label: "Bosh sahifa", page: "home" },
-    { href: "products.html", label: "Katalog", page: "products" },
-    { href: "configurator.html", label: "3D konstruktor", page: "configurator" },
-    { href: "about.html", label: "Biz haqimizda", page: "about" },
-    { href: "contact.html", label: "Aloqa", page: "contact" }
+    { href: "/", label: "Bosh sahifa", page: "home" },
+    { href: "/Products", label: "Katalog", page: "products" },
+    { href: "/Configurator", label: "3D konstruktor", page: "configurator" },
+    { href: "/About", label: "Biz haqimizda", page: "about" },
+    { href: "/Contact", label: "Aloqa", page: "contact" }
   ];
 
   function logoHTML() {
-    return '<a class="logo" href="index.html" aria-label="YasinDoors — bosh sahifa">' +
+    return '<a class="logo" href="/" aria-label="YasinDoors — bosh sahifa">' +
       '<span class="logo-mark"><svg viewBox="0 0 18 22" aria-hidden="true"><use href="#i-door"></use></svg></span>' +
       '<span>Yasin<b>Doors</b></span></a>';
   }
@@ -269,8 +269,8 @@
       return '<a href="' + n.href + '"' + (n.page === page ? ' class="is-active" aria-current="page"' : "") + ">" + n.label + "</a>";
     }).join("");
     var drawerLinks = NAV.concat([
-      { href: "favorites.html", label: "Sevimlilar", page: "favorites" },
-      { href: "cart.html", label: "Savat", page: "cart" }
+      { href: "/Favorites", label: "Sevimlilar", page: "favorites" },
+      { href: "/Cart", label: "Savat", page: "cart" }
     ]).map(function (n) {
       return '<a class="drawer-link' + (n.page === page ? " is-active" : "") + '" href="' + n.href + '">' + n.label + icon("arrow") + "</a>";
     }).join("");
@@ -280,10 +280,10 @@
       '<nav class="nav-links" aria-label="Asosiy menyu">' + links + "</nav>" +
       '<div class="nav-actions">' +
       '<button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Rejimni almashtirish (yorug‘ / qorong‘i)">' + icon("sun", "i-sun") + icon("moon", "i-moon") + "</button>" +
-      '<a class="icon-btn" href="favorites.html" aria-label="Sevimlilar">' + icon("heart") + '<span class="count" data-fav-count>0</span></a>' +
-      '<a class="icon-btn" href="cart.html" aria-label="Savat">' + icon("bag") + '<span class="count" data-cart-count>0</span></a>' +
+      '<a class="icon-btn" href="/Favorites" aria-label="Sevimlilar">' + icon("heart") + '<span class="count" data-fav-count>0</span></a>' +
+      '<a class="icon-btn" href="/Cart" aria-label="Savat">' + icon("bag") + '<span class="count" data-cart-count>0</span></a>' +
       '<div class="auth-slot" data-auth-slot></div>' +
-      '<a class="btn btn--sm hide-mobile nav-catalog" href="products.html">Katalog</a>' +
+      '<a class="btn btn--sm hide-mobile nav-catalog" href="/Products">Katalog</a>' +
       '<button class="icon-btn menu-toggle" type="button" data-menu-open aria-label="Menyuni ochish" aria-expanded="false" aria-controls="mobileDrawer">' + icon("menu") + "</button>" +
       "</div></div></header>" +
       '<div class="drawer-backdrop" data-overlay></div>' +
@@ -294,7 +294,7 @@
       drawerLinks +
       '<div class="drawer-foot">' +
       '<button class="btn btn--outline btn--block" type="button" data-theme-toggle>' + icon("moon") + " Rejimni almashtirish</button>" +
-      '<a class="btn btn--gold btn--block" href="products.html">Mahsulotlarni ko‘rish</a>' +
+      '<a class="btn btn--gold btn--block" href="/Products">Mahsulotlarni ko‘rish</a>' +
       "</div></aside>";
   }
 
@@ -315,11 +315,11 @@
       "<p>" + esc(SITE.footer_about || "Faqat MDF eshiklar: zamonaviy dizayn, puxta ishlov va har bir detalga e’tibor.") + "</p>" +
       (socials ? '<div class="socials">' + socials + "</div>" : "") + "</div>" +
       '<div><h4>Sahifalar</h4><ul class="footer-links">' +
-      '<li><a href="index.html">Bosh sahifa</a></li><li><a href="products.html">Katalog</a></li>' +
-      '<li><a href="about.html">Biz haqimizda</a></li><li><a href="contact.html">Aloqa</a></li></ul></div>' +
+      '<li><a href="/">Bosh sahifa</a></li><li><a href="/Products">Katalog</a></li>' +
+      '<li><a href="/About">Biz haqimizda</a></li><li><a href="/Contact">Aloqa</a></li></ul></div>' +
       '<div><h4>Xaridorlar uchun</h4><ul class="footer-links">' +
-      '<li><a href="favorites.html">Sevimlilar</a></li><li><a href="cart.html">Savat</a></li>' +
-      '<li><a href="checkout.html">Buyurtma berish</a></li><li><a href="about.html#delivery">Yetkazib berish</a></li></ul></div>' +
+      '<li><a href="/Favorites">Sevimlilar</a></li><li><a href="/Cart">Savat</a></li>' +
+      '<li><a href="/Checkout">Buyurtma berish</a></li><li><a href="/About#delivery">Yetkazib berish</a></li></ul></div>' +
       '<div><h4>Aloqa</h4><ul class="footer-links footer-contact">' +
       "<li>" + icon("phone") + "<span>" + phoneLink + "</span></li>" +
       "<li>" + icon("pin") + "<span>" + contactValue(CONFIG.address) + "</span></li>" +
@@ -332,11 +332,11 @@
 
   /* ---------- Pastki mobil navigatsiya (≤960px da CSS ko‘rsatadi) ---------- */
   var BOTTOM_NAV = [
-    { href: "index.html", label: "Bosh sahifa", icon: "home", pages: ["home"] },
-    { href: "products.html", label: "Katalog", icon: "grid", pages: ["products"] },
-    { href: "favorites.html", label: "Sevimlilar", icon: "heart", pages: ["favorites"], count: "fav" },
-    { href: "cart.html", label: "Savat", icon: "bag", pages: ["cart", "checkout"], count: "cart" },
-    { href: "profile.html", label: "Profil", icon: "user", pages: ["profile", "login", "register", "forgot", "reset"] }
+    { href: "/", label: "Bosh sahifa", icon: "home", pages: ["home"] },
+    { href: "/Products", label: "Katalog", icon: "grid", pages: ["products"] },
+    { href: "/Favorites", label: "Sevimlilar", icon: "heart", pages: ["favorites"], count: "fav" },
+    { href: "/Cart", label: "Savat", icon: "bag", pages: ["cart", "checkout"], count: "cart" },
+    { href: "/Profile", label: "Profil", icon: "user", pages: ["profile", "login", "register", "forgot", "reset"] }
   ];
   function bottomNavHTML(page) {
     return '<nav class="bottom-nav" aria-label="Pastki menyu">' + BOTTOM_NAV.map(function (n) {
@@ -400,7 +400,7 @@
   function productCard(p) {
     var color = DATA.COLORS[p.color] || { name: p.color, hex: "#ccc" };
     var fav = store.isFav(p.id);
-    var url = "product-detail.html?id=" + encodeURIComponent(p.id);
+    var url = "/Product?id=" + encodeURIComponent(p.id);
     return '<article class="product-card reveal" data-id="' + esc(p.id) + '">' +
       '<a class="product-media" href="' + url + '" aria-label="' + esc(p.name) + ' — batafsil">' +
       '<img src="' + esc(p.image) + '" alt="' + esc(p.name) + ' MDF eshigi" loading="lazy" decoding="async" width="480" height="600"></a>' +
@@ -422,7 +422,7 @@
     return '<div class="empty-state reveal">' +
       '<div class="empty-icon">' + icon(opts.icon || "bag") + "</div>" +
       "<h2>" + esc(opts.title) + "</h2><p>" + esc(opts.text) + "</p>" +
-      '<a class="btn btn--gold" href="' + (opts.href || "products.html") + '">' + esc(opts.button || "Katalogga o‘tish") + icon("arrow") + "</a></div>";
+      '<a class="btn btn--gold" href="' + (opts.href || "/Products") + '">' + esc(opts.button || "Katalogga o‘tish") + icon("arrow") + "</a></div>";
   }
 
   /* ---------- Hisoblagichlarni yangilash ---------- */
@@ -541,14 +541,14 @@
         var added = store.toggleFav(t.getAttribute("data-fav"));
         t.classList.remove("pop"); void t.offsetWidth; t.classList.add("pop");
         if (p) toast(added ? p.name + " sevimlilarga qo‘shildi" : p.name + " sevimlilardan olib tashlandi",
-          added ? { href: "favorites.html", label: "Ko‘rish" } : null);
+          added ? { href: "/Favorites", label: "Ko‘rish" } : null);
       }
       else if (t.hasAttribute("data-add")) {
         e.preventDefault();
         var prod = getProduct(t.getAttribute("data-add"));
         if (!prod) return;
         store.addToCart(prod.id, prod.sizes[0], 1);
-        toast(prod.name + " savatga qo‘shildi", { href: "cart.html", label: "Savatga o‘tish" });
+        toast(prod.name + " savatga qo‘shildi", { href: "/Cart", label: "Savatga o‘tish" });
       }
     });
     document.addEventListener("keydown", function (e) {

@@ -12,7 +12,7 @@
   var current = "profile";
   var ordersLoaded = false;
 
-  function toLogin() { window.location.replace("login.html?next=" + encodeURIComponent("profile.html" + window.location.hash)); }
+  function toLogin() { window.location.replace("/Login?next=" + encodeURIComponent("/Profile" + window.location.hash)); }
 
   /* ---------- Вкладки ---------- */
   function show(tab, pushHash) {
@@ -175,7 +175,7 @@
     var box = document.getElementById("favBox");
     document.getElementById("favSub").textContent = favs.length ? "Сохранённые модели: " + favs.length : "Модели, которые вы сохранили.";
     if (!favs.length) {
-      box.innerHTML = '<div class="auth-state"><div class="empty-icon"><svg class="icon" aria-hidden="true"><use href="#i-heart"></use></svg></div><h2>Пока пусто</h2><p>Нажмите на сердечко у понравившейся модели — она появится здесь и будет доступна с любого устройства.</p><a class="btn btn--gold" href="products.html">Перейти в каталог</a></div>';
+      box.innerHTML = '<div class="auth-state"><div class="empty-icon"><svg class="icon" aria-hidden="true"><use href="#i-heart"></use></svg></div><h2>Пока пусто</h2><p>Нажмите на сердечко у понравившейся модели — она появится здесь и будет доступна с любого устройства.</p><a class="btn btn--gold" href="/Products">Перейти в каталог</a></div>';
       return;
     }
     box.innerHTML = '<div class="profile-fav-grid">' + favs.map(function (id) { return YD.productCard(YD.getProduct(id)); }).join("") + "</div>";
@@ -198,7 +198,7 @@
     A.request("GET", "/api/account/orders").then(function (res) {
       ordersLoaded = true;
       if (!res.items.length) {
-        box.innerHTML = '<div class="auth-state"><div class="empty-icon"><svg class="icon" aria-hidden="true"><use href="#i-box"></use></svg></div><h2>Заказов пока нет</h2><p>Когда вы оформите заказ, войдя в аккаунт, он появится здесь со статусом выполнения.</p><a class="btn btn--gold" href="products.html">Перейти в каталог</a></div>';
+        box.innerHTML = '<div class="auth-state"><div class="empty-icon"><svg class="icon" aria-hidden="true"><use href="#i-box"></use></svg></div><h2>Заказов пока нет</h2><p>Когда вы оформите заказ, войдя в аккаунт, он появится здесь со статусом выполнения.</p><a class="btn btn--gold" href="/Products">Перейти в каталог</a></div>';
         return;
       }
       box.innerHTML = '<div class="order-list">' + res.items.map(function (o) {

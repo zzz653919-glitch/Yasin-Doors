@@ -423,7 +423,7 @@
         $("cfgDone").focus();
         state.attemptKey = null;
       }).catch(function (err) {
-        if (err.code === "login_required") { closeModal(); YD.account.showGate("configurator.html"); }   // sessiya tugagan
+        if (err.code === "login_required") { closeModal(); YD.account.showGate("/Configurator"); }   // sessiya tugagan
         if (err.status === 409) {
           refreshRules().then(function () {
             renderSummary();
@@ -472,7 +472,7 @@
     $("cfgSummary").addEventListener("click", function (e) {
       var q = e.target.closest("[data-qty]");
       if (q) { set({ qty: state.cfg.qty + Number(q.dataset.qty) }, { skipPanel: true }); return; }
-      if (e.target.closest("#cfgOrder")) YD.account.gate("configurator.html", openModal);   // konfiguratsiya localStorage’da saqlanadi
+      if (e.target.closest("#cfgOrder")) YD.account.gate("/Configurator", openModal);   // konfiguratsiya localStorage’da saqlanadi
     });
     $("cfgSummary").addEventListener("change", function (e) { if (e.target.id === "cfgQty") set({ qty: parseInt(e.target.value, 10) || 1 }, { skipPanel: true }); });
 

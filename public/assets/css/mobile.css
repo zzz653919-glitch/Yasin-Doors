@@ -15,8 +15,8 @@
   .nav { gap: 10px; }
   .nav-actions { gap: 8px; }
   /* Sevimlilar, savat va profil pastki panelda — yuqorida faqat mavzu va menyu qoladi */
-  .nav-actions > a.icon-btn[href="favorites.html"],
-  .nav-actions > a.icon-btn[href="cart.html"],
+  .nav-actions > a.icon-btn[href="/Favorites"],
+  .nav-actions > a.icon-btn[href="/Cart"],
   .auth-slot { display: none; }
   .site-header.is-scrolled { background: color-mix(in srgb, var(--bg) 86%, transparent); }
   .logo { font-size: 19px; }

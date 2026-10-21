@@ -96,10 +96,10 @@
   }
   function onReady(cb) { if (state.ready) cb(state); else readyCbs.push(cb); }
 
-  /** Faqat shu saytdagi nisbiy sahifaga yo‘naltirish (open-redirect'dan himoya) */
+  /** Faqat shu saytdagi sahifaga ("/Cart" ko‘rinishida) yo‘naltirish (open-redirect'dan himoya) */
   function safeNext(value, fallback) {
     var v = String(value || "");
-    return /^[a-z0-9-]+\.html(\?[\w=&%.-]*)?(#[\w-]*)?$/i.test(v) ? v : (fallback || "profile.html");
+    return /^\/[A-Za-z0-9-]*(\?[\w=&%.-]*)?(#[\w-]*)?$/.test(v) ? v : (fallback || "/Profile");
   }
 
   function logout() {
@@ -159,16 +159,16 @@
   function slotHTML(hintInitial) {
     var u = state.user;
     if (!u && !hintInitial) {
-      return '<a class="auth-link" href="login.html">Вход</a>' +
-        '<a class="btn btn--sm btn--gold auth-register" href="register.html">Регистрация</a>' +
-        '<a class="icon-btn auth-icon" href="login.html" aria-label="Вход">' + icon("user") + "</a>";
+      return '<a class="auth-link" href="/Login">Вход</a>' +
+        '<a class="btn btn--sm btn--gold auth-register" href="/Register">Регистрация</a>' +
+        '<a class="icon-btn auth-icon" href="/Login" aria-label="Вход">' + icon("user") + "</a>";
     }
     var initial = u ? (u.first_name || "?").charAt(0).toUpperCase() : hintInitial;
     var menu = u ?
       '<div class="user-dd-head"><strong>' + esc(displayName(u)) + "</strong><span>" + esc(u.email) + "</span></div>" +
-      '<a role="menuitem" href="profile.html">' + icon("user") + "Профиль</a>" +
-      '<a role="menuitem" href="profile.html#orders">' + icon("box") + "Мои заказы</a>" +
-      '<a role="menuitem" href="favorites.html">' + icon("heart") + "Избранное</a>" +
+      '<a role="menuitem" href="/Profile">' + icon("user") + "Профиль</a>" +
+      '<a role="menuitem" href="/Profile#orders">' + icon("box") + "Мои заказы</a>" +
+      '<a role="menuitem" href="/Favorites">' + icon("heart") + "Избранное</a>" +
       '<button role="menuitem" type="button" data-account-logout>' + icon("logout") + "Выйти из аккаунта</button>" : "";
     return '<div class="user-menu">' +
       '<button class="icon-btn user-btn" type="button" data-user-toggle aria-haspopup="menu" aria-expanded="false" aria-controls="userMenu" aria-label="Меню профиля">' +
@@ -178,14 +178,14 @@
   function drawerHTML(hintInitial) {
     var u = state.user;
     if (!u && !hintInitial) {
-      return '<a class="btn btn--gold btn--block" href="register.html">Регистрация</a>' +
-        '<a class="btn btn--outline btn--block" href="login.html">Вход</a>';
+      return '<a class="btn btn--gold btn--block" href="/Register">Регистрация</a>' +
+        '<a class="btn btn--outline btn--block" href="/Login">Вход</a>';
     }
     if (!u) return '<div class="drawer-user"><span class="avatar">' + esc(hintInitial) + "</span></div>";
     return '<div class="drawer-user"><span class="avatar">' + esc((u.first_name || "?").charAt(0).toUpperCase()) + "</span>" +
       "<div><strong>" + esc(displayName(u)) + "</strong><span>" + esc(u.email) + "</span></div></div>" +
-      '<div class="drawer-auth-actions"><a class="btn btn--outline btn--sm" href="profile.html">Профиль</a>' +
-      '<a class="btn btn--outline btn--sm" href="profile.html#orders">Заказы</a>' +
+      '<div class="drawer-auth-actions"><a class="btn btn--outline btn--sm" href="/Profile">Профиль</a>' +
+      '<a class="btn btn--outline btn--sm" href="/Profile#orders">Заказы</a>' +
       '<button class="btn btn--outline btn--sm" type="button" data-account-logout>Выйти</button></div>';
   }
   function renderHeader() {
@@ -221,7 +221,7 @@
         e.preventDefault();
         logout().then(function () {
           YD.toast("Вы вышли из аккаунта");
-          if (document.body.getAttribute("data-protected") === "1") window.location.href = "index.html";
+          if (document.body.getAttribute("data-protected") === "1") window.location.href = "/";
         });
         return;
       }
@@ -261,8 +261,8 @@
       '<div class="gate-card"><div class="gate-icon">' + icon("user") + "</div>" +
       '<p class="gate-text" id="gateText"></p>' +
       '<div class="gate-actions">' +
-      '<a class="btn btn--gold" data-gate-login href="login.html">Войти</a>' +
-      '<a class="btn" data-gate-register href="register.html">Регистрация</a>' +
+      '<a class="btn btn--gold" data-gate-login href="/Login">Войти</a>' +
+      '<a class="btn" data-gate-register href="/Register">Регистрация</a>' +
       '<button class="btn btn--outline" type="button" data-gate-close>Отмена</button></div></div>';
     gateEl.querySelector("#gateText").textContent = GATE_TEXT;
     document.body.appendChild(gateEl);
@@ -279,8 +279,8 @@
   function showGate(next) {
     if (!gateEl) buildGate();
     var q = next ? "?next=" + encodeURIComponent(next) : "";
-    gateEl.querySelector("[data-gate-login]").href = "login.html" + q;
-    gateEl.querySelector("[data-gate-register]").href = "register.html" + q;
+    gateEl.querySelector("[data-gate-login]").href = "/Login" + q;
+    gateEl.querySelector("[data-gate-register]").href = "/Register" + q;
     gateReturnFocus = document.activeElement;
     gateEl.hidden = false;
     document.documentElement.classList.add("gate-open");
@@ -307,11 +307,11 @@
   document.addEventListener("click", function (e) {
     var a = e.target.closest && e.target.closest("a[href]");
     if (!a || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey) return;
-    if (!/^(\.\/)?checkout\.html(\?.*)?$/.test(a.getAttribute("href"))) return;
+    if (!/^\/Checkout(\?.*)?$/i.test(a.getAttribute("href"))) return;
     if (state.ready && state.user) return;
     e.preventDefault();
     var href = a.getAttribute("href");
-    gate("checkout.html", function () { window.location.href = href; });
+    gate("/Checkout", function () { window.location.href = href; });
   });
 
   YD.account = {

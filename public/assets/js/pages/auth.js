@@ -70,7 +70,7 @@
     busy = false;
     if (err.fields) Object.keys(err.fields).forEach(function (n) { U.setError(form, n, err.fields[n], touched); });
     if (err.status === 409 && kind === "register") {
-      U.showAlert(alertEl, "error", "", 'Аккаунт с такими данными уже существует. <a href="login.html">Войти</a> или <a href="forgot-password.html">восстановить пароль</a>.');
+      U.showAlert(alertEl, "error", "", 'Аккаунт с такими данными уже существует. <a href="/Login">Войти</a> или <a href="/Forgot-Password">восстановить пароль</a>.');
     } else {
       U.showAlert(alertEl, "error", err.message);
     }
@@ -91,7 +91,7 @@
   }
   function invalidLink() {
     stateCard("error", "info", "Ссылка недействительна",
-      "Срок действия ссылки истёк или она уже была использована. Запросите восстановление пароля заново.", "forgot-password.html", "Запросить новую ссылку");
+      "Срок действия ссылки истёк или она уже была использована. Запросите восстановление пароля заново.", "/Forgot-Password", "Запросить новую ссылку");
   }
 
   var handlers = {
@@ -108,19 +108,19 @@
         first_name: val("first_name").trim(), last_name: val("last_name").trim(), email: val("email").trim(),
         phone: val("phone").trim(), password: val("password"), password2: val("password2"),
         consent: !!val("consent"), website: val("website")
-      }).then(function (res) { A.setSession(res); window.location.href = A.safeNext(params.get("next"), "profile.html#welcome"); })
+      }).then(function (res) { A.setSession(res); window.location.href = A.safeNext(params.get("next"), "/Profile#welcome"); })
         .catch(function (err) { fail(err, "first_name"); });
     },
     forgot: function () {
       return A.request("POST", "/api/account/forgot", { email: val("email").trim() }).then(function () {
         stateCard("success", "mail", "Проверьте почту",
           "Если аккаунт с адресом " + val("email").trim() + " существует, мы отправили письмо со ссылкой для смены пароля. Ссылка действует 1 час. Не пришло? Загляните в папку «Спам».",
-          "login.html", "Вернуться ко входу");
+          "/Login", "Вернуться ко входу");
       }).catch(function (err) { fail(err, "email"); });
     },
     reset: function () {
       return A.request("POST", "/api/account/reset", { token: token, password: val("password"), password2: val("password2") }).then(function () {
-        stateCard("success", "check", "Пароль изменён", "Теперь вы можете войти с новым паролем. На всех устройствах потребуется войти заново.", "login.html", "Войти");
+        stateCard("success", "check", "Пароль изменён", "Теперь вы можете войти с новым паролем. На всех устройствах потребуется войти заново.", "/Login", "Войти");
       }).catch(function (err) {
         if (err.code === "invalid_token") invalidLink(); else fail(err, "password");
       });

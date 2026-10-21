@@ -187,7 +187,7 @@ test("parol tiklash: bir martalik, vaqt bilan cheklangan havola, hamma sessiyala
   } finally { console.log = orig; delete process.env.MAIL_DRY_RUN; }
   assert.equal(r1.status, 200); assert.equal(r2.status, 200); assert.deepEqual(r1.json, r2.json); // enumeration yo'q
   assert.equal(logs.filter(l => l.includes("MAIL_DRY_RUN")).length, 1); // faqat mavjud akkauntga
-  const m = logs.join("\n").match(/https:\/\/shop\.example\/reset-password\.html#t=([A-Za-z0-9_-]+)/);
+  const m = logs.join("\n").match(/https:\/\/shop\.example\/Reset-Password#t=([A-Za-z0-9_-]+)/);
   assert.ok(m, "havola topilmadi");
   const token = m[1];
   const stored = await db.get("SELECT token_hash FROM password_resets");

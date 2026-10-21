@@ -6,7 +6,7 @@ YD.whenReady(function () {
 
   function itemHTML(it) {
     var p = it.product;
-    var url = "product-detail.html?id=" + encodeURIComponent(p.id);
+    var url = "/Product?id=" + encodeURIComponent(p.id);
     var color = YD.data.COLORS[p.color] || { name: p.color };
     return '<article class="cart-item" data-id="' + esc(p.id) + '" data-size="' + esc(it.size) + '">' +
       '<a class="cart-item-media" href="' + url + '"><img src="' + esc(p.image) + '" alt="' + esc(p.name) + '" width="110" height="138" loading="lazy"></a>' +
@@ -51,7 +51,7 @@ YD.whenReady(function () {
         "<div>" +
           '<div class="cart-list">' + items.map(itemHTML).join("") + "</div>" +
           '<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:20px">' +
-            '<a class="btn btn--outline btn--sm" href="products.html">' + icon("arrow-left") + "Xaridni davom ettirish</a>" +
+            '<a class="btn btn--outline btn--sm" href="/Products">' + icon("arrow-left") + "Xaridni davom ettirish</a>" +
             '<button class="link-btn" type="button" id="clearCart">' + icon("trash") + "Savatni tozalash</button>" +
           "</div>" +
         "</div>" +
@@ -61,7 +61,7 @@ YD.whenReady(function () {
           '<div class="summary-row"><span>Yetkazib berish</span><span class="muted">Kelishiladi</span></div>' +
           '<div class="summary-row"><span>O‘rnatish</span><span class="muted">Kelishiladi</span></div>' +
           '<div class="summary-row total"><span>Jami</span><span>' + fmt(YD.store.cartTotal()) + "</span></div>" +
-          '<a class="btn btn--gold btn--block" href="checkout.html">Buyurtmani rasmiylashtirish' + icon("arrow") + "</a>" +
+          '<a class="btn btn--gold btn--block" href="/Checkout">Buyurtmani rasmiylashtirish' + icon("arrow") + "</a>" +
           '<p class="muted" style="font-size:13px;margin:14px 0 0">' + (YD.isSample() ? "Narxlar namunaviy. " : "") + 'Yakuniy summa menejer bilan tasdiqlanadi.</p>' +
         "</aside>" +
       "</div>";

@@ -5,10 +5,230 @@
   "outputDirectory": "public",
   "cleanUrls": false,
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api?__p=$1" }
+    {
+      "source": "/api/(.*)",
+      "destination": "/api?__p=$1"
+    },
+    {
+      "source": "/About",
+      "destination": "/about.html"
+    },
+    {
+      "source": "/about",
+      "destination": "/about.html"
+    },
+    {
+      "source": "/Products",
+      "destination": "/products.html"
+    },
+    {
+      "source": "/products",
+      "destination": "/products.html"
+    },
+    {
+      "source": "/Product",
+      "destination": "/product-detail.html"
+    },
+    {
+      "source": "/product",
+      "destination": "/product-detail.html"
+    },
+    {
+      "source": "/Contact",
+      "destination": "/contact.html"
+    },
+    {
+      "source": "/contact",
+      "destination": "/contact.html"
+    },
+    {
+      "source": "/Cart",
+      "destination": "/cart.html"
+    },
+    {
+      "source": "/cart",
+      "destination": "/cart.html"
+    },
+    {
+      "source": "/Favorites",
+      "destination": "/favorites.html"
+    },
+    {
+      "source": "/favorites",
+      "destination": "/favorites.html"
+    },
+    {
+      "source": "/Checkout",
+      "destination": "/checkout.html"
+    },
+    {
+      "source": "/checkout",
+      "destination": "/checkout.html"
+    },
+    {
+      "source": "/Configurator",
+      "destination": "/configurator.html"
+    },
+    {
+      "source": "/configurator",
+      "destination": "/configurator.html"
+    },
+    {
+      "source": "/Login",
+      "destination": "/login.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/login.html"
+    },
+    {
+      "source": "/Register",
+      "destination": "/register.html"
+    },
+    {
+      "source": "/register",
+      "destination": "/register.html"
+    },
+    {
+      "source": "/Forgot-Password",
+      "destination": "/forgot-password.html"
+    },
+    {
+      "source": "/forgot-password",
+      "destination": "/forgot-password.html"
+    },
+    {
+      "source": "/Reset-Password",
+      "destination": "/reset-password.html"
+    },
+    {
+      "source": "/reset-password",
+      "destination": "/reset-password.html"
+    },
+    {
+      "source": "/Profile",
+      "destination": "/profile.html"
+    },
+    {
+      "source": "/profile",
+      "destination": "/profile.html"
+    },
+    {
+      "source": "/Privacy",
+      "destination": "/privacy.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/privacy.html"
+    },
+    {
+      "source": "/Terms",
+      "destination": "/terms.html"
+    },
+    {
+      "source": "/terms",
+      "destination": "/terms.html"
+    },
+    {
+      "source": "/Admin",
+      "destination": "/admin/index.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/admin/index.html"
+    }
   ],
   "redirects": [
-    { "source": "/admin", "destination": "/admin/", "permanent": false }
+    {
+      "source": "/Home",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/about.html",
+      "destination": "/About",
+      "permanent": true
+    },
+    {
+      "source": "/products.html",
+      "destination": "/Products",
+      "permanent": true
+    },
+    {
+      "source": "/product-detail.html",
+      "destination": "/Product",
+      "permanent": true
+    },
+    {
+      "source": "/contact.html",
+      "destination": "/Contact",
+      "permanent": true
+    },
+    {
+      "source": "/cart.html",
+      "destination": "/Cart",
+      "permanent": true
+    },
+    {
+      "source": "/favorites.html",
+      "destination": "/Favorites",
+      "permanent": true
+    },
+    {
+      "source": "/checkout.html",
+      "destination": "/Checkout",
+      "permanent": true
+    },
+    {
+      "source": "/configurator.html",
+      "destination": "/Configurator",
+      "permanent": true
+    },
+    {
+      "source": "/login.html",
+      "destination": "/Login",
+      "permanent": true
+    },
+    {
+      "source": "/register.html",
+      "destination": "/Register",
+      "permanent": true
+    },
+    {
+      "source": "/forgot-password.html",
+      "destination": "/Forgot-Password",
+      "permanent": true
+    },
+    {
+      "source": "/reset-password.html",
+      "destination": "/Reset-Password",
+      "permanent": true
+    },
+    {
+      "source": "/profile.html",
+      "destination": "/Profile",
+      "permanent": true
+    },
+    {
+      "source": "/privacy.html",
+      "destination": "/Privacy",
+      "permanent": true
+    },
+    {
+      "source": "/terms.html",
+      "destination": "/Terms",
+      "permanent": true
+    },
+    {
+      "source": "/admin/index.html",
+      "destination": "/Admin",
+      "permanent": false
+    }
   ],
   "functions": {
     "api/*.js": {
@@ -20,33 +240,69 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), payment=()" },
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'sha256-qGs1TcEYN810qGPzzRFXxoX7tkmq/iBgfc5oNdFfxUo='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self'; connect-src 'self'; frame-src https:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=()"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'sha256-qGs1TcEYN810qGPzzRFXxoX7tkmq/iBgfc5oNdFfxUo='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self'; connect-src 'self'; frame-src https:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
+        }
       ]
     },
     {
       "source": "/assets/(img|vendor)/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=604800" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800"
+        }
       ]
     },
     {
       "source": "/assets/video/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=604800" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800"
+        }
       ]
     },
     {
-      "source": "/admin/(.*)",
+      "source": "/(Admin|admin|admin/(.*))",
       "headers": [
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "Referrer-Policy", "value": "same-origin" },
-        { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
-        { "key": "Cache-Control", "value": "no-cache" },
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'sha256-qGs1TcEYN810qGPzzRFXxoX7tkmq/iBgfc5oNdFfxUo='; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'" }
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'sha256-qGs1TcEYN810qGPzzRFXxoX7tkmq/iBgfc5oNdFfxUo='; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"
+        }
       ]
     }
   ]

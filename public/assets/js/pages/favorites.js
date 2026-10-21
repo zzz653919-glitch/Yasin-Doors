@@ -34,7 +34,7 @@ YD.whenReady(function () {
     favs.forEach(function (id) {
       if (!YD.store.inCart(id)) YD.store.addToCart(id, null, 1);
     });
-    YD.toast("Sevimli mahsulotlar savatga qo‘shildi", { href: "cart.html", label: "Savatga o‘tish" });
+    YD.toast("Sevimli mahsulotlar savatga qo‘shildi", { href: "/Cart", label: "Savatga o‘tish" });
   });
   document.getElementById("clearFavs").addEventListener("click", function () {
     if (!window.confirm("Sevimlilar ro‘yxatini tozalaysizmi?")) return;

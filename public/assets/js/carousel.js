@@ -26,7 +26,7 @@
   function cardHTML(p, i, n) {
     var D = YD.data, esc = YD.esc, icon = YD.icon;
     var color = D.COLORS[p.color] || { name: p.color, hex: "#ccc" };
-    var url = "product-detail.html?id=" + encodeURIComponent(p.id);
+    var url = "/Product?id=" + encodeURIComponent(p.id);
     var sale = p.oldPrice && p.oldPrice > p.price;
     return '<article class="dc-card" data-index="' + i + '" role="group" aria-roledescription="slayd" aria-label="' + (i + 1) + " / " + n + ": " + esc(p.name) + '">' +
       '<a class="dc-media" href="' + url + '" tabindex="-1" draggable="false">' +

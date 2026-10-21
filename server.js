@@ -27,6 +27,7 @@ const PUBLIC = path.join(ROOT, "public"); // faqat shu papka brauzerga beriladi 
 })();
 
 const { handle: handleApi } = require("./lib/router");
+const { resolvePage } = require("./lib/pages");
 
 const PORT = Number(process.env.PORT) || 3000;
 const MIME = {
@@ -65,10 +66,12 @@ const SITE_HEADERS = {
   "Content-Security-Policy": "default-src 'self'; script-src 'self' 'sha256-qGs1TcEYN810qGPzzRFXxoX7tkmq/iBgfc5oNdFfxUo='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self'; connect-src 'self'; frame-src https:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
 };
 
-function serveStatic(req, res, pathname) {
+function serveStatic(req, res, pathname, search) {
   if (BLOCKED.test(pathname)) return notFound(res);
-  if (pathname === "/admin") { res.writeHead(301, { Location: "/admin/" }); return res.end(); }
-  if (pathname.endsWith("/")) pathname += "index.html";
+  const page = resolvePage(pathname);
+  if (page && page.redirect) { res.writeHead(308, { Location: page.redirect + search }); return res.end(); }
+  if (page) pathname = "/" + page.file;
+  else if (pathname.endsWith("/")) pathname += "index.html";
   const file = path.normalize(path.join(PUBLIC, pathname));
   if (!file.startsWith(PUBLIC)) return notFound(res);
 
@@ -128,14 +131,14 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(405, { "Content-Type": "text/plain; charset=utf-8", Allow: "GET, HEAD" });
     return res.end("Method not allowed");
   }
-  serveStatic(req, res, pathname);
+  serveStatic(req, res, pathname, new URL(req.url, "http://localhost").search);
 });
 
 require("./lib/bootstrap-admin").bootstrapAdmin();
 
 server.listen(PORT, () => {
   const dbMode = require("./lib/db").isConfigured() ? "baza: " + (process.env.DATABASE_URL ? "DATABASE_URL" : "lokal fayl data/yasindoors.db") : "baza: YO'Q";
-  console.log(`Admin panel: http://localhost:${PORT}/admin/  |  ${dbMode}`);
+  console.log(`Admin panel: http://localhost:${PORT}/Admin  |  ${dbMode}`);
   const mode = String(process.env.ORDER_DRY_RUN).toLowerCase() === "true"
     ? "DRY RUN (buyurtmalar faqat konsolga chiqadi)"
     : (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID ? "Telegram ulangan" : "Telegram SOZLANMAGAN — .env faylini to‘ldiring");
