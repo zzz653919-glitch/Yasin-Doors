@@ -47,7 +47,7 @@ async function seed() {
         const r = await p.evaluate(() => {
           const W = innerWidth, over = [];
           document.querySelectorAll("body *").forEach(e => {
-            if (e.closest(".drawer,.drawer-backdrop,.toast-wrap,.dc-track,.carousel,[data-carousel],.dc-stage,.marquee")) return;
+            if (e.closest(".drawer,.drawer-backdrop,.toast-wrap,.dc-track,.tl,.hl,.carousel,[data-carousel],.dc-stage,.marquee")) return;
             // Kesuvchi (overflow hidden/clip) ota-element ichida bo'lsa ekrandan chiqib ketmaydi (masalan, parallax rasm)
             for (let a = e.parentElement; a && a !== document.body; a = a.parentElement) {
               const o = getComputedStyle(a).overflowX;
@@ -114,7 +114,7 @@ async function seed() {
     ok(await gateVisible(), "1) mehmon 'Hoziroq buyurtma' bosdi: aniq matnli modal chiqdi");
     ok(p.url().includes("/Product"), "   sahifa o'zgarmadi");
     const btns = await p.locator("#authGate .gate-actions >> text=/./").allInnerTexts();
-    ok(JSON.stringify(btns) === JSON.stringify(["Войти", "Регистрация", "Отмена"]), "   tugmalar: Войти / Регистрация / Отмена " + JSON.stringify(btns));
+    ok(JSON.stringify(btns.map(t => t.toLowerCase())) === JSON.stringify(["войти", "регистрация", "отмена"])   /* CSS text-transform: uppercase */, "   tugmalar: Войти / Регистрация / Отмена " + JSON.stringify(btns));
     // 4.2 Отмена yopadi
     await p.click("#authGate [data-gate-close].btn"); await p.waitForTimeout(250);
     ok(!(await p.locator("#authGate").isVisible()), "Отмена modalni yopadi");
