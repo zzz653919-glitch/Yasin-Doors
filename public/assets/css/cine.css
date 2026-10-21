@@ -364,9 +364,7 @@ input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, te
 
 /* ---------- Moslashuvchanlik ---------- */
 @media (max-width: 1100px) {
-  .phi, .contact-cine { grid-template-columns: minmax(0, 1fr); gap: 56px; }
-  .phi > *, .contact-cine > * { min-width: 0; }
-  .anat-p { right: 0; }
+  .phi, .contact-cine { grid-template-columns: 1fr; gap: 56px; }
   .fl { display: none; }
 }
 @media (max-width: 1000px) {
@@ -381,7 +379,6 @@ input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, te
   .tl-c { display: none; }
 }
 @media (max-width: 700px) {
-  .btn { padding: 0 18px; letter-spacing: .14em; white-space: normal; text-align: center; line-height: 1.3; }
   .yd-hero { min-height: max(100svh, 860px); }
   .h-copy { padding: 120px 20px 240px; gap: 22px; }
   .h-door { left: calc(50% - min(9.5vh, 15vw)); bottom: 61%; width: min(19vh, 30vw); }
@@ -431,9 +428,3 @@ input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, te
 .site-header.is-scrolled { background: rgba(11, 10, 9, .96); }
 .auth-link { color: #f2ece0; font-size: 12px; font-weight: 700; letter-spacing: .08em; }
 .stepper button, .qty button { border-radius: 0 !important; }
-
-/* Kichik ekranlar: uzun so‘zli sarlavhalar sig‘sin, grid ustunlari ichki kenglikdan kengaymasin */
-.auth-page { grid-template-columns: minmax(0, 1fr); }
-@media (max-width: 700px) {
-  .mega, .title-xl, .h2, .title-lg, .page-hero h1 { font-size: clamp(26px, 8.2vw, 64px); overflow-wrap: break-word; }
-}
