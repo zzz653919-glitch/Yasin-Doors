@@ -139,6 +139,21 @@ Dashboarddagi barcha raqamlar bazadan shu qoidalar bo'yicha hisoblanadi:
 
 Cheklov: bazada to'lov sanasi saqlanmaydi, shuning uchun grafik to'lov kuni emas, buyurtma yaratilgan kun bo'yicha chiziladi.
 
+## Dizayn: "Kinematik ko'rgazma zali"
+
+Sayt dizayni Claude'dagi "YasinDoors Redesign" prototipi asosida qurilgan (qorong'i kino sahnalari + iliq och bo'limlar, oltin urg'u).
+
+| Qism | Fayl |
+|---|---|
+| Ranglar, shriftlar (Archivo / Cormorant Garamond / Manrope), tugma, sarlavha, karta, footer, bosh sahifa sahnalari | `public/assets/css/cine.css` (barcha sahifalarda `style.css` dan keyin) |
+| Eshik illyustratsiyasi: 7 uslub x 8 qoplama (`YD.doorSVG`, `YD.FINISHES`) | `public/assets/js/door-svg.js` |
+| Scroll chizig'i, kursor, parallaks, tilt, magnit tugmalar (sensorli ekran va `prefers-reduced-motion` da o'chadi) | `public/assets/js/fx.js` |
+| Hero, kolleksiya hikoyalari (kategoriyalardan avtomatik), ishlab chiqarish lentasi | `public/index.html`, `public/assets/js/pages/home.js` |
+
+- Kolleksiya hikoyalari bazadagi kategoriyalardan yig'iladi (har biri uchun eshik uslubi `STORY_CFG` da). Kategoriya bo'lmasa — uslub (`style`) bo'yicha guruhlanadi.
+- Hikoya va heroda ko'rsatilgan eshiklar — chizilgan illyustratsiya; mahsulot kartalaridagi rasmlar katalogdan olinadi (admin'da almashtiriladi).
+- Kirish/ro'yxatdan o'tish/profil bo'limlari matni rus tilida (avvalgi talab bo'yicha); qolgan hamma matn o'zbekcha.
+
 ## Toza URL manzillar
 
 Sayt manzillarida `.html` ko'rinmaydi. Ro'yxat `lib/pages.js` da (lokal server va `vercel.json` shunga tayanadi, `tests/routes.test.js` ularning mosligini tekshiradi).

@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>YasinDoors — Premium MDF eshiklar</title>
   <meta name="description" content="YasinDoors — uyingiz uchun zamonaviy dizayndagi, yuqori sifatli MDF eshiklar. Katalog, buyurtma asosida tayyorlash, yetkazib berish va o‘rnatish.">
-  <meta name="theme-color" content="#f7f5f1">
+  <meta name="theme-color" content="#0b0a09">
   <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/cine.css">
   <link rel="stylesheet" href="/assets/css/account.css">
   <link rel="stylesheet" href="/assets/css/mobile.css" media="(max-width: 960px)">
   <link rel="stylesheet" href="/assets/css/loader.css">
@@ -21,151 +22,168 @@
   <div data-include="header"></div>
 
   <main>
-    <!-- HERO -->
-    <section class="hero hero--video" aria-labelledby="heroTitle">
+    <!-- HERO: kinematik ko‘rgazma zali -->
+    <section class="yd-hero" id="top-hero" aria-labelledby="heroTitle">
+      <div class="hl h-wall px1"></div>
+      <div class="hl h-slats px1"></div>
+      <div class="hl h-floor"></div>
+      <div class="hl h-beam px2"></div>
+      <div class="h-door px2">
+        <div class="glow"></div>
+        <div class="xf tilt" data-door-stack="hero" data-variant="modern" data-handle="bronze"></div>
+        <div class="h-refl" aria-hidden="true"><div><div class="xf" data-door-stack="hero" data-variant="modern" data-handle="bronze"></div></div></div>
+        <div class="fl" style="top:24%"><i></i><u></u>Laklangan MDF sirt</div>
+        <div class="fl" style="top:52%"><i></i><u></u>Bronza dastak</div>
+      </div>
+      <div class="hl h-vig"></div>
+      <div class="h-copy">
+        <p class="eyebrow rise" style="--dl:0s">YasinDoors · MDF eshiklar atelyesi</p>
+        <h1 class="rise" id="heroTitle" style="--dl:.12s">Har bir eshik — <span>yangi imkoniyat.</span></h1>
+        <p class="h-lead rise" style="--dl:.3s">Zamonaviy makonlar uchun nafis va sifatli MDF eshiklar.</p>
+        <div class="h-row rise" style="--dl:.45s">
+          <a class="btn btn--gold mag" href="#collections">Kolleksiyani ko‘rish <svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg></a>
+          <a class="btn btn--ghost-light mag" href="#craft">Ishlab chiqarish jarayoni</a>
+        </div>
+      </div>
+      <div class="h-fin"><span>Qoplama · <b id="heroFinName"></b></span>
+        <div class="dots" role="group" aria-label="Qoplamani tanlash" id="heroDots"></div>
+      </div>
+      <a class="scrollind" href="#about" aria-label="Pastga aylantirish"><span>Pastga</span><i></i></a>
+    </section>
+
+    <!-- BIZ HAQIMIZDA -->
+    <section class="section" id="about">
       <div class="container">
-        <div class="hero-banner">
-          <div class="hero-media" id="heroMedia"
-               data-video-wide="assets/video/hero-16x9.mp4"
-               data-video-tall="assets/video/hero-9x16.mp4">
-            <img class="hero-poster" src="/assets/img/hero-poster.svg" alt="" width="1600" height="900" fetchpriority="high">
-            <span class="hero-loading" aria-hidden="true"></span>
+        <p class="eyebrow reveal">Biz haqimizda</p>
+        <h2 class="mega reveal" style="margin-top:28px;max-width:17ch">Eshik — birinchi teginadigan va oxirgi yopiladigan <em>makon chegarasi.</em></h2>
+        <div class="phi">
+          <div class="phi-l">
+            <p class="lead reveal">YasinDoors faqat MDF ichki eshiklar bilan shug‘ullanadi: dizayn, qoplama va o‘lchamni xonangizga moslab tanlaysiz. Yorug‘lik, sirt va mutanosiblikka me’mor nigohi bilan yondashamiz.</p>
+            <div class="pr reveal"><b>01</b><h3>Ochilishingizga mos o‘lcham</h3><p>Standart o‘lchamlar bilan bir qatorda buyurtma asosida tayyorlash imkoniyati.</p></div>
+            <div class="pr reveal"><b>02</b><h3>Sirt — alohida material</h3><p>Emal, mat PVX yoki yog‘och teksturali qoplama — turli xil ranglarda.</p></div>
+            <div class="pr reveal"><b>03</b><h3>Yetkazib berish va o‘rnatish</h3><p>Eshikni manzilingizga olib kelish va o‘rnatish shartlari menejer bilan kelishiladi.</p></div>
+            <div class="reveal"><a class="btn btn--outline mag" href="#craft">Qanday tayyorlanishini ko‘rish</a></div>
           </div>
-          <div class="hero-content">
-            <span class="eyebrow">Premium MDF eshiklar</span>
-            <h1 class="title-xl" id="heroTitle">Uyingizga <em>yarashadigan</em> uslub</h1>
-            <p class="lead">Zamonaviy dizayn, yuqori sifat va har bir detalda mukammallik.</p>
-            <div class="hero-actions">
-              <a class="btn btn--gold" href="/Products">Katalogni ko‘rish <svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg></a>
-              <a class="btn btn--ghost-light" href="/About">Biz haqimizda</a>
+          <div class="anat">
+            <div class="anat-s">
+              <div class="anat-d"><div class="xf tilt" data-door-static='{"hex":"#4A3328","edge":"#33231B","grain":0.5,"variant":"minimal","handle":"steel"}'></div></div>
+              <div class="fl" style="top:34%;left:62%"><i></i><u></u>MDF varaq</div>
+              <div class="fl" style="top:52%;left:66%"><i></i><u></u>Dastak</div>
+              <div class="fl" style="top:76%;left:62%"><i></i><u></u>Tekis ostona</div>
             </div>
+            <div class="anat-p"><b>Buyurtma<br>asosida</b><span>Ko‘rsatilgan tasvir — illyustratsiya. Mahsulot suratlari katalogda.</span></div>
           </div>
-          <button class="hero-toggle" type="button" id="heroToggle" aria-pressed="false" aria-label="Videoni to‘xtatish" hidden>
-            <svg class="icon icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg>
-            <svg class="icon icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg>
-          </button>
         </div>
-        <ul class="hero-points">
-          <li><svg class="icon" aria-hidden="true"><use href="#i-ruler"></use></svg>Buyurtma asosida o‘lcham</li>
-          <li><svg class="icon" aria-hidden="true"><use href="#i-truck"></use></svg>Yetkazib berish</li>
-          <li><svg class="icon" aria-hidden="true"><use href="#i-tool"></use></svg>O‘rnatish xizmati</li>
-        </ul>
       </div>
     </section>
 
-    <!-- 3D SHOWCASE CAROUSEL -->
-    <section class="showcase" aria-labelledby="showcaseTitle">
-      <div class="container">
-        <div class="section-head reveal">
-          <div>
-            <span class="eyebrow">Kolleksiya</span>
-            <h2 class="title-lg" id="showcaseTitle">Premium MDF eshiklar vitrinasi</h2>
-          </div>
-          <p>Minimalist, yog‘och teksturali va yangi kolleksiya modellari. Strelkalar, sudrash yoki swipe orqali ko‘rib chiqing.</p>
+    <!-- KOLLEKSIYALAR: scroll bilan almashadigan hikoyalar -->
+    <section class="cine" id="collections" aria-labelledby="colTitle">
+      <div class="stories-head">
+        <div>
+          <p class="eyebrow reveal">Kolleksiyalar</p>
+          <h2 class="mega reveal" id="colTitle">Har bir kolleksiya. <em>Alohida kayfiyat.</em></h2>
         </div>
+        <p class="lead reveal">Har bir hikoyada qoplamani almashtiring, so‘ng to‘liq katalogga o‘ting.</p>
       </div>
-      <div id="doorShowcase"></div>
-    </section>
-
-    <!-- KATEGORIYALAR -->
-    <section class="section section--tight">
-      <div class="container">
-        <div class="section-head reveal">
-          <div>
-            <span class="eyebrow">Kategoriyalar</span>
-            <h2 class="title-lg">Uslubingizni tanlang</h2>
-          </div>
-          <p>Klassikdan minimalizmgacha — har bir interyer uchun mos MDF eshik.</p>
-        </div>
-        <div class="cat-grid">
-          <a class="cat-card reveal" href="/Products?style=klassik">
-            <img src="/assets/img/doors/classic-royal.svg" alt="" loading="lazy" width="480" height="600">
-            <h3>Klassik</h3><span>Ko‘rish <svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg></span>
-          </a>
-          <a class="cat-card reveal" href="/Products?style=zamonaviy">
-            <img src="/assets/img/doors/nordic-oak.svg" alt="" loading="lazy" width="480" height="600">
-            <h3>Zamonaviy</h3><span>Ko‘rish <svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg></span>
-          </a>
-          <a class="cat-card reveal" href="/Products?style=minimalistik">
-            <img src="/assets/img/doors/linea-grafit.svg" alt="" loading="lazy" width="480" height="600">
-            <h3>Minimalistik</h3><span>Ko‘rish <svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg></span>
-          </a>
-          <a class="cat-card reveal" href="/Products?style=shishali">
-            <img src="/assets/img/doors/walnut-glass.svg" alt="" loading="lazy" width="480" height="600">
-            <h3>Shishali</h3><span>Ko‘rish <svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg></span>
-          </a>
-        </div>
-      </div>
+      <div id="stories"></div>
     </section>
 
     <!-- ENG KO‘P SOTILADIGANLAR -->
-    <section class="section section--soft">
+    <section class="section" id="catalog">
       <div class="container">
-        <div class="section-head reveal">
+        <div class="bento-head">
           <div>
-            <span class="eyebrow">Xaridorlar tanlovi</span>
-            <h2 class="title-lg">Eng ko‘p sotiladigan eshiklar</h2>
+            <p class="eyebrow reveal">Xaridorlar tanlovi</p>
+            <h2 class="mega reveal">Eng ko‘p sotiladigan <em>eshiklar</em></h2>
           </div>
-          <a class="btn btn--outline" href="/Products">Barcha mahsulotlar <svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg></a>
+          <a class="btn btn--outline mag" href="/Products">Barcha mahsulotlar <svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg></a>
         </div>
         <div class="product-grid" id="bestsellers"></div>
       </div>
     </section>
 
-    <!-- AFZALLIKLAR -->
-    <section class="section">
+    <!-- ISHLAB CHIQARISH: gorizontal lenta -->
+    <section class="cine craft" id="craft" aria-labelledby="craftTitle">
       <div class="container">
-        <div class="section-head reveal">
+        <div class="section-head" style="margin-bottom:56px">
           <div>
-            <span class="eyebrow">Nega YasinDoors</span>
-            <h2 class="title-lg">Faqat MDF eshiklar — va faqat puxta</h2>
+            <p class="eyebrow reveal">Ishlab chiqarish</p>
+            <h2 class="mega reveal" id="craftTitle">O‘lchovdan o‘rnatishgacha — <em>olti bosqich</em></h2>
           </div>
-          <p>Biz bitta mahsulotga ixtisoslashganmiz, shuning uchun har bir eshikka to‘liq e’tibor qaratamiz.</p>
+          <p class="lead reveal">Yonga suring yoki tugmalardan foydalaning. Telefonda hikoya yuqoridan pastga davom etadi.</p>
         </div>
-        <div class="feature-grid">
-          <div class="feature reveal">
-            <div class="feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-door"></use></svg></div>
-            <h3>Faqat MDF eshiklar</h3>
-            <p>Diqqatimiz bitta yo‘nalishda — MDF eshiklarni loyihalash, tayyorlash va sotish.</p>
+      </div>
+      <div class="tl" id="tl" tabindex="0" role="region" aria-label="Ishlab chiqarish bosqichlari">
+        <article class="tl-p">
+          <div class="tl-t"><span class="tl-n">01</span><div><h3>O‘lchov olish</h3><p>Eshik o‘lchamlari aniqlanadi: ochilish eni va bo‘yi, devor qalinligi va ochilish tomoni.</p></div></div>
+          <div class="tl-v pale">
+            <svg class="bp" viewBox="0 0 300 380" role="img" aria-label="Eshik ochilishining eni va bo‘yi ko‘rsatilgan chizma" fill="none" stroke="currentColor" stroke-width="1.2">
+              <rect x="80" y="40" width="140" height="300"/><rect x="92" y="52" width="116" height="288" stroke-dasharray="4 5" opacity="0.6"/>
+              <path d="M80 358H220M80 351V365M220 351V365M50 40V340M43 40H57M43 340H57"/>
+              <text x="150" y="376" text-anchor="middle" stroke="none">800 MM</text>
+              <text x="34" y="190" text-anchor="middle" stroke="none" transform="rotate(-90 34 190)">2000 MM</text>
+              <path d="M110 190H190M150 150V230" opacity="0.35"/>
+            </svg>
           </div>
-          <div class="feature reveal">
-            <div class="feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-ruler"></use></svg></div>
-            <h3>Buyurtma asosida</h3>
-            <p>Eshik o‘lchami, rangi va dizaynini xonangizga moslab tanlash imkoniyati.</p>
-          </div>
-          <div class="feature reveal">
-            <div class="feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-spark"></use></svg></div>
-            <h3>Zamonaviy dizayn</h3>
-            <p>Klassik, neoklassik, minimalistik va loft uslubidagi modellar.</p>
-          </div>
-          <div class="feature reveal">
-            <div class="feature-icon"><svg class="icon" aria-hidden="true"><use href="#i-truck"></use></svg></div>
-            <h3>Yetkazish va o‘rnatish</h3>
-            <p>Buyurtmani manzilingizga yetkazib berish va o‘rnatishni kelishib olamiz.</p>
-          </div>
+        </article>
+        <article class="tl-p">
+          <div class="tl-t"><span class="tl-n">02</span><div><h3>Material tanlash</h3><p>Sifatli materiallar va qoplamalar tanlanadi. Har bir tus eshikda oldindan ko‘rsatiladi.</p></div></div>
+          <div class="tl-v pale"><div class="mats" id="matSwatches"></div></div>
+        </article>
+        <article class="tl-p">
+          <div class="tl-t"><span class="tl-n">03</span><div><h3>Aniq ishlab chiqarish</h3><p>MDF eshiklar zamonaviy uskunalarda tayyorlanadi: kesish, presslash va panellarni aniq frezalash.</p></div></div>
+          <div class="tl-v"><div class="tl-door"><div data-door-static='{"hex":"#B9A27C","edge":"#8F7B58","variant":"classic","handle":"steel"}'></div>
+            <svg class="cnc" viewBox="0 0 200 420" aria-hidden="true"><rect x="28" y="40" width="60" height="150"/><rect x="108" y="40" width="60" height="150"/><rect x="28" y="214" width="60" height="170"/><rect x="108" y="214" width="60" height="170"/></svg></div></div>
+        </article>
+        <article class="tl-p">
+          <div class="tl-t"><span class="tl-n">04</span><div><h3>Yakuniy ishlov berish</h3><p>Sirtga qoplama beriladi va dizayn yakunlanadi. Har bir qatlam yon yorug‘likda tekshiriladi.</p></div></div>
+          <div class="tl-v"><div class="tl-door"><div data-door-static='{"hex":"#6B4A33","edge":"#4A3022","grain":0.5,"variant":"modern","handle":"bronze"}'></div><div class="swp"></div></div></div>
+        </article>
+        <article class="tl-p">
+          <div class="tl-t"><span class="tl-n">05</span><div><h3>Sifat nazorati</h3><p>Tayyor mahsulot tekislik, chekka sifati va rang mosligi bo‘yicha tekshiriladi.</p></div></div>
+          <div class="tl-v" style="gap:10px"><div class="tl-door"><div data-door-static='{"hex":"#232323","edge":"#101010","variant":"minimal","handle":"steel"}'></div></div>
+            <div class="chk">
+              <div><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg>Tekislik</div>
+              <div><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg>Chekka sifati</div>
+              <div><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg>Rang mosligi</div>
+            </div></div>
+        </article>
+        <article class="tl-p">
+          <div class="tl-t"><span class="tl-n">06</span><div><h3>Professional o‘rnatish</h3><p>Eshik manzilingizda o‘rnatiladi: osiladi, sozlanadi va yakuniy ko‘rikdan o‘tadi. Shartlar menejer bilan kelishiladi.</p></div></div>
+          <div class="tl-v"><div class="wallbox"></div><div class="tl-door"><div data-door-static='{"hex":"#EDE8DD","edge":"#CFC8B8","variant":"classic","handle":"black"}'></div></div></div>
+        </article>
+      </div>
+      <div class="tl-c">
+        <span class="tl-no" id="tlNo">01 / 06</span>
+        <div class="tl-bar" aria-hidden="true"><b id="tlBar" style="width:16.6%"></b></div>
+        <div class="tl-steps" role="group" aria-label="Bosqichga o‘tish" id="tlSteps"></div>
+        <div class="tl-arrows">
+          <button class="icon-btn" type="button" id="tlPrev" aria-label="Oldingi bosqich"><svg class="icon" aria-hidden="true"><use href="#i-arrow-left"></use></svg></button>
+          <button class="icon-btn" type="button" id="tlNext" aria-label="Keyingi bosqich"><svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg></button>
         </div>
       </div>
     </section>
 
-    <!-- BUYURTMA BOSQICHLARI -->
-    <section class="section dark-band">
+    <!-- XIZMAT -->
+    <section class="section" id="delivery">
       <div class="container">
-        <div class="section-head reveal">
+        <div class="section-head">
           <div>
-            <span class="eyebrow">Qanday ishlaymiz</span>
-            <h2 class="title-lg">Buyurtma berish — 4 oddiy qadam</h2>
+            <p class="eyebrow reveal">Yetkazib berish va xizmat</p>
+            <h2 class="mega reveal">Olib kelamiz, <em>o‘rnatamiz</em></h2>
           </div>
-          <p>Tanlovdan o‘rnatishgacha bo‘lgan jarayon shaffof va tushunarli.</p>
+          <p class="lead reveal">Buyurtma rasmiylashtirilgach menejerimiz siz bilan bog‘lanib, tafsilotlarni aniqlashtiradi.</p>
         </div>
-        <div class="steps">
-          <div class="step reveal"><h3>Model tanlang</h3><p>Katalogdan sizga yoqqan eshik va o‘lchamni tanlang.</p></div>
-          <div class="step reveal"><h3>Buyurtma bering</h3><p>Savatga qo‘shing va qisqa formani to‘ldiring.</p></div>
-          <div class="step reveal"><h3>Tasdiqlash</h3><p>Menejerimiz siz bilan bog‘lanib, tafsilotlarni aniqlashtiradi.</p></div>
-          <div class="step reveal"><h3>Yetkazish va o‘rnatish</h3><p>Eshik kelishilgan vaqtda manzilingizga yetkaziladi.</p></div>
+        <div class="dgrid reveal">
+          <div class="dc"><p class="eyebrow">Yetkazib berish</p><span class="big">Manzilingizga</span><p id="svcDelivery">Yetkazib berish shartlari buyurtma vaqtida kelishiladi.</p></div>
+          <div class="dc"><p class="eyebrow">O‘rnatish</p><span class="big">Mutaxassis</span><p>Eshikni joyiga o‘rnatish va sozlash xizmati mavjud.</p></div>
+          <div class="dc"><p class="eyebrow">Kafolat</p><span class="big">Ishonch</span><p id="svcWarranty">Kafolat shartlari menejer tomonidan taqdim etiladi.</p></div>
         </div>
       </div>
     </section>
 
+    <!-- MIJOZLAR FIKRLARI -->
     <!-- MIJOZLAR FIKRLARI -->
     <section class="section">
       <div class="container">
@@ -200,18 +218,18 @@
       </div>
     </section>
 
-    <!-- CTA / ALOQA -->
-    <section class="section section--tight">
-      <div class="container">
-        <div class="cta reveal">
-          <div>
-            <span class="eyebrow">Maslahat kerakmi?</span>
-            <h2 class="title-lg">Eshik tanlashda yordam beramiz</h2>
-            <p>O‘lcham, rang yoki dizayn bo‘yicha savollaringiz bo‘lsa, bizga yozing — mutaxassisimiz siz bilan bog‘lanadi.</p>
-          </div>
-          <div class="cta-actions">
-            <a class="btn btn--gold" href="/Contact">Bog‘lanish</a>
-            <a class="btn btn--ghost-light" href="/Products">Katalog</a>
+    <!-- ALOQA -->
+    <section class="cine section" id="contact">
+      <div class="container contact-cine">
+        <div>
+          <p class="eyebrow reveal">Aloqa</p>
+          <h2 class="mega reveal">Ochilishingiz haqida <em>bizga ayting</em></h2>
+          <p class="lead reveal">O‘lchamlaringizni yuboring yoki qoplama haqida so‘rang — mutaxassisimiz siz bilan bog‘lanadi.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:18px;align-items:flex-start">
+          <div class="h-row">
+            <a class="btn btn--gold mag" href="/Contact">Xabar yozish <svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg></a>
+            <a class="btn btn--ghost-light mag" href="/Products">Katalog</a>
           </div>
         </div>
       </div>
@@ -223,9 +241,10 @@
   <script src="/assets/js/config.js"></script>
   <script src="/assets/js/products.js"></script>
   <script src="/assets/js/app.js"></script>
+  <script src="/assets/js/door-svg.js"></script>
   <script src="/assets/js/account.js"></script>
   <script src="/assets/js/scroll.js"></script>
-  <script src="/assets/js/carousel.js"></script>
+  <script src="/assets/js/fx.js"></script>
   <script src="/assets/js/pages/home.js"></script>
 </body>
 </html>
