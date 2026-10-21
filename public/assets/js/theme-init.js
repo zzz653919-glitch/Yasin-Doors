@@ -8,12 +8,12 @@
   document.documentElement.setAttribute("data-theme", theme);
 })();
 
-/* Rang sxemasi tajribasi (assets/css/palettes.css): ?palette=N yoki avval tanlangan palitra */
+/* Uslub tajribasi (assets/css/styles.css): ?style=N yoki avval tanlangan uslub */
 (function () {
   try {
-    var q = /[?&]palette=(\d+)/.exec(location.search);
-    var n = q ? Number(q[1]) : Number(localStorage.getItem("yd_palette"));
-    if (q) { if (n >= 2 && n <= 20) localStorage.setItem("yd_palette", String(n)); else localStorage.removeItem("yd_palette"); }
-    if (n >= 2 && n <= 20) document.documentElement.setAttribute("data-palette", String(n));
+    var q = /[?&]style=(\d+)/.exec(location.search);
+    var n = q ? Number(q[1]) : Number(localStorage.getItem("yd_style"));
+    if (q) { if (n >= 1 && n <= 20) localStorage.setItem("yd_style", String(n)); else localStorage.removeItem("yd_style"); }
+    if (n >= 1 && n <= 20) document.documentElement.setAttribute("data-style", String(n));
   } catch (e) { /* e‘tiborsiz */ }
 })();

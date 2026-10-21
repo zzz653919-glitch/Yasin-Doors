@@ -1,0 +1,320 @@
+/* YasinDoors — 20 ta uslub qobig‘i (tajriba). <html data-style="N"> bilan yoqiladi; N yo‘q bo‘lsa — asosiy dizayn.
+   Har bir uslub: rang sxemasi, sarlavha shrifti, burchak yumaloqligi, soya/yaltirash va hero ustki qatlamini o‘zgartiradi.
+   Ranglar kontrast bo‘yicha tekshirilgan (matn >= 7:1, ikkinchi darajali matn/havola/tugma >= 4.5:1). */
+:root[data-style="1"] {
+  --bg: #FAF8F4; --bg-soft: #F1EEE8; --surface: #FFFFFF; --surface-2: #f1f1f1;
+  --text: #1B1B1B; --text-soft: #484746; --muted: #66625B;
+  --border: #d6d5d1; --border-strong: #b7b6b3;
+  --graphite: #1B1B1B; --gold: #262626; --gold-strong: #1B1B1B; --gold-soft: #d4d2cf; --on-dark: #f5f2ec; --on-accent: #FFFFFF;
+  --s-rb: 999px; --s-rc: 8px; --s-ri: 10px;
+  --s-head: "Manrope", system-ui, sans-serif; --s-wh: 700; --s-tt: none; --s-ls: -.02em;
+  --s-tint: linear-gradient(90deg,rgba(250,248,244,.0),rgba(250,248,244,0));
+  --s-body: #FAF8F4;
+  color-scheme: light;
+}
+:root[data-style="1"] .btn {box-shadow:none!important}
+:root[data-style="1"] .product-card {box-shadow:none;border-color:var(--border)}
+:root[data-style="2"] {
+  --bg: #0C0C0D; --bg-soft: #131314; --surface: #161617; --surface-2: #232323;
+  --text: #F2EEE6; --text-soft: #c4c1bb; --muted: #A8A194;
+  --border: #313030; --border-strong: #51504e;
+  --graphite: #050505; --gold: #D9BC85; --gold-strong: #E6CE9D; --gold-soft: #312c23; --on-dark: #f5f2ec; --on-accent: #161411;
+  --s-rb: 6px; --s-rc: 6px; --s-ri: 6px;
+  --s-head: "Playfair Display", Georgia, serif; --s-wh: 600; --s-tt: none; --s-ls: -.01em;
+  --s-tint: linear-gradient(180deg,rgba(0,0,0,.0),rgba(217,188,133,.06));
+  --s-body: #0C0C0D;
+  color-scheme: dark;
+}
+:root[data-style="2"] .product-card {border-color:rgba(217,188,133,.25)}
+:root[data-style="3"] {
+  --bg: #060B16; --bg-soft: #0A1324; --surface: #0C1730; --surface-2: #19243c;
+  --text: #E6F1FF; --text-soft: #b9c3d0; --muted: #8FA6C6;
+  --border: #2a303b; --border-strong: #49505c;
+  --graphite: #040812; --gold: #35C8FF; --gold-strong: #7BDCFF; --gold-soft: #0e2d40; --on-dark: #f5f2ec; --on-accent: #031018;
+  --s-rb: 14px; --s-rc: 16px; --s-ri: 12px;
+  --s-head: "Space Grotesk", system-ui, sans-serif; --s-wh: 700; --s-tt: none; --s-ls: -.02em;
+  --s-tint: radial-gradient(60% 80% at 75% 40%,rgba(53,200,255,.28),transparent 70%);
+  --s-body: radial-gradient(80% 50% at 80% 0%,rgba(53,200,255,.12),transparent 60%),#060B16;
+  color-scheme: dark;
+}
+:root[data-style="3"] .product-card, :root[data-style="3"] .card, :root[data-style="3"] .feature, :root[data-style="3"] .hero-banner {box-shadow:0 0 0 1px rgba(53,200,255,.28),0 0 34px rgba(53,200,255,.12)}
+:root[data-style="3"] .btn--gold {box-shadow:0 0 22px rgba(53,200,255,.45)}
+:root[data-style="4"] {
+  --bg: #F3F1E6; --bg-soft: #E8E6D6; --surface: #FBFAF2; --surface-2: #eeeee5;
+  --text: #1F2A1B; --text-soft: #495244; --muted: #55604A;
+  --border: #d1d1c6; --border-strong: #b3b5a9;
+  --graphite: #17301C; --gold: #2F6B3A; --gold-strong: #245A2F; --gold-soft: #d0d9c7; --on-dark: #f5f2ec; --on-accent: #FFFFFF;
+  --s-rb: 999px; --s-rc: 22px; --s-ri: 14px;
+  --s-head: "Fraunces", Georgia, serif; --s-wh: 600; --s-tt: none; --s-ls: -.01em;
+  --s-tint: linear-gradient(120deg,rgba(47,107,58,.28),rgba(47,107,58,0) 60%);
+  --s-body: #F3F1E6;
+  color-scheme: light;
+}
+:root[data-style="4"] .product-card {box-shadow:0 12px 30px -18px rgba(31,70,36,.4)}
+:root[data-style="5"] {
+  --bg: #F4EEE3; --bg-soft: #EAE1D1; --surface: #FBF7EE; --surface-2: #efeae1;
+  --text: #2B2118; --text-soft: #534a41; --muted: #6B5C4B;
+  --border: #d4cdc3; --border-strong: #b8b1a6;
+  --graphite: #2B2118; --gold: #8A6A3A; --gold-strong: #6F5226; --gold-soft: #e1d6c5; --on-dark: #f5f2ec; --on-accent: #FFFFFF;
+  --s-rb: 2px; --s-rc: 2px; --s-ri: 2px;
+  --s-head: "Cormorant Garamond", Georgia, serif; --s-wh: 700; --s-tt: none; --s-ls: 0;
+  --s-tint: linear-gradient(180deg,rgba(138,106,58,.10),rgba(138,106,58,0));
+  --s-body: #F4EEE3;
+  color-scheme: light;
+}
+:root[data-style="5"] .product-card, :root[data-style="5"] .card {border:1px solid var(--border-strong);outline:1px solid var(--border);outline-offset:-6px}
+:root[data-style="5"] h1, :root[data-style="5"] h2, :root[data-style="5"] .title-xl, :root[data-style="5"] .title-lg {font-size:1.1em}
+:root[data-style="6"] {
+  --bg: #FFFFFF; --bg-soft: #F1F1F1; --surface: #FAFAFA; --surface-2: #ececec;
+  --text: #0B0B0B; --text-soft: #3c3c3c; --muted: #555555;
+  --border: #d8d8d8; --border-strong: #b6b6b6;
+  --graphite: #0B0B0B; --gold: #0B0B0B; --gold-strong: #0B0B0B; --gold-soft: #d3d3d3; --on-dark: #f5f2ec; --on-accent: #FFFFFF;
+  --s-rb: 0; --s-rc: 0; --s-ri: 0;
+  --s-head: "Outfit", system-ui, sans-serif; --s-wh: 800; --s-tt: uppercase; --s-ls: -.03em;
+  --s-tint: linear-gradient(90deg,rgba(0,0,0,.2),rgba(0,0,0,0));
+  --s-body: #FFFFFF;
+  color-scheme: light;
+}
+:root[data-style="6"] .product-card, :root[data-style="6"] .card {border:2px solid #0B0B0B;box-shadow:6px 6px 0 #0B0B0B}
+:root[data-style="6"] .btn {border:2px solid #0B0B0B}
+:root[data-style="7"] {
+  --bg: #0A0907; --bg-soft: #120F0B; --surface: #15110C; --surface-2: #221e19;
+  --text: #F3EBDD; --text-soft: #c4beb2; --muted: #ABA08E;
+  --border: #2f2d29; --border-strong: #504d47;
+  --graphite: #050403; --gold: #C9A45C; --gold-strong: #E2C07E; --gold-soft: #2c2516; --on-dark: #f5f2ec; --on-accent: #14100A;
+  --s-rb: 2px; --s-rc: 4px; --s-ri: 2px;
+  --s-head: "Playfair Display", Georgia, serif; --s-wh: 700; --s-tt: none; --s-ls: 0;
+  --s-tint: linear-gradient(135deg,rgba(201,164,92,.18),rgba(0,0,0,0) 60%);
+  --s-body: #0A0907;
+  color-scheme: dark;
+}
+:root[data-style="7"] .product-card, :root[data-style="7"] .card, :root[data-style="7"] .feature {border:1px solid transparent;background:linear-gradient(var(--surface),var(--surface)) padding-box,linear-gradient(135deg,#E2C07E,#7a5a24 50%,#E2C07E) border-box}
+:root[data-style="8"] {
+  --bg: #F5F6F8; --bg-soft: #ECEEF2; --surface: #FFFFFF; --surface-2: #f1f1f2;
+  --text: #14171F; --text-soft: #41444a; --muted: #5A6272;
+  --border: #d1d2d5; --border-strong: #b2b3b7;
+  --graphite: #111827; --gold: #2563EB; --gold-strong: #1D4ED8; --gold-soft: #d0dcf6; --on-dark: #f5f2ec; --on-accent: #FFFFFF;
+  --s-rb: 8px; --s-rc: 10px; --s-ri: 8px;
+  --s-head: "Inter", system-ui, sans-serif; --s-wh: 700; --s-tt: none; --s-ls: -.02em;
+  --s-tint: linear-gradient(90deg,rgba(17,24,39,.15),rgba(17,24,39,0));
+  --s-body: #F5F6F8;
+  color-scheme: light;
+}
+:root[data-style="8"] .product-card {box-shadow:0 1px 2px rgba(17,24,39,.08)}
+:root[data-style="8"] .product-card:hover {box-shadow:0 10px 24px -12px rgba(17,24,39,.3)}
+:root[data-style="8"] .section {padding:72px 0}
+:root[data-style="9"] {
+  --bg: #070B14; --bg-soft: #0C1322; --surface: #101A2E; --surface-2: #1d273a;
+  --text: #E9EEF8; --text-soft: #bcc1ca; --muted: #97A8C6;
+  --border: #2b2f38; --border-strong: #4b4f58;
+  --graphite: #050810; --gold: #E6B86A; --gold-strong: #F0CB8A; --gold-soft: #2f2a23; --on-dark: #f5f2ec; --on-accent: #1A1204;
+  --s-rb: 16px; --s-rc: 18px; --s-ri: 12px;
+  --s-head: "Space Grotesk", system-ui, sans-serif; --s-wh: 600; --s-tt: none; --s-ls: -.02em;
+  --s-tint: radial-gradient(50% 60% at 70% 50%,rgba(77,163,255,.30),transparent 70%);
+  --s-body: radial-gradient(70% 40% at 50% 0%,rgba(77,163,255,.14),transparent 60%),#070B14;
+  color-scheme: dark;
+}
+:root[data-style="9"] .product-card, :root[data-style="9"] .card {background:linear-gradient(160deg,#142039,#0C1424);box-shadow:0 0 0 1px rgba(77,163,255,.22),0 20px 40px -20px rgba(77,163,255,.35)}
+:root[data-style="10"] {
+  --bg: #0B0A09; --bg-soft: #131110; --surface: #16130F; --surface-2: #23201b;
+  --text: #EFE7DA; --text-soft: #c1bbb0; --muted: #ABA292;
+  --border: #2f2d2a; --border-strong: #4f4c48;
+  --graphite: #060504; --gold: #C18A55; --gold-strong: #D8A674; --gold-soft: #2c2117; --on-dark: #f5f2ec; --on-accent: #1A0E05;
+  --s-rb: 0; --s-rc: 0; --s-ri: 0;
+  --s-head: "Playfair Display", Georgia, serif; --s-wh: 600; --s-tt: none; --s-ls: -.02em;
+  --s-tint: linear-gradient(0deg,rgba(11,10,9,.7),rgba(193,138,85,.08));
+  --s-body: #0B0A09;
+  color-scheme: dark;
+}
+:root[data-style="10"] .title-xl {font-size:clamp(40px,7vw,88px)}
+:root[data-style="10"] .title-lg {font-size:clamp(32px,5vw,60px)}
+:root[data-style="10"] .product-card {border:0;border-bottom:1px solid var(--border-strong)}
+:root[data-style="11"] {
+  --bg: #FBFAF7; --bg-soft: #F1EEE7; --surface: #FFFFFF; --surface-2: #f2f2f2;
+  --text: #222222; --text-soft: #4d4d4d; --muted: #6B6860;
+  --border: #d8d7d5; --border-strong: #bab9b7;
+  --graphite: #1F1F1F; --gold: #1F1F1F; --gold-strong: #1F1F1F; --gold-soft: #d3d3d0; --on-dark: #f5f2ec; --on-accent: #FFFFFF;
+  --s-rb: 12px; --s-rc: 16px; --s-ri: 12px;
+  --s-head: "Poppins", system-ui, sans-serif; --s-wh: 600; --s-tt: none; --s-ls: -.02em;
+  --s-tint: linear-gradient(90deg,rgba(255,255,255,.0),rgba(255,255,255,0));
+  --s-body: #FBFAF7;
+  color-scheme: light;
+}
+:root[data-style="11"] .product-card {box-shadow:0 10px 30px -18px rgba(0,0,0,.25);border-color:transparent}
+:root[data-style="12"] {
+  --bg: #0D0D0E; --bg-soft: #141416; --surface: #161618; --surface-2: #232325;
+  --text: #F4F2EE; --text-soft: #c6c4c1; --muted: #A3A09A;
+  --border: #323232; --border-strong: #525251;
+  --graphite: #050506; --gold: #F4F2EE; --gold-strong: #FFFFFF; --gold-soft: #373636; --on-dark: #f5f2ec; --on-accent: #0D0D0E;
+  --s-rb: 12px; --s-rc: 14px; --s-ri: 10px;
+  --s-head: "Manrope", system-ui, sans-serif; --s-wh: 700; --s-tt: none; --s-ls: -.025em;
+  --s-tint: linear-gradient(90deg,rgba(0,0,0,.2),rgba(0,0,0,0));
+  --s-body: #0D0D0E;
+  color-scheme: dark;
+}
+:root[data-style="12"] .btn--gold {--btn-bg:#F4F2EE}
+:root[data-style="13"] {
+  --bg: #111010; --bg-soft: #181616; --surface: #1B1818; --surface-2: #282524;
+  --text: #F0EAE0; --text-soft: #c3beb6; --muted: #ABA395;
+  --border: #353331; --border-strong: #54514e;
+  --graphite: #080707; --gold: #D8B56A; --gold-strong: #E8CB8C; --gold-soft: #352e20; --on-dark: #f5f2ec; --on-accent: #17120A;
+  --s-rb: 0; --s-rc: 0; --s-ri: 0;
+  --s-head: "Syne", system-ui, sans-serif; --s-wh: 800; --s-tt: none; --s-ls: -.03em;
+  --s-tint: linear-gradient(115deg,rgba(216,181,106,.22),rgba(0,0,0,0) 45%);
+  --s-body: #111010;
+  color-scheme: dark;
+}
+:root[data-style="13"] .product-card {border:2px solid var(--text);transform:rotate(-.4deg)}
+:root[data-style="13"] .product-card:nth-child(even) {transform:rotate(.4deg) translateY(10px)}
+:root[data-style="13"] .product-card:hover {transform:none}
+:root[data-style="14"] {
+  --bg: #F2FAFA; --bg-soft: #E3F2F3; --surface: #FFFFFF; --surface-2: #f1f3f3;
+  --text: #12303A; --text-soft: #3f5860; --muted: #4A6870;
+  --border: #cedadb; --border-strong: #afbdc0;
+  --graphite: #12303A; --gold: #0F7F88; --gold-strong: #0B6870; --gold-soft: #c9e4e5; --on-dark: #f5f2ec; --on-accent: #FFFFFF;
+  --s-rb: 999px; --s-rc: 24px; --s-ri: 16px;
+  --s-head: "Jost", system-ui, sans-serif; --s-wh: 500; --s-tt: none; --s-ls: 0;
+  --s-tint: linear-gradient(120deg,rgba(15,127,136,.18),rgba(15,127,136,0) 60%);
+  --s-body: #F2FAFA;
+  color-scheme: light;
+}
+:root[data-style="14"] .product-card {border-color:transparent;box-shadow:0 18px 40px -26px rgba(15,127,136,.4)}
+:root[data-style="14"] .title-xl, :root[data-style="14"] .title-lg {letter-spacing:.01em}
+:root[data-style="15"] {
+  --bg: #050A14; --bg-soft: #09111F; --surface: #0B1426; --surface-2: #182133;
+  --text: #DCE8FF; --text-soft: #b1bcd0; --muted: #8CA3C7;
+  --border: #272e3a; --border-strong: #464d5b;
+  --graphite: #030710; --gold: #1F6BFF; --gold-strong: #6FA2FF; --gold-soft: #0a1b3e; --on-dark: #f5f2ec; --on-accent: #FFFFFF;
+  --s-rb: 4px; --s-rc: 6px; --s-ri: 4px;
+  --s-head: "JetBrains Mono", ui-monospace, monospace; --s-wh: 600; --s-tt: uppercase; --s-ls: -.02em;
+  --s-tint: linear-gradient(90deg,rgba(31,107,255,.25),rgba(31,107,255,0) 60%);
+  --s-body: linear-gradient(rgba(31,107,255,.07) 1px,transparent 1px) 0 0/40px 40px,linear-gradient(90deg,rgba(31,107,255,.07) 1px,transparent 1px) 0 0/40px 40px,#050A14;
+  color-scheme: dark;
+}
+:root[data-style="15"] .product-card, :root[data-style="15"] .card {border:1px solid rgba(31,107,255,.45)}
+:root[data-style="15"] .title-xl, :root[data-style="15"] .title-lg {font-size:clamp(28px,4.4vw,52px)}
+:root[data-style="16"] {
+  --bg: #F2E8DC; --bg-soft: #E6D8C6; --surface: #FAF3E8; --surface-2: #eee6db;
+  --text: #2B1D12; --text-soft: #53463a; --muted: #6E5A47;
+  --border: #d2c8bc; --border-strong: #b6ab9f;
+  --graphite: #2B1D12; --gold: #7A4B27; --gold-strong: #5E3A1E; --gold-soft: #dcccbb; --on-dark: #f5f2ec; --on-accent: #FFFFFF;
+  --s-rb: 10px; --s-rc: 12px; --s-ri: 8px;
+  --s-head: "Lora", Georgia, serif; --s-wh: 600; --s-tt: none; --s-ls: -.01em;
+  --s-tint: linear-gradient(120deg,rgba(122,75,39,.28),rgba(122,75,39,0) 60%);
+  --s-body: #F2E8DC;
+  color-scheme: light;
+}
+:root[data-style="16"] .product-card {box-shadow:0 14px 30px -20px rgba(80,45,20,.5)}
+:root[data-style="17"] {
+  --bg: #0A0A0A; --bg-soft: #121212; --surface: #151515; --surface-2: #222222;
+  --text: #F5F1E8; --text-soft: #c6c3bc; --muted: #A9A398;
+  --border: #302f2e; --border-strong: #514f4d;
+  --graphite: #050505; --gold: #F0A93B; --gold-strong: #FFC36A; --gold-soft: #332713; --on-dark: #f5f2ec; --on-accent: #140C00;
+  --s-rb: 0; --s-rc: 0; --s-ri: 0;
+  --s-head: "Archivo", system-ui, sans-serif; --s-wh: 800; --s-tt: uppercase; --s-ls: -.02em;
+  --s-tint: linear-gradient(135deg,rgba(240,169,59,.35) 0 18%,transparent 18% 100%);
+  --s-body: #0A0A0A;
+  color-scheme: dark;
+}
+:root[data-style="17"] .product-card, :root[data-style="17"] .card {border:2px solid var(--border-strong);clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,0 100%)}
+:root[data-style="17"] .btn {clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%)}
+:root[data-style="18"] {
+  --bg: #FDEFEA; --bg-soft: #F8DFD8; --surface: #FFF8F5; --surface-2: #f4ece9;
+  --text: #4A2A2E; --text-soft: #6e5154; --muted: #7A5256;
+  --border: #e0cfcc; --border-strong: #c7b4b2;
+  --graphite: #4A2A2E; --gold: #C24B60; --gold-strong: #A93A4F; --gold-soft: #f2d1d1; --on-dark: #f5f2ec; --on-accent: #FFFFFF;
+  --s-rb: 999px; --s-rc: 28px; --s-ri: 18px;
+  --s-head: "Nunito", system-ui, sans-serif; --s-wh: 800; --s-tt: none; --s-ls: -.01em;
+  --s-tint: linear-gradient(120deg,rgba(255,170,170,.35),rgba(255,214,170,.1) 70%);
+  --s-body: #FDEFEA;
+  color-scheme: light;
+}
+:root[data-style="18"] .product-card {border-color:transparent;box-shadow:0 16px 34px -22px rgba(194,75,96,.5)}
+:root[data-style="19"] {
+  --bg: #0A0F1A; --bg-soft: #0F1626; --surface: #131C2E; --surface-2: #20293a;
+  --text: #EAF0FA; --text-soft: #bdc3cd; --muted: #9DAEC8;
+  --border: #2e333e; --border-strong: #4d535d;
+  --graphite: #060A12; --gold: #7DD3FC; --gold-strong: #A5E3FF; --gold-soft: #1f3243; --on-dark: #f5f2ec; --on-accent: #04141E;
+  --s-rb: 20px; --s-rc: 22px; --s-ri: 14px;
+  --s-head: "Inter", system-ui, sans-serif; --s-wh: 600; --s-tt: none; --s-ls: -.025em;
+  --s-tint: linear-gradient(120deg,rgba(125,211,252,.22),rgba(125,211,252,0) 60%);
+  --s-body: radial-gradient(60% 50% at 15% 10%,rgba(125,211,252,.18),transparent 60%),radial-gradient(50% 40% at 90% 30%,rgba(167,139,250,.16),transparent 60%),#0A0F1A;
+  color-scheme: dark;
+}
+:root[data-style="19"] .product-card, :root[data-style="19"] .card, :root[data-style="19"] .feature, :root[data-style="19"] .site-header.is-scrolled {background:rgba(255,255,255,.06)!important;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.14)}
+:root[data-style="20"] {
+  --bg: #1A0F2E; --bg-soft: #241339; --surface: #2A1640; --surface-2: #37234a;
+  --text: #FBEFE6; --text-soft: #cec2c1; --muted: #D0B8C8;
+  --border: #3e334b; --border-strong: #5e5265;
+  --graphite: #12081F; --gold: #FF8A3D; --gold-strong: #FFB07A; --gold-soft: #432531; --on-dark: #f5f2ec; --on-accent: #1A0A00;
+  --s-rb: 16px; --s-rc: 20px; --s-ri: 12px;
+  --s-head: "Poppins", system-ui, sans-serif; --s-wh: 700; --s-tt: none; --s-ls: -.02em;
+  --s-tint: linear-gradient(0deg,rgba(255,110,60,.45),rgba(26,15,46,0) 70%);
+  --s-body: linear-gradient(180deg,#1A0F2E 0%,#3A1536 55%,#6B2A2A 100%) fixed;
+  color-scheme: dark;
+}
+:root[data-style="20"] .product-card, :root[data-style="20"] .card {background:rgba(42,22,64,.75)}
+
+/* Umumiy qoidalar: barcha uslublar uchun */
+:root[data-style] body { background: var(--s-body); background-attachment: fixed; }
+:root[data-style] h1, :root[data-style] h2, :root[data-style] h3, :root[data-style] h4,
+:root[data-style] .logo, :root[data-style] .title-xl, :root[data-style] .title-lg, :root[data-style] .title-md, :root[data-style] .product-title {
+  font-family: var(--s-head); font-weight: var(--s-wh); text-transform: var(--s-tt); letter-spacing: var(--s-ls);
+}
+:root[data-style] .btn, :root[data-style] .chip, :root[data-style] .tag { border-radius: var(--s-rb); }
+:root[data-style] .product-card, :root[data-style] .card, :root[data-style] .feature, :root[data-style] .testimonial, :root[data-style] .cta,
+:root[data-style] .cat-card, :root[data-style] .hero-banner, :root[data-style] .auth-card, :root[data-style] .empty-state, :root[data-style] .split-media { border-radius: var(--s-rc); }
+:root[data-style] input:not([type="checkbox"]):not([type="radio"]), :root[data-style] select, :root[data-style] textarea { border-radius: var(--s-ri); }
+:root[data-style] .hero-banner::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: var(--s-tint); }
+:root[data-style] .btn--gold, :root[data-style] .add-btn.is-added { --btn-fg: var(--on-accent); }
+:root[data-style] .badge--popular, :root[data-style] .icon-btn .count { color: var(--on-accent); }
+:root[data-style] .site-header { background: color-mix(in srgb, var(--bg) 82%, transparent); }
+:root[data-style] .dark-band, :root[data-style] .site-footer { background: var(--graphite); }
+
+/* ---------- Uslub tanlagich (tajriba paneli) ---------- */
+.pal-fab {
+  position: fixed; left: 18px; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 90;
+  display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 16px 0 12px;
+  background: var(--surface); color: var(--text); border: 1px solid var(--border-strong); border-radius: 999px;
+  box-shadow: var(--shadow); font-weight: 700; font-size: 13px; cursor: pointer;
+}
+.pal-fab:hover { border-color: var(--text); }
+.pal-fab i { width: 22px; height: 22px; border-radius: 50%; flex: none; background: conic-gradient(var(--gold), var(--bg-soft), var(--text), var(--gold)); border: 1px solid var(--border-strong); }
+.pal-panel {
+  position: fixed; left: 18px; bottom: calc(76px + env(safe-area-inset-bottom, 0px)); z-index: 91;
+  width: min(440px, calc(100vw - 36px)); max-height: min(70vh, 640px); overflow: auto;
+  background: var(--surface); color: var(--text); border: 1px solid var(--border-strong); border-radius: 18px; box-shadow: var(--shadow-lg); padding: 16px;
+}
+.pal-panel[hidden] { display: none; }
+.pal-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
+.pal-head strong { font-size: 15px; }
+.pal-head button { min-height: 36px; padding: 0 12px; border: 1px solid var(--border-strong); border-radius: 999px; font-size: 12.5px; font-weight: 700; }
+.pal-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.pal-item { display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 6px 10px; text-align: left; border: 1px solid var(--border); border-radius: 12px; font-size: 13px; font-weight: 600; background: transparent; color: inherit; cursor: pointer; }
+.pal-item:hover { border-color: var(--text); }
+.pal-item[aria-pressed="true"] { border-color: var(--gold-strong); box-shadow: 0 0 0 2px var(--gold-strong) inset; }
+.pal-sw { position: relative; flex: none; width: 38px; height: 38px; border-radius: 10px; border: 1px solid rgba(128, 128, 128, .4); overflow: hidden; }
+.pal-sw b { position: absolute; left: 0; right: 0; bottom: 0; height: 36%; }
+.pal-sw i { position: absolute; right: 5px; top: 5px; width: 13px; height: 13px; border-radius: 50%; }
+.pal-item small { display: block; font-weight: 500; color: var(--muted); font-size: 11.5px; }
+@media (max-width: 960px) { .pal-fab { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); } .pal-panel { bottom: calc(142px + env(safe-area-inset-bottom, 0px)); } }
+
+.pal-item small { line-height: 1.25; }
+.pal-fab, .pal-panel { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif !important; text-transform: none !important; }
+.pal-fab, .pal-panel, .pal-item, .pal-head button { border-radius: 14px; clip-path: none !important; box-shadow: var(--shadow); letter-spacing: 0; }
+.pal-fab { border-radius: 999px; }
+.pal-item { box-shadow: none; }
+
+/* Yorug‘ uslublarda hero banner ham yorug‘ bo‘ladi (matn qoraydi, rasm yengillashadi) */
+:root:is([data-style="1"],[data-style="4"],[data-style="5"],[data-style="6"],[data-style="8"],[data-style="11"],[data-style="14"],[data-style="16"],[data-style="18"]) .hero-banner { background: var(--bg-soft); color: var(--text); }
+:root:is([data-style="1"],[data-style="4"],[data-style="5"],[data-style="6"],[data-style="8"],[data-style="11"],[data-style="14"],[data-style="16"],[data-style="18"]) .hero-poster,
+:root:is([data-style="1"],[data-style="4"],[data-style="5"],[data-style="6"],[data-style="8"],[data-style="11"],[data-style="14"],[data-style="16"],[data-style="18"]) .hero-video { filter: brightness(2.1) contrast(.78) saturate(.7); }
+:root:is([data-style="1"],[data-style="4"],[data-style="5"],[data-style="6"],[data-style="8"],[data-style="11"],[data-style="14"],[data-style="16"],[data-style="18"]) .hero-banner::before {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--bg) 96%, transparent) 0%, color-mix(in srgb, var(--bg) 78%, transparent) 40%, color-mix(in srgb, var(--bg) 8%, transparent) 78%);
+}
+:root:is([data-style="1"],[data-style="4"],[data-style="5"],[data-style="6"],[data-style="8"],[data-style="11"],[data-style="14"],[data-style="16"],[data-style="18"]) .hero h1 { color: var(--text); }
+:root:is([data-style="1"],[data-style="4"],[data-style="5"],[data-style="6"],[data-style="8"],[data-style="11"],[data-style="14"],[data-style="16"],[data-style="18"]) .hero h1 em { color: var(--gold-strong); }
+:root:is([data-style="1"],[data-style="4"],[data-style="5"],[data-style="6"],[data-style="8"],[data-style="11"],[data-style="14"],[data-style="16"],[data-style="18"]) .hero .lead { color: var(--muted); }
+:root:is([data-style="1"],[data-style="4"],[data-style="5"],[data-style="6"],[data-style="8"],[data-style="11"],[data-style="14"],[data-style="16"],[data-style="18"]) .hero-content .eyebrow { color: var(--gold-strong); }
+:root:is([data-style="1"],[data-style="4"],[data-style="5"],[data-style="6"],[data-style="8"],[data-style="11"],[data-style="14"],[data-style="16"],[data-style="18"]) .hero .btn--ghost-light { --btn-fg: var(--text); border-color: var(--border-strong); }
+:root:is([data-style="1"],[data-style="4"],[data-style="5"],[data-style="6"],[data-style="8"],[data-style="11"],[data-style="14"],[data-style="16"],[data-style="18"]) .hero .btn--ghost-light:hover { border-color: var(--text); }
