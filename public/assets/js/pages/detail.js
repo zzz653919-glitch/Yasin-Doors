@@ -1,4 +1,4 @@
-/* Mahsulot sahifasi: product-detail.html?id=<mahsulot-id> */
+/* Mahsulot sahifasi: /Product?id=<mahsulot-id> */
 YD.whenReady(function () {
   var D = YD.data, esc = YD.esc, icon = YD.icon;
   var root = document.getElementById("productRoot");
@@ -47,7 +47,7 @@ YD.whenReady(function () {
   if (p.badges.indexOf("popular") !== -1) badges += '<span class="badge badge--popular">Mashhur</span>';
 
   root.innerHTML =
-    '<nav class="breadcrumb" aria-label="Breadcrumb"><a href="index.html">Bosh sahifa</a><span>/</span><a href="products.html">Katalog</a><span>/</span><span aria-current="page">' + esc(p.name) + "</span></nav>" +
+    '<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Bosh sahifa</a><span>/</span><a href="/Products">Katalog</a><span>/</span><span aria-current="page">' + esc(p.name) + "</span></nav>" +
     '<div class="detail">' +
       '<div class="detail-media" id="zoomBox">' +
         (badges ? '<div class="badges">' + badges + "</div>" : "") +
@@ -85,7 +85,7 @@ YD.whenReady(function () {
         '<ul class="perks">' +
           "<li>" + icon("ruler") + "<span>O‘lchov olish va buyurtma asosida tayyorlash shartlarini menejer bilan kelishasiz.</span></li>" +
           "<li>" + icon("truck") + "<span>Yetkazib berish va o‘rnatish manzilingizga qarab alohida kelishiladi.</span></li>" +
-          "<li>" + icon("chat") + "<span>Savollar bo‘lsa — <a href=\"contact.html\" class=\"text-gold\">biz bilan bog‘laning</a>.</span></li>" +
+          "<li>" + icon("chat") + "<span>Savollar bo‘lsa — <a href=\"/Contact\" class=\"text-gold\">biz bilan bog‘laning</a>.</span></li>" +
         "</ul>" +
 
         '<div class="option-label">Xususiyatlar</div>' +
@@ -117,11 +117,11 @@ YD.whenReady(function () {
 
   document.getElementById("addToCart").addEventListener("click", function () {
     YD.store.addToCart(p.id, state.size, state.qty);
-    YD.toast(p.name + " (" + state.size + ") savatga qo‘shildi", { href: "cart.html", label: "Savatga o‘tish" });
+    YD.toast(p.name + " (" + state.size + ") savatga qo‘shildi", { href: "/Cart", label: "Savatga o‘tish" });
   });
   document.getElementById("buyNow").addEventListener("click", function () {
     YD.store.addToCart(p.id, state.size, state.qty);   // savat saqlanadi — kirgandan keyin checkout’da shu mahsulot turadi
-    YD.account.gate("checkout.html", function () { window.location.href = "checkout.html"; });
+    YD.account.gate("/Checkout", function () { window.location.href = "/Checkout"; });
   });
 
   // Rasmni sichqoncha ostida kattalashtirish

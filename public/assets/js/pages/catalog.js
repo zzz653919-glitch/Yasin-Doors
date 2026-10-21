@@ -112,7 +112,7 @@ YD.whenReady(function () {
         icon: "search",
         title: "Hech narsa topilmadi",
         text: "Qidiruv so‘zini o‘zgartirib yoki filtrlarni tozalab ko‘ring.",
-        href: "products.html",
+        href: "/Products",
         button: "Filtrlarni tozalash"
       }) + "</div>";
     }

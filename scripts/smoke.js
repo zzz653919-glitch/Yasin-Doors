@@ -17,7 +17,7 @@ const call = (method, p, body) => fetch(base + p, { method, headers: { "Content-
   const o = await call("POST", "/api/order", { customer: { name: "Smoke", phone: "+998900000000", address: "x" }, items: [] });
   ok(o.status === 401, `buyurtma autentifikatsiyasiz rad etiladi (${o.status})`);
   for (const p of ["/api/admin/orders", "/api/admin/accounts", "/api/admin/dashboard"]) { const r = await call("GET", p); ok(r.status === 401, `${p} ruxsatsiz → ${r.status}`); }
-  const home = await fetch(base + "/index.html");
+  const home = await fetch(base + "/");
   ok(!!home.headers.get("content-security-policy"), "CSP sarlavhasi bor");
   ok(!!home.headers.get("x-content-type-options"), "X-Content-Type-Options bor");
   for (const p of ["/.env", "/lib/auth.js", "/server.js", "/package.json"]) { const r = await fetch(base + p); ok(r.status === 404, `${p} yopiq (${r.status})`); }

@@ -1,6 +1,6 @@
 # YasinDoors — MDF eshiklar internet-do'koni + Admin panel
 
-Faqat MDF eshiklar uchun: ochiq sayt (katalog, savat, sevimlilar, buyurtma) va **admin panel** (`/admin/`) — mahsulotlar, buyurtmalar, mijozlar, ombor, administratorlar, sozlamalar va audit log.
+Faqat MDF eshiklar uchun: ochiq sayt (katalog, savat, sevimlilar, buyurtma) va **admin panel** (`/Admin`) — mahsulotlar, buyurtmalar, mijozlar, ombor, administratorlar, sozlamalar va audit log.
 
 **Texnologiyalar:** HTML5, CSS3, Vanilla JS (frontend) · Node.js serverless API · **libSQL/Turso** (SQLite) ma'lumotlar bazasi · Telegram bot bildirishnomalari. Faqat bitta tashqi bog'liqlik: `@libsql/client`.
 
@@ -39,7 +39,7 @@ Talab: **Node.js 22+**.
 npm install
 cp .env.example .env        # Windows: copy .env.example .env
 npm run create-admin        # birinchi Super Admin (pastga qarang)
-npm run dev                 # http://localhost:3000   ·   admin: http://localhost:3000/admin/
+npm run dev                 # http://localhost:3000   ·   admin: http://localhost:3000/Admin
 ```
 
 Lokal baza `data/yasindoors.db` fayli (hisob kerak emas, gitignore'da). Testlar: `npm test` (backend). Brauzer (E2E) testlari: `npm i --no-save playwright` so'ng `npm run test:e2e` — 7 kenglikda overflow, pastki panel, sevimlilar izolyatsiyasi, savat/checkout, CSP.
@@ -72,7 +72,7 @@ Ishlab chiqarish (Turso) bazasi uchun buyruqni shu bazaning `DATABASE_URL` va `D
 
 **1b) `.env` orqali (lokal, avtomatik)** — `.env` ga `ADMIN_USERNAME`, `ADMIN_NAME`, `ADMIN_PASSWORD` yozing; `npm run dev` birinchi ishga tushganda (administrator yo'q bo'lsa) super admin shu ma'lumotlar bilan yaratiladi. Yaratilgach `ADMIN_PASSWORD` qatorini o'chiring.
 
-**2) Brauzer orqali (bir martalik)** — serverda uzun tasodifiy `SETUP_TOKEN` belgilang, `/admin/` sahifasi birinchi administrator formasini ko'rsatadi. Administrator yaratilgach u o'chadi; `SETUP_TOKEN` ni olib tashlang.
+**2) Brauzer orqali (bir martalik)** — serverda uzun tasodifiy `SETUP_TOKEN` belgilang, `/Admin` sahifasi birinchi administrator formasini ko'rsatadi. Administrator yaratilgach u o'chadi; `SETUP_TOKEN` ni olib tashlang.
 
 Parol siyosati: kamida 10 belgi, harf va raqam.
 
@@ -139,7 +139,25 @@ Dashboarddagi barcha raqamlar bazadan shu qoidalar bo'yicha hisoblanadi:
 
 Cheklov: bazada to'lov sanasi saqlanmaydi, shuning uchun grafik to'lov kuni emas, buyurtma yaratilgan kun bo'yicha chiziladi.
 
-## 3D eshik konstruktori (`/configurator.html`)
+## Toza URL manzillar
+
+Sayt manzillarida `.html` ko'rinmaydi. Ro'yxat `lib/pages.js` da (lokal server va `vercel.json` shunga tayanadi, `tests/routes.test.js` ularning mosligini tekshiradi).
+
+| Manzil | Fayl | | Manzil | Fayl |
+|---|---|---|---|---|
+| `/` (`/Home` → `/`) | index.html | | `/Checkout` | checkout.html |
+| `/About` | about.html | | `/Configurator` | configurator.html |
+| `/Products` | products.html | | `/Login`, `/Register` | login.html, register.html |
+| `/Product?id=…` | product-detail.html | | `/Forgot-Password`, `/Reset-Password` | forgot-/reset-password.html |
+| `/Contact` | contact.html | | `/Profile` | profile.html |
+| `/Cart` | cart.html | | `/Privacy`, `/Terms` | privacy.html, terms.html |
+| `/Favorites` | favorites.html | | `/Admin` | admin/index.html |
+
+- Katta-kichik harf farqlanmaydi: `/about` ham `/About` ni ochadi.
+- Eski `…/about.html` manzillari doimiy (308) `/About` ga yo'naltiriladi, `?query` saqlanadi.
+- Yangi sahifa qo'shsangiz: `public/` ga fayl qo'shing, `lib/pages.js` ga yozing va `vercel.json` ga rewrite + redirect qo'shing (test sizga yetishmagan joyni aytadi).
+
+## 3D eshik konstruktori (`/Configurator`)
 
 Mijoz model, naqsh, rang, qoplama, tutqich, ochilish tomoni, o'lcham, rom va dekorni tanlaydi; natija 3D da darhol yangilanadi (aylantirish, zoom, old/orqa/yon/tutqich ko'rinishlari). Chap — sozlamalar, markaz — 3D, o'ng — buyurtma xulosasi; mobilda sozlamalar pastdan chiqadigan panel. Oldingi holat, boshidan boshlash, havola (`#c=…`), PNG yuklab olish bor. 3D ishlamasa (WebGL yo'q/xato) — 2D zaxira ko'rinish, barcha sozlamalar va buyurtma ishlayveradi (sinash: `?fallback=1`).
 
@@ -153,7 +171,7 @@ Buyurtma `POST /api/configurator/order`: konfiguratsiya serverda qat'iy tekshiri
 
 Sayt mijozlari uchun alohida akkaunt tizimi (xodimlar/admin tizimidan **alohida**: boshqa jadval `accounts`, boshqa cookie `yd_acc`; mijoz akkauntida rol yo'q, shuning uchun frontend orqali admin bo'lib bo'lmaydi). Interfeys rus tilida.
 
-**Sahifalar:** `login.html`, `register.html`, `forgot-password.html`, `reset-password.html`, `profile.html` (profil, parol o'zgartirish, sevimlilar, buyurtmalar), `privacy.html`, `terms.html`. Navbar'da «Вход / Регистрация», kirgach profil menyusi. Frontend: `assets/js/account.js` (holat, navbar, sevimlilar sinxroni), `auth-ui.js`, `pages/auth.js`, `pages/profile.js`, `assets/css/account.css`.
+**Sahifalar:** `/Login`, `/Register`, `/Forgot-Password`, `/Reset-Password`, `/Profile` (profil, parol o'zgartirish, sevimlilar, buyurtmalar), `privacy.html`, `terms.html`. Navbar'da «Вход / Регистрация», kirgach profil menyusi. Frontend: `assets/js/account.js` (holat, navbar, sevimlilar sinxroni), `auth-ui.js`, `pages/auth.js`, `pages/profile.js`, `assets/css/account.css`.
 
 **API (`lib/routes-account.js`):** `GET /api/account/me`, `POST register | login | logout | forgot | reset | reset/check | password`, `PUT profile`, `GET/PUT favorites`, `GET orders`. Admin: `GET /api/admin/accounts`, `PUT /api/admin/accounts/:id/status` (bloklash; faqat Super Admin, parol tasdig'i bilan). Admin panelda «Sayt foydalanuvchilari» bo'limi (Manager ko'ra oladi, Operator — yo'q).
 
@@ -169,7 +187,7 @@ Sayt mijozlari uchun alohida akkaunt tizimi (xodimlar/admin tizimidan **alohida*
 
 **Buyurtma faqat kirgan mijozdan.** `POST /api/order` va `POST /api/configurator/order` akkaunt sessiyasi va CSRF tokenini talab qiladi (router `acct: true`); kirmagan mijozga `401 {code: "login_required"}` qaytadi, buyurtma hech qachon yaratilmaydi; buyurtma doim sessiya egasiga bog'lanadi (so'rovdagi `account_id` e'tiborsiz). Frontend (`account.js` → `YD.account.gate`): «Hoziroq buyurtma», savatdagi «Buyurtmani rasmiylashtirish», checkout sahifasi va 3D konstruktor buyurtmasi kirmagan foydalanuvchiga modal ko'rsatadi («Войти» / «Регистрация» → `?next=` bilan, «Отмена»); kirgach foydalanuvchi shu sahifaga qaytadi, savat `localStorage`da saqlanadi. Katalog, sevimlilar va savatga qo'shish cheklanmagan. Eslatma: baza ulanmagan rejimda akkaunt bo'lmagani uchun buyurtma qabul qilinmaydi.
 
-**Eslatma:** `privacy.html` va `terms.html` matnlari tizim haqiqatan qiladigan ishlarni tasvirlaydigan qisqa shablon — nashrdan oldin egasi/yurist ko'rib chiqsin.
+**Eslatma:** `/Privacy` va `/Terms` matnlari tizim haqiqatan qiladigan ishlarni tasvirlaydigan qisqa shablon — nashrdan oldin egasi/yurist ko'rib chiqsin.
 
 ## Joylashtirishni tekshirish (ro'yxatdan o'tish va buyurtmalar real bazada)
 
@@ -236,7 +254,7 @@ Token va chat ID **faqat serverda** (muhit o'zgaruvchilari); brauzerga hech qach
    - `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` (ixtiyoriy)
    - (`SETUP_TOKEN` — faqat birinchi administrator uchun, ixtiyoriy)
 4. **Deploy**.
-5. Birinchi administratorni yarating (yuqoridagi 1- yoki 2-usul). Keyin `https://<domen>/admin/` ga kiring.
+5. Birinchi administratorni yarating (yuqoridagi 1- yoki 2-usul). Keyin `https://<domen>/Admin` ga kiring.
 6. Env o'zgartirsangiz — **Deployments → Redeploy**.
 
 Baza ulanmagan bo'lsa: ochiq sayt statik katalog bilan ishlayveradi, buyurtmalar faqat Telegram'ga yuboriladi (zaxira rejim), admin panel esa aniq xabar ko'rsatadi.

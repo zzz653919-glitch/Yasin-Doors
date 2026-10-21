@@ -34,7 +34,7 @@ async function seed() {
   const newCtx = (o) => browser.newContext(o).then(async c => { await c.addInitScript(() => sessionStorage.setItem("yd_intro_seen", "1")); return c; });
   try {
     /* 1) Gorizontal scroll yo'q: 7 ta kenglik x asosiy sahifalar */
-    const pages = ["index", "products", "product-detail?id=classic-royal", "about", "contact", "login", "register", "cart", "checkout", "favorites", "privacy"];
+    const pages = ["/", "/Products", "/Product?id=classic-royal", "/About", "/Contact", "/Login", "/Register", "/Cart", "/Checkout", "/Favorites", "/Privacy"];
     for (const w of [320, 360, 390, 430, 768, 1024, 1440]) {
       const ctx = await newCtx({ viewport: { width: w, height: 800 }, isMobile: w < 700, hasTouch: w < 700 });
       // Savat va sevimlilar to'la bo'lsin: bo'sh holat uzun matn/elementlarni ko'rsatmaydi
@@ -42,7 +42,7 @@ async function seed() {
       const p = await ctx.newPage();
       const bad = [];
       for (const pg of pages) {
-        await p.goto(B + "/" + pg.replace(/(\?|$)/, ".html$1").replace(".html.html", ".html"));
+        await p.goto(B + pg);
         await p.waitForTimeout(500);
         const r = await p.evaluate(() => {
           const W = innerWidth, over = [];
@@ -67,15 +67,15 @@ async function seed() {
     /* 2) Pastki navigatsiya (mobil) va desktopda yashirinligi */
     let ctx = await newCtx({ viewport: { width: 390, height: 800 }, isMobile: true, hasTouch: true });
     let p = await ctx.newPage();
-    await p.goto(B + "/index.html"); await p.waitForTimeout(600);
+    await p.goto(B + "/"); await p.waitForTimeout(600);
     ok(await p.locator(".bottom-nav").isVisible(), "mobil: pastki panel ko'rinadi");
-    for (const [label, url] of [["Katalog", "products.html"], ["Sevimlilar", "favorites.html"], ["Savat", "cart.html"], ["Profil", "login.html"]]) {
+    for (const [label, url] of [["Katalog", "/Products"], ["Sevimlilar", "/Favorites"], ["Savat", "/Cart"], ["Profil", "/Login"]]) {
       await p.locator(".bn-item", { hasText: label }).click(); await p.waitForLoadState(); await p.waitForTimeout(400);
       ok(p.url().includes(url), `pastki panel: ${label} -> ${url}`);
     }
     await ctx.close();
     ctx = await newCtx({ viewport: { width: 1280, height: 800 } }); p = await ctx.newPage();
-    await p.goto(B + "/index.html"); await p.waitForTimeout(500);
+    await p.goto(B + "/"); await p.waitForTimeout(500);
     ok(!(await p.locator(".bottom-nav").isVisible()) && await p.locator(".nav-links").isVisible(), "desktop: pastki panel yo'q, navbar bor");
     await ctx.close();
 
@@ -86,13 +86,13 @@ async function seed() {
     };
     await reg("e2e-a@example.com", "+998905550101"); await reg("e2e-b@example.com", "+998905550102");
     ctx = await newCtx(); p = await ctx.newPage();
-    const login = async id => { await p.goto(B + "/login.html"); await p.fill("#identifier", id); await p.fill("#password", PW); await p.click("button[type=submit]"); await p.waitForURL(/profile/); await p.waitForTimeout(800); };
+    const login = async id => { await p.goto(B + "/Login"); await p.fill("#identifier", id); await p.fill("#password", PW); await p.click("button[type=submit]"); await p.waitForURL(/profile/); await p.waitForTimeout(800); };
     await login("e2e-a@example.com");
-    await p.goto(B + "/products.html"); await p.waitForTimeout(1000);
+    await p.goto(B + "/Products"); await p.waitForTimeout(1000);
     await p.locator("[data-fav]").first().click(); await p.waitForTimeout(900);
     const favA = await p.locator("[data-fav]").first().getAttribute("data-fav");
     await ctx.clearCookies();
-    await login("e2e-b@example.com"); await p.goto(B + "/favorites.html"); await p.waitForTimeout(1000);
+    await login("e2e-b@example.com"); await p.goto(B + "/Favorites"); await p.waitForTimeout(1000);
     const local = await p.evaluate(() => localStorage.getItem("yd_favs_v1"));
     const server = await p.evaluate(() => fetch("/api/account/favorites").then(r => r.json()));
     ok(!String(local).includes(favA) && !server.ids.includes(favA), "A ning sevimlisi B akkauntiga o'tmadi");
@@ -107,36 +107,36 @@ async function seed() {
     const gateVisible = async () => (await p.locator("#authGate").isVisible()) && (await p.locator("#gateText").innerText()) === GATE;
 
     // 4.1 Mehmon "Hoziroq buyurtma" -> modal (savat saqlanadi); katalog/savatga qo'shish cheklanmagan
-    await p.goto(B + "/product-detail.html?id=classic-royal"); await p.waitForTimeout(900);
+    await p.goto(B + "/Product?id=classic-royal"); await p.waitForTimeout(900);
     await p.click("#addToCart"); await p.waitForTimeout(200);
     ok(!(await p.locator("#authGate").isVisible().catch(() => false)), "mehmon: savatga qo'shish modal chiqarmaydi");
     await p.click("#buyNow"); await p.waitForTimeout(500);
     ok(await gateVisible(), "1) mehmon 'Hoziroq buyurtma' bosdi: aniq matnli modal chiqdi");
-    ok(p.url().includes("product-detail"), "   sahifa o'zgarmadi");
+    ok(p.url().includes("/Product"), "   sahifa o'zgarmadi");
     const btns = await p.locator("#authGate .gate-actions >> text=/./").allInnerTexts();
     ok(JSON.stringify(btns) === JSON.stringify(["Войти", "Регистрация", "Отмена"]), "   tugmalar: Войти / Регистрация / Отмена " + JSON.stringify(btns));
     // 4.2 Отмена yopadi
     await p.click("#authGate [data-gate-close].btn"); await p.waitForTimeout(250);
     ok(!(await p.locator("#authGate").isVisible()), "Отмена modalni yopadi");
     // 4.3 Savat havolasi va checkout
-    await p.goto(B + "/cart.html"); await p.waitForTimeout(800);
-    await p.click("a.btn[href='checkout.html']"); await p.waitForTimeout(400);
-    ok(await gateVisible() && p.url().includes("cart.html"), "savatdan 'Buyurtmani rasmiylashtirish': modal, sahifa o'zgarmadi");
+    await p.goto(B + "/Cart"); await p.waitForTimeout(800);
+    await p.click("a.btn[href='/Checkout']"); await p.waitForTimeout(400);
+    ok(await gateVisible() && p.url().includes("/Cart"), "savatdan 'Buyurtmani rasmiylashtirish': modal, sahifa o'zgarmadi");
     await p.keyboard.press("Escape"); await p.waitForTimeout(200);
     ok(!(await p.locator("#authGate").isVisible()), "Escape modalni yopadi");
-    await p.goto(B + "/checkout.html"); await p.waitForTimeout(1200);
+    await p.goto(B + "/Checkout"); await p.waitForTimeout(1200);
     ok(await gateVisible(), "checkout sahifasiga to'g'ridan-to'g'ri kirish: modal chiqdi");
-    // 4.4 Войти -> login.html?next=checkout.html
-    await p.click("[data-gate-login]"); await p.waitForURL(/login\.html/);
-    ok(p.url().includes("next=checkout.html"), "2) 'Войти' kirish sahifasini ochdi (?next=checkout.html)");
+    // 4.4 Войти -> /Login?next=%2FCheckout
+    await p.click("[data-gate-login]"); await p.waitForURL(/Login/i);
+    ok(p.url().includes("next=%2FCheckout"), "2) 'Войти' kirish sahifasini ochdi (?next=%2FCheckout)");
     // 4.5 Регистрация -> register
-    await p.goto(B + "/checkout.html"); await p.waitForTimeout(1000);
-    await p.click("[data-gate-register]"); await p.waitForURL(/register\.html/);
-    ok(p.url().includes("next=checkout.html"), "3) 'Регистрация' ro'yxatdan o'tish sahifasini ochdi");
+    await p.goto(B + "/Checkout"); await p.waitForTimeout(1000);
+    await p.click("[data-gate-register]"); await p.waitForURL(/Register/i);
+    ok(p.url().includes("next=%2FCheckout"), "3) 'Регистрация' ro'yxatdan o'tish sahifasini ochdi");
     // 4.6 Ro'yxatdan o'tgach checkout'ga qaytadi, savat saqlangan, forma to'ldirilgan
     await p.fill("#first_name", "Заказ"); await p.fill("#last_name", "Тестов"); await p.fill("#email", "e2e-order@example.com"); await p.fill("#phone", "+998 90 555 01 03");
     await p.fill("#password", PW); await p.fill("#password2", PW); await p.check("#consent");
-    await p.click("button[type=submit]"); await p.waitForURL(/checkout\.html/, { timeout: 8000 }); await p.waitForTimeout(1200);
+    await p.click("button[type=submit]"); await p.waitForURL(/Checkout/i, { timeout: 8000 }); await p.waitForTimeout(1200);
     ok(!(await p.locator("#authGate").isVisible().catch(() => false)), "kirgandan keyin modal chiqmaydi");
     // savatga qo'shish + "Hoziroq buyurtma" mahsulotni ikki marta qo'shgan (avvalgi xatti-harakat): jami = 2 x narx
     ok((await p.locator("#summaryTotal").innerText()).replace(/\D/g, "") === String(price * 2), "6) ro'yxatdan o'tgach savat saqlangan (jami = 2 x narx)");
@@ -148,8 +148,8 @@ async function seed() {
     ok(posts === 1, "4) kirgan foydalanuvchi buyurtma berdi, qo'sh bosish = 1 ta so'rov");
     ok((await p.evaluate(() => localStorage.getItem("yd_cart_v1"))) === "[]", "   buyurtmadan keyin savat tozalandi");
     // 4.8 Kirgan foydalanuvchi "Hoziroq buyurtma" -> to'g'ridan-to'g'ri checkout
-    await p.goto(B + "/product-detail.html?id=classic-royal"); await p.waitForTimeout(900);
-    await p.click("#buyNow"); await p.waitForURL(/checkout\.html/, { timeout: 5000 });
+    await p.goto(B + "/Product?id=classic-royal"); await p.waitForTimeout(900);
+    await p.click("#buyNow"); await p.waitForURL(/Checkout/i, { timeout: 5000 });
     ok(!(await p.locator("#authGate").isVisible().catch(() => false)), "kirgan foydalanuvchi: 'Hoziroq buyurtma' modalsiz checkout'ga o'tadi");
     // 4.9 Backend: autentifikatsiyasiz so'rov rad etiladi (brauzerdan, cookie'siz kontekst)
     const anon = await (await browser.newContext()).request.post(B + "/api/order", { data: { customer: { name: "Mehmon", phone: "+998901112299", address: "Ташкент, ул. 1" }, items: [{ id: "classic-royal", size: "800 × 2000", qty: 1 }] } });
@@ -161,14 +161,14 @@ async function seed() {
 
     // 4.10 Konstruktor: mehmon buyurtma tugmasini bosadi
     ctx = await newCtx({ viewport: { width: 1280, height: 900 } }); p = await ctx.newPage();
-    await p.goto(B + "/configurator.html?fallback=1"); await p.waitForTimeout(1500);
+    await p.goto(B + "/Configurator?fallback=1"); await p.waitForTimeout(1500);
     await p.click("#cfgOrder"); await p.waitForTimeout(500);
     ok(await p.locator("#authGate").isVisible() && !(await p.locator("#cfgModal").isVisible().catch(() => false)), "konstruktor: mehmon uchun buyurtma oynasi o'rniga kirish modali");
     await ctx.close();
 
     // 4.11 Telefonda modal ekranga sig'adi
     ctx = await newCtx({ viewport: { width: 320, height: 640 }, isMobile: true, hasTouch: true }); p = await ctx.newPage();
-    await p.goto(B + "/checkout.html"); await p.waitForTimeout(1200);
+    await p.goto(B + "/Checkout"); await p.waitForTimeout(1200);
     const box = await p.locator(".gate-card").boundingBox();
     ok(box && box.x >= 0 && box.x + box.width <= 320 && box.y >= 0 && box.y + box.height <= 640, "320px: modal ekrandan chiqmaydi " + JSON.stringify(box));
     await ctx.close();
@@ -176,7 +176,7 @@ async function seed() {
     /* 5) CSP bilan 3D konstruktor va sahifalar xatosiz yuklanadi */
     ctx = await newCtx({ viewport: { width: 1280, height: 800 } }); p = await ctx.newPage();
     const cspErr = []; p.on("console", m => { if (/Content Security Policy|Refused to/.test(m.text())) cspErr.push(m.text().slice(0, 100)); });
-    for (const pg of ["index", "products", "configurator", "login", "profile"]) { await p.goto(B + "/" + pg + ".html"); await p.waitForTimeout(1200); }
+    for (const pg of ["index", "products", "configurator", "login", "profile"]) { await p.goto(B + (pg === "index" ? "/" : "/" + pg[0].toUpperCase() + pg.slice(1))); await p.waitForTimeout(1200); }
     ok(cspErr.length === 0, "CSP buzilishlari yo'q " + JSON.stringify(cspErr));
     await ctx.close();
   } finally {

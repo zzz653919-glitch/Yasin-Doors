@@ -39,7 +39,7 @@ YD.whenReady(function () {
   }
 
   // Buyurtma faqat tizimga kirgan mijozdan: kirmagan bo‘lsa sahifa ochilishi bilan modal chiqadi (savat saqlanib qoladi)
-  YD.account.onReady(function (st) { if (!st.user) YD.account.showGate("checkout.html"); });
+  YD.account.onReady(function (st) { if (!st.user) YD.account.showGate("/Checkout"); });
 
   if (!renderSummary()) return;
   document.addEventListener("yd:change", renderSummary);
@@ -56,7 +56,7 @@ YD.whenReady(function () {
     e.preventDefault();
     if (sending) return;
     YDForm.hideAlert(alertEl);
-    if (!YD.account.state.user) { YD.account.showGate("checkout.html"); return; }
+    if (!YD.account.state.user) { YD.account.showGate("/Checkout"); return; }
 
     var bad = YDForm.validate(form, rules);
     if (bad) {
@@ -99,15 +99,15 @@ YD.whenReady(function () {
           "<p>Rahmat, " + esc(payload.customer.name) + "! Menejerimiz tez orada " + esc(payload.customer.phone) +
           " raqami orqali siz bilan bog‘lanib, buyurtma tafsilotlarini tasdiqlaydi.</p>" +
           '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">' +
-            '<a class="btn btn--gold" href="products.html">Katalogga qaytish</a>' +
-            '<a class="btn btn--outline" href="index.html">Bosh sahifa</a>' +
+            '<a class="btn btn--gold" href="/Products">Katalogga qaytish</a>' +
+            '<a class="btn btn--outline" href="/">Bosh sahifa</a>' +
           "</div></div>";
       window.scrollTo({ top: 0, behavior: "smooth" });
     }).catch(function (err) {
       sending = false;
       submitBtn.disabled = false;
       submitBtn.textContent = "Buyurtmani yuborish";
-      if (err.code === "login_required") { YD.account.showGate("checkout.html"); return; }   // sessiya tugagan
+      if (err.code === "login_required") { YD.account.showGate("/Checkout"); return; }   // sessiya tugagan
       var phone = YD.config.phone ? " Yoki bizga qo‘ng‘iroq qiling: " + YD.config.phone : "";
       YDForm.showAlert(alertEl, "error", (err.message || "Buyurtmani yuborib bo‘lmadi.") + phone);
     });
