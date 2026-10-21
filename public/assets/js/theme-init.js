@@ -7,3 +7,6 @@
   } catch (e) { /* localStorage mavjud emas */ }
   document.documentElement.setAttribute("data-theme", theme);
 })();
+
+/* Asosiy uslub: Artistic (assets/css/styles.css, [data-style="13"]) */
+document.documentElement.setAttribute("data-style", "13");
