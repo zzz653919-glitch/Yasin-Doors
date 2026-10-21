@@ -36,6 +36,18 @@
             <strong>Filtrlar</strong>
             <button class="icon-btn" type="button" data-filters-close aria-label="Filtrlarni yopish"><svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg></button>
           </div>
+          <div class="filter-group" id="categoryGroup" hidden>
+            <h3>Kategoriya</h3>
+            <div class="chips" id="categoryFilters"></div>
+          </div>
+          <div class="filter-group">
+            <h3>Narx (so‘m)</h3>
+            <div class="price-range">
+              <input class="input" type="number" inputmode="numeric" min="0" step="10000" id="priceMin" placeholder="dan" aria-label="Minimal narx">
+              <span aria-hidden="true">—</span>
+              <input class="input" type="number" inputmode="numeric" min="0" step="10000" id="priceMax" placeholder="gacha" aria-label="Maksimal narx">
+            </div>
+          </div>
           <div class="filter-group">
             <h3>Uslub / dizayn</h3>
             <div class="chips" id="styleFilters"></div>
@@ -78,6 +90,7 @@
           </div>
           <p class="result-count" id="resultCount" aria-live="polite"></p>
           <div class="product-grid product-grid--3" id="productGrid"></div>
+          <div class="load-more" id="loadMoreWrap" hidden><button class="btn btn--outline" type="button" id="loadMore">Yana ko‘rsatish</button><span class="muted" id="loadMoreInfo"></span></div>
         </div>
       </div>
     </section>

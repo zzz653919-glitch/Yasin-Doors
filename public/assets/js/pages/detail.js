@@ -16,6 +16,15 @@ YD.whenReady(function () {
     return;
   }
 
+  // Ko'rishlar soni (admin statistikasi uchun): bir sessiyada bir mahsulot bir marta sanaladi; xato bo'lsa sahifaga ta'sir qilmaydi
+  try {
+    var vk = "yd_viewed_" + p.id;
+    if (!sessionStorage.getItem(vk) && window.fetch && location.protocol !== "file:") {
+      sessionStorage.setItem(vk, "1");
+      fetch(YD.apiUrl("/api/catalog/view"), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: p.id }), keepalive: true }).catch(function () {});
+    }
+  } catch (e) { /* sessionStorage yo'q */ }
+
   document.title = p.name + " — MDF eshik | YasinDoors";
   var meta = document.querySelector('meta[name="description"]');
   if (meta) meta.setAttribute("content", p.name + ": " + p.short);

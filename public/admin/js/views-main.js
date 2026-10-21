@@ -140,6 +140,8 @@
         body: '<form id="pf" novalidate><div class="form-grid">' +
           '<div class="field full"><label for="pf-name">Nomi *</label><input class="input" id="pf-name" name="name" maxlength="120" value="' + esc(p.name) + '"><span class="err"></span></div>' +
           '<div class="field"><label for="pf-cat">Kategoriya</label><select class="select" id="pf-cat" name="category_id">' + catOpts + '</select><span class="err"></span></div>' +
+          '<div class="field"><label for="pf-sku">Mahsulot kodi (SKU)</label><input class="input" id="pf-sku" name="sku" maxlength="40" autocapitalize="characters" placeholder="Bo\'sh qolsa avtomatik" value="' + esc(p.sku || "") + '"><span class="err"></span></div>' +
+          '<div class="field"><label for="pf-fin">Tekstura / qoplama</label><input class="input" id="pf-fin" name="finish" maxlength="80" value="' + esc(p.finish || "") + '"></div>' +
           '<div class="field"><label for="pf-mat">Material</label><input class="input" id="pf-mat" name="material" maxlength="80" value="' + esc(p.material) + '"></div>' +
           '<div class="field"><label for="pf-price">Narx (so\'m) *</label><input class="input" id="pf-price" name="price" inputmode="numeric" value="' + esc(p.price) + '"><span class="err"></span></div>' +
           '<div class="field"><label for="pf-old">Chegirmadan oldingi narx</label><input class="input" id="pf-old" name="old_price" inputmode="numeric" value="' + esc(p.old_price == null ? "" : p.old_price) + '" placeholder="Chegirma bo\'lmasa bo\'sh"><span class="err"></span></div>' +
@@ -153,11 +155,11 @@
           '<div class="field full"><span class="label">Rasm</span><div class="img-up"><div class="preview" id="pfPrev">' + (imageUrl ? '<img data-fb src="' + esc(A.imgSrc(imageUrl)) + '" alt="">' : A.icon("image")) + '</div><div class="stack" style="gap:8px"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn--ghost btn--sm" type="button" id="pfPick">' + A.icon("image") + 'Rasm tanlash</button><button class="btn btn--ghost btn--sm" type="button" id="pfClear"' + (imageUrl ? "" : " hidden") + '>Olib tashlash</button></div><span class="hint">JPG, PNG yoki WEBP. Rasm avtomatik kichraytiriladi. 4:5 nisbat tavsiya etiladi.</span><span class="err" id="pfImgErr" style="color:var(--danger);font-weight:600"></span></div><input type="file" id="pfFile" accept="image/jpeg,image/png,image/webp" hidden></div></div>' +
           '<div class="full" style="display:flex;gap:22px;flex-wrap:wrap"><label class="check"><input type="checkbox" name="active"' + (p.active ? " checked" : "") + '> Sotuvda (faol)</label><label class="check"><input type="checkbox" name="is_new"' + (p.is_new ? " checked" : "") + '> Yangi</label><label class="check"><input type="checkbox" name="is_popular"' + (p.is_popular ? " checked" : "") + "> Mashhur</label></div>" +
           '</div><div class="alert alert--error" id="pfErr" hidden style="margin-top:14px"></div></form>',
-        actions: [
+        actions: (isEdit ? [{ label: "Tarix", cls: "btn--ghost", onClick: function () { if (A.openProductHistory) A.openProductHistory(p.id, p.name); } }] : []).concat([
           { label: isEdit ? "Asl holatiga qaytarish" : "Formani tozalash", cls: "btn--ghost", id: "pfReset", onClick: function () { resetForm(); } },
           { label: "Bekor qilish", cls: "btn--ghost", onClick: function (api) { api.close(); } },
           { label: isEdit ? "Saqlash" : "Qo'shish", cls: "btn--gold", id: "pfSave", onClick: function (api, btn) { save(api, btn); } }
-        ]
+        ])
       });
       A.openProductForm.opening = false;
       var form = $("#pf", m.el);
@@ -205,7 +207,7 @@
           name: fd.name.value.trim(), category_id: fd.category_id.value || null, material: fd.material.value.trim(),
           price: price, old_price: old, stock: stock == null ? 0 : stock, low_stock: intOrNull(fd.low_stock.value) == null ? 5 : intOrNull(fd.low_stock.value),
           color: fd.color.value, style: fd.style.value, sizes: fd.sizes.value.split(",").map(function (x) { return x.trim(); }).filter(Boolean),
-          short: fd.short.value.trim(), description: fd.description.value.trim(), image: imageUrl,
+          short: fd.short.value.trim(), description: fd.description.value.trim(), image: imageUrl, sku: fd.sku.value.trim(), finish: fd.finish.value.trim(),
           active: fd.active.checked, is_new: fd.is_new.checked, is_popular: fd.is_popular.checked
         };
         // Forma ochiq turganda ombor boshqa joyda o'zgargan bo'lishi mumkin (masalan, buyurtma tasdiqlangan):
@@ -242,24 +244,37 @@
   A.views.products = {
     title: "Mahsulotlar", icon: "box", perm: "products.read",
     render: function (root, query) {
-      var f = { q: query.q || "", category: "", active: "", stock: query.stock || "", sort: "new" };
+      var f = { q: query.q || "", category: "", active: "", stock: query.stock || "", sort: "new", color: "", badge: "", price_min: "", price_max: "" };
+      var page = 1, PAGE = 40;
       var items = [], selected = new Set(), cats = [];
       root.innerHTML = '<div class="page-head"><div><h1>Mahsulotlar</h1><p>MDF eshiklar katalogi — saytda ko\'rinadigan mahsulotlar shu yerda boshqariladi.</p></div><div class="head-actions">' +
-        (A.can("products.write") ? '<button class="btn btn--gold" data-act="add">' + A.icon("plus") + "Mahsulot qo'shish</button>" : "") + '</div></div><div class="card" id="pCard"></div>';
+        '<button class="btn btn--ghost" data-act="export">' + A.icon("download") + "CSV eksport</button>" +
+        (A.can("products.write") ? '<button class="btn btn--ghost" data-act="import">' + A.icon("upload") + 'CSV import</button><input type="file" id="pImportFile" accept=".csv,text/csv" hidden>' +
+          '<button class="btn btn--ghost" data-act="seed">' + A.icon("box") + "200 ta namunaviy eshik</button>" +
+          '<button class="btn btn--gold" data-act="add">' + A.icon("plus") + "Mahsulot qo'shish</button>" : "") + '</div></div><div class="card" id="pCard"></div>';
       var card = $("#pCard", root);
       card.innerHTML = '<div class="toolbar"><input class="input grow" id="pq" type="search" placeholder="Nomi bo\'yicha qidirish…" value="' + esc(f.q) + '" aria-label="Qidirish">' +
         '<select class="select" id="pcat" aria-label="Kategoriya"><option value="">Barcha kategoriyalar</option></select>' +
         '<select class="select" id="pact" aria-label="Holat"><option value="">Barcha holatlar</option><option value="1">Faol</option><option value="0">Nofaol</option></select>' +
         '<select class="select" id="pstock" aria-label="Ombor"><option value="">Ombor: hammasi</option><option value="low">Kam qolgan</option><option value="out">Tugagan</option></select>' +
-        '<select class="select" id="psort" aria-label="Saralash"><option value="new">Yangilari avval</option><option value="name">Nomi A–Z</option><option value="price_asc">Narx: arzon</option><option value="price_desc">Narx: qimmat</option><option value="stock">Ombor: kam</option></select>' +
+        '<select class="select" id="psort" aria-label="Saralash"><option value="new">Yangilari avval</option><option value="name">Nomi A–Z</option><option value="price_asc">Narx: arzon</option><option value="price_desc">Narx: qimmat</option><option value="stock">Ombor: kam</option><option value="sold">Sotuvlar: ko\'p</option><option value="views">Ko\'rishlar: ko\'p</option><option value="name_desc">Nomi Z–A</option><option value="sku">Kod (SKU)</option></select>' +
+        '<select class="select" id="pcolor" aria-label="Rang"><option value="">Barcha ranglar</option>' + Object.keys(A.COLORS).map(function (k) { return '<option value="' + k + '">' + esc(A.COLORS[k].name) + "</option>"; }).join("") + "</select>" +
+        '<select class="select" id="pbadge" aria-label="Belgi"><option value="">Barcha belgilar</option><option value="new">Yangi</option><option value="popular">Bestseller</option><option value="discount">Chegirmali</option></select>' +
+        '<input class="input" id="pmin" type="number" inputmode="numeric" min="0" placeholder="Narx: dan" aria-label="Minimal narx" style="max-width:130px"><input class="input" id="pmax" type="number" inputmode="numeric" min="0" placeholder="gacha" aria-label="Maksimal narx" style="max-width:130px">' +
         '<button class="btn btn--ghost btn--sm" type="button" id="pClear" hidden>' + A.icon("close") + "Filtrlarni tozalash</button></div>" +
         '<div id="pBulk"></div><div id="pTable">' + A.skeleton() + "</div>";
       $("#pstock", root).value = f.stock;
 
-      A.get("/categories").then(function (r) {
-        cats = r.items;
-        $("#pcat", root).innerHTML = '<option value="">Barcha kategoriyalar</option>' + cats.map(function (c) { return '<option value="' + c.id + '">' + esc(c.name) + "</option>"; }).join("");
-      }).catch(function () {});
+      // Kategoriyalar ro'yxati (seed/import yangi kategoriya qo'shishi mumkin — shuning uchun qayta yuklanadi)
+      function loadCats() {
+        return A.get("/categories").then(function (r) {
+          cats = r.items;
+          var sel = $("#pcat", root), cur = sel.value;
+          sel.innerHTML = '<option value="">Barcha kategoriyalar</option>' + cats.map(function (c) { return '<option value="' + c.id + '">' + esc(c.name) + "</option>"; }).join("");
+          sel.value = cur;
+        }).catch(function () {});
+      }
+      loadCats();
 
       function load() {
         syncClear();
@@ -278,6 +293,7 @@
           bulk = '<div class="bulkbar"><span>' + selected.size + ' ta tanlandi</span>' +
             '<button class="btn btn--sm btn--ghost" data-bulk="activate">Faollashtirish</button><button class="btn btn--sm btn--ghost" data-bulk="deactivate">Nofaol qilish</button>' +
             '<button class="btn btn--sm btn--ghost" data-bulk="mark_new">«Yangi» belgisi</button><button class="btn btn--sm btn--ghost" data-bulk="mark_popular">«Mashhur» belgisi</button>' +
+            '<button class="btn btn--sm btn--ghost" data-bulk="set_category">Kategoriya…</button><button class="btn btn--sm btn--ghost" data-bulk="set_color">Rang…</button><button class="btn btn--sm btn--ghost" data-bulk="price_percent">Narx ±%…</button><button class="btn btn--sm btn--ghost" data-bulk="discount_percent">Chegirma %…</button><button class="btn btn--sm btn--ghost" data-bulk="clear_discount">Chegirmani olib tashlash</button>' +
             (canD ? '<button class="btn btn--sm btn--danger" data-bulk="delete">' + A.icon("trash") + "O'chirish</button>" : "") +
             '<button class="btn btn--sm btn--ghost" data-bulk="clear" style="margin-left:auto">Bekor qilish</button></div>';
         }
@@ -296,20 +312,49 @@
         }
         var allSel = items.length && items.every(function (p) { return selected.has(p.id); });
         $("#pTable", root).innerHTML = '<div class="table-wrap"><table class="tbl"><thead><tr>' + (canW ? '<th style="width:40px"><input type="checkbox" data-selall aria-label="Hammasini tanlash"' + (allSel ? " checked" : "") + "></th>" : "") +
-          "<th>Mahsulot</th><th>Kategoriya</th><th>Narx</th><th>Ombor</th><th>Holat</th><th></th></tr></thead><tbody>" +
-          items.map(function (p) {
+          "<th>Mahsulot</th><th>Kategoriya</th><th>Narx</th><th>Ombor</th><th>Ko'rish · Sotuv</th><th>Holat</th><th></th></tr></thead><tbody>" +
+          items.slice((page - 1) * PAGE, page * PAGE).map(function (p) {
             var stockChip = p.stock <= 0 ? A.chip("bad", "Tugagan") : p.stock <= p.low_stock ? A.chip("low", "Kam: " + p.stock) : A.chip("ok", p.stock + " dona");
             var tags = (p.is_new ? '<span class="tag">Yangi</span>' : "") + (p.is_popular ? '<span class="tag">Mashhur</span>' : "");
             return "<tr>" + (canW ? '<td><input type="checkbox" data-sel="' + esc(p.id) + '" aria-label="Tanlash"' + (selected.has(p.id) ? " checked" : "") + "></td>" : "") +
-              '<td><div class="cell-product"><img class="thumb" data-fb loading="lazy" src="' + esc(A.imgSrc(p.image)) + '" alt=""><div><div class="cell-main">' + esc(p.name) + '</div><div class="cell-sub">' + tags + esc(p.id) + "</div></div></div></td>" +
+              '<td><div class="cell-product"><img class="thumb" data-fb loading="lazy" src="' + esc(A.imgSrc(p.image)) + '" alt=""><div><div class="cell-main">' + esc(p.name) + '</div><div class="cell-sub">' + tags + '<span class="mono">' + esc(p.sku || p.id) + "</span></div></div></div></td>" +
               "<td>" + (p.category_name ? esc(p.category_name) : '<span class="muted">—</span>') + "</td>" +
               '<td class="mono nowrap">' + (p.old_price ? '<span class="price-old">' + fmt.money(p.old_price) + "</span>" : "") + "<b>" + fmt.money(p.price) + "</b></td>" +
-              "<td>" + stockChip + "</td><td>" + (p.active ? A.chip("ok", "Faol") : A.chip("off", "Nofaol")) + "</td>" +
+              "<td>" + stockChip + '</td><td class="nowrap"><span title="Ko\'rishlar">' + A.icon("eye") + " " + fmt.num(p.views) + '</span> · <span title="Sotilgan">' + A.icon("cart") + " " + fmt.num(p.sold) + "</span></td><td>" + (p.active ? A.chip("ok", "Faol") : A.chip("off", "Nofaol")) + "</td>" +
               '<td><div class="actions">' + (canW ? '<button class="icon-btn" data-edit="' + esc(p.id) + '" aria-label="Tahrirlash">' + A.icon("edit") + "</button>" : "") +
               (canD ? '<button class="icon-btn danger" data-del="' + esc(p.id) + '" aria-label="O\'chirish">' + A.icon("trash") + "</button>" : "") + "</div></td></tr>";
-          }).join("") + "</tbody></table></div>";
+          }).join("") + "</tbody></table></div>" + pagerHTML();
         A.fallbackImg(root);
       }
+      function pagerHTML() {
+        var pages = Math.max(1, Math.ceil(items.length / PAGE));
+        if (page > pages) page = pages;
+        return '<div class="pager"><span class="muted">Jami: ' + items.length + " ta · sahifa " + page + " / " + pages + '</span><div><button class="btn btn--sm btn--ghost" data-page="prev"' + (page <= 1 ? " disabled" : "") + '>Oldingi</button> <button class="btn btn--sm btn--ghost" data-page="next"' + (page >= pages ? " disabled" : "") + ">Keyingi</button></div></div>";
+      }
+      function askValue(title, bodyHtml, read) {
+        return new Promise(function (resolve) {
+          var done = false;
+          var m = A.modal({ title: title, size: "sm", body: '<form id="avf" novalidate>' + bodyHtml + '<div class="alert alert--error" id="avErr" hidden style="margin-top:12px"></div></form>',
+            actions: [{ label: "Bekor qilish", cls: "btn--ghost", onClick: function (api) { done = true; api.close(); resolve(undefined); } },
+              { label: "Qo'llash", cls: "btn--gold", onClick: function (api) { var r = read(A.$("#avf", m.el).elements); if (r.error) { var b = A.$("#avErr", m.el); b.textContent = r.error; b.hidden = false; return; } done = true; api.close(); resolve(r.value); } }],
+            onClose: function () { if (!done) resolve(undefined); } });
+        });
+      }
+      function openHistory(id, name) {
+        A.get("/products/" + encodeURIComponent(id) + "/history").then(function (r) {
+          var AC = { "product.create": "Yaratildi", "product.update": "Tahrirlandi", "products.import": "CSV import", "product.bulk.activate": "Faollashtirildi", "product.bulk.deactivate": "Nofaol qilindi" };
+          function what(a) {
+            if (a.detail && a.detail.bulk) return "Ommaviy amal: " + esc(a.detail.bulk) + (a.detail.value != null ? " (" + esc(String(a.detail.value)) + ")" : "");
+            var parts = a.detail && typeof a.detail === "object" ? Object.keys(a.detail).map(function (k) { var v = a.detail[k]; return Array.isArray(v) ? esc(k) + ": " + esc(String(v[0] == null ? "—" : v[0]).slice(0, 40)) + " → <b>" + esc(String(v[1] == null ? "—" : v[1]).slice(0, 40)) + "</b>" : esc(k) + ": " + esc(String(v).slice(0, 60)); }) : [];
+            return esc(AC[a.action] || a.action) + (parts.length ? "<br><small class=\"muted\">" + parts.join("; ") + "</small>" : "");
+          }
+          var rows = r.audits.map(function (a) { return { at: a.at, html: what(a), who: a.username }; }).concat(r.moves.map(function (m) { return { at: m.at, html: "Ombor: " + (m.delta > 0 ? "+" : "") + m.delta + " → qoldiq <b>" + m.balance_after + "</b>" + (m.note ? "<br><small class=\"muted\">" + esc(m.note) + "</small>" : ""), who: m.username }; }))
+            .sort(function (a, b) { return a.at < b.at ? 1 : -1; });
+          A.modal({ title: "O'zgarishlar tarixi — " + name, size: "md", body: rows.length ? '<div class="timeline">' + rows.map(function (x) { return "<div>" + x.html + "<small>" + fmt.date(x.at) + (x.who ? " · " + esc(x.who) : "") + "</small></div>"; }).join("") + "</div>" : '<p class="muted">Hozircha yozuvlar yo\'q.</p>',
+            actions: [{ label: "Yopish", cls: "btn--ghost", onClick: function (api) { api.close(); } }] });
+        }).catch(A.fail);
+      }
+      A.openProductHistory = openHistory;
 
       var reload = function () { load(); };
       // Mahsulot o'chirib bo'lmasa: sababi va muqobil yechim (nofaol qilish) taklif qilinadi
@@ -327,15 +372,17 @@
         });
       }
       // «Filtrlarni tozalash»: qidiruv va barcha filtrlar boshlang'ich holatga qaytadi
-      function syncClear() { var b = $("#pClear", root); if (b) b.hidden = !(f.q || f.category || f.active || f.stock || f.sort !== "new"); }
+      function syncClear() { var b = $("#pClear", root); if (b) b.hidden = !(f.q || f.category || f.active || f.stock || f.color || f.badge || f.price_min || f.price_max || f.sort !== "new"); }
       var onFilter = A.debounce(function () { load(); }, 250);
-      $("#pq", root).addEventListener("input", function (e) { f.q = e.target.value.trim(); onFilter(); });
-      [["pcat", "category"], ["pact", "active"], ["pstock", "stock"], ["psort", "sort"]].forEach(function (x) {
-        $("#" + x[0], root).addEventListener("change", function (e) { f[x[1]] = e.target.value; load(); });
+      $("#pq", root).addEventListener("input", function (e) { f.q = e.target.value.trim(); page = 1; onFilter(); });
+      [["pcat", "category"], ["pact", "active"], ["pstock", "stock"], ["psort", "sort"], ["pcolor", "color"], ["pbadge", "badge"]].forEach(function (x) {
+        $("#" + x[0], root).addEventListener("change", function (e) { f[x[1]] = e.target.value; page = 1; load(); });
       });
+      $("#pmin", root).addEventListener("input", function (e) { f.price_min = e.target.value.trim(); page = 1; onFilter(); });
+      $("#pmax", root).addEventListener("input", function (e) { f.price_max = e.target.value.trim(); page = 1; onFilter(); });
       $("#pClear", root).addEventListener("click", function () {
-        f.q = ""; f.category = ""; f.active = ""; f.stock = ""; f.sort = "new";
-        $("#pq", root).value = ""; $("#pcat", root).value = ""; $("#pact", root).value = ""; $("#pstock", root).value = ""; $("#psort", root).value = "new";
+        f.q = ""; f.category = ""; f.active = ""; f.stock = ""; f.sort = "new"; f.color = ""; f.badge = ""; f.price_min = ""; f.price_max = ""; page = 1;
+        $("#pq", root).value = ""; $("#pcat", root).value = ""; $("#pact", root).value = ""; $("#pstock", root).value = ""; $("#psort", root).value = "new"; $("#pcolor", root).value = ""; $("#pbadge", root).value = ""; $("#pmin", root).value = ""; $("#pmax", root).value = "";
         load();
       });
 
@@ -357,6 +404,19 @@
           var a = t.getAttribute("data-act");
           if (a === "add") A.openProductForm(null, reload);
           if (a === "reload") load();
+          if (a === "export") {
+            A.setBusy(t, true);
+            A.download("/admin/products/export" + A.qs({ q: f.q, category: f.category, active: f.active, stock: f.stock, color: f.color, badge: f.badge, price_min: f.price_min, price_max: f.price_max, sort: f.sort }), "yasindoors-mahsulotlar.csv")
+              .then(function () { A.toast("CSV fayl yuklab olindi"); }).catch(A.fail).then(function () { A.setBusy(t, false); });
+          }
+          if (a === "import") $("#pImportFile", root).click();
+          if (a === "seed") {
+            A.confirm({ title: "Namunaviy katalog", confirmLabel: "Qo'shish", text: "200 ta namunaviy MDF eshik (9 kategoriya) qo'shiladi. Narxlar, ombor va tavsiflar <b>namunaviy</b> — keyin tahrirlang. Qayta bosilsa dublikat yaratilmaydi (SKU bo'yicha tekshiriladi)." }).then(function (ok) {
+              if (!ok) return;
+              A.setBusy(t, true, "Qo'shilmoqda…");
+              A.post("/products/seed-catalog", {}).then(function (r) { A.toast("Qo'shildi: " + r.inserted + " ta yangi, " + r.linked + " ta bog'landi, " + r.skipped + " ta mavjud edi"); loadCats(); load(); }).catch(A.fail).then(function () { A.setBusy(t, false); });
+            });
+          }
         } else if (t.hasAttribute("data-edit")) {
           if (t.disabled) return;
           var id = t.getAttribute("data-edit");
@@ -381,9 +441,9 @@
           var action = t.getAttribute("data-bulk");
           if (action === "clear") { selected.clear(); paint(); return; }
           var ids = Array.from(selected);
-          var run = function () {
+          var run = function (value) {
             t.disabled = true;
-            A.post("/products/bulk", { action: action, ids: ids }).then(function (r) {
+            A.post("/products/bulk", { action: action, ids: ids, value: value }).then(function (r) {
               selected.clear();
               if (action === "delete") {
                 A.toast(r.changed + " ta mahsulot o'chirildi");
@@ -396,8 +456,43 @@
           };
           if (action === "delete") {
             A.confirm({ title: "Tanlanganlarni o'chirish", danger: true, confirmLabel: "O'chirish", text: "<b>" + ids.length + " ta</b> mahsulot butunlay o'chiriladi. Bu amalni qaytarib bo'lmaydi." }).then(function (ok) { if (ok) run(); });
+          } else if (action === "set_category") {
+            askValue("Kategoriyani o'zgartirish (" + ids.length + " ta)", '<div class="field"><label for="av1">Kategoriya</label><select class="select" id="av1" name="v"><option value="">— Kategoriyasiz —</option>' + cats.map(function (c) { return '<option value="' + c.id + '">' + esc(c.name) + "</option>"; }).join("") + "</select></div>", function (el) { return { value: el.v.value || null }; }).then(function (v) { if (v !== undefined) run(v); });
+          } else if (action === "set_color") {
+            askValue("Rangni o'zgartirish (" + ids.length + " ta)", '<div class="field"><label for="av1">Rang</label><select class="select" id="av1" name="v">' + Object.keys(A.COLORS).map(function (k) { return '<option value="' + k + '">' + esc(A.COLORS[k].name) + "</option>"; }).join("") + "</select></div>", function (el) { return { value: el.v.value }; }).then(function (v) { if (v !== undefined) run(v); });
+          } else if (action === "price_percent" || action === "discount_percent") {
+            var disc = action === "discount_percent";
+            askValue((disc ? "Chegirma berish" : "Narxni o'zgartirish") + " (" + ids.length + " ta)", '<div class="field"><label for="av1">' + (disc ? "Chegirma foizi (1–70)" : "Foiz (−50 … +200, masalan 10 yoki −5)") + '</label><input class="input" id="av1" name="v" inputmode="decimal"><span class="hint">' + (disc ? "Eski narx saqlanadi va chegirma belgisi ko'rinadi." : "Narx 1000 so'mgacha yaxlitlanadi.") + "</span></div>", function (el) {
+              var n = Number(String(el.v.value).replace(",", "."));
+              if (!isFinite(n) || el.v.value.trim() === "") return { error: "Foizni kiriting." };
+              if (disc ? (n < 1 || n > 70) : (n < -50 || n > 200)) return { error: disc ? "1 dan 70 gacha." : "−50 dan 200 gacha." };
+              return { value: n };
+            }).then(function (v) { if (v !== undefined) run(v); });
           } else run();
         }
+      });
+      root.addEventListener("click", function (e) {
+        var pg = e.target.closest("[data-page]");
+        if (!pg || pg.disabled) return;
+        page += pg.getAttribute("data-page") === "next" ? 1 : -1;
+        paint();
+        root.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      var impFile = $("#pImportFile", root);
+      if (impFile) impFile.addEventListener("change", function (e) {
+        var file = e.target.files[0]; e.target.value = "";
+        if (!file) return;
+        if (file.size > 3 * 1024 * 1024) return A.toast("CSV fayl 3 MB dan katta", "error");
+        var rd = new FileReader();
+        rd.onload = function () {
+          A.post("/products/import", { csv: String(rd.result) }).then(function (r) { A.toast("Import: " + r.created + " ta yangi, " + r.updated + " ta yangilandi"); loadCats(); load(); })
+            .catch(function (err) {
+              var errs = err.data && err.data.errors;
+              if (errs) A.modal({ title: "CSV xatolari", size: "md", body: "<p>" + esc(err.message) + '</p><ul style="margin:10px 0 0;padding-left:18px">' + errs.map(function (x) { return "<li>" + x.line + "-qator: " + esc(x.message) + "</li>"; }).join("") + "</ul>", actions: [{ label: "Yopish", cls: "btn--ghost", onClick: function (api) { api.close(); } }] });
+              else A.fail(err);
+            });
+        };
+        rd.readAsText(file, "utf-8");
       });
       load();
     }

@@ -197,6 +197,20 @@ Ma'lumotlar bazasi: **libSQL** (lokal — `data/yasindoors.db` fayli, Vercel'da 
 
 **Admin panel:** «Пользователи» — qidiruv, saralash, profil (buyurtmalar va kirish tarixi bilan); «Заказы» — sana/holat/to'lov filtrlari, mijoz (ism, telefon, email, manzil), mahsulotlar (nomi, narxi, soni), jami summa, holatni yangilash (Новый → В обработке → Готовится → Доставляется → Завершён / Отменён; ombor shunga mos avtomatik yuritiladi) va tarix. Buyurtmadagi email buyurtma vaqtida saqlanadi (migratsiya v7).
 
+## Katalog: 200 ta MDF eshik
+
+`lib/catalog-seed.js` — 9 kategoriya bo'yicha 200 ta **namunaviy** MDF eshik (30 minimalist, 25 premium/luxury, 25 klassik naqshli, 25 shishali, 25 yog'och teksturali, 20 oq/och, 20 qora/kulrang/to'q, 15 geometrik, 15 noodatiy). Har biri noyob SKU (`YD-MIN-001`…), nom, dizayn, rang/tekstura, narx (chegirmali ba'zilarida), o'lchamlar, qoplama, tavsif, ombor, faollik (8 ta yashirin), «Yangi»/«Mashhur (bestseller)» belgilari va yaratilgan sanaga ega. **Narx, ombor va tavsiflar namunaviy** — haqiqiy ishlab chiqaruvchi ma'lumoti sifatida ko'rsatilmaydi; ularni admin panelda o'zgartiring.
+
+**Bazaga qo'shish (idempotent — SKU bo'yicha, qayta ishga tushirilsa dublikat yaratilmaydi):** admin panel → *Mahsulotlar* → **«200 ta namunaviy eshik»** (parol tasdig'i so'raydi) yoki `npm run seed:catalog` (Turso uchun `DATABASE_URL`/`DATABASE_AUTH_TOKEN` bilan). Avval import qilingan 10 ta namunaviy mahsulot 200 tadan 10 tasi sifatida kategoriyaga bog'lanadi (ID, narx va ombor o'zgarmaydi).
+
+**Rasmlar:** `lib/door-art.js` har bir eshik uchun noyob SVG illyustratsiya chizadi (`public/assets/img/doors/yd-*.svg`, `npm run gen:images`). Bu **haqiqiy foto emas** — haqiqiy foto qo'yish uchun mahsulotni tahrirlab rasmini almashtiring (yuklash admin panelda). Rasm topilmasa `fallback.svg` ko'rsatiladi.
+
+**Admin imkoniyatlari (Mahsulotlar):** jadval (40 tadan sahifalab), qidiruv (nom/ID/SKU), kategoriya/rang/belgi/holat/ombor/narx oralig'i filtrlari, saralash (yangi, nom, narx, ombor, sotuvlar, ko'rishlar, SKU), qo'shish/tahrirlash (SKU, tekstura bilan), rasmni almashtirish, o'chirish (tasdiq + parol), ommaviy amallar (faollik, belgilar, kategoriya, rang, narx ±%, chegirma %, chegirmani olib tashlash), **CSV eksport/import** (SKU bo'yicha yangilaydi yoki yaratadi; xato bo'lsa hech narsa o'zgarmaydi), **o'zgarishlar tarixi** (admin amallari va ombor harakatlari), ombor boshqaruvi («Ombor» bo'limi). «Sotuvlar» — qabul qilingan va undan keyingi buyurtmalardan hisoblanadi; «Ko'rishlar» — mahsulot sahifasi ochilishlari (bir IP uchun 30 daqiqada bir marta).
+
+**Sayt:** katalogda kategoriya va narx filtri, SKU/kategoriya bo'yicha qidiruv, 24 tadan «Yana ko'rsatish», mahsulot sahifasida «Mahsulot kodi» va «Tekstura».
+
+**CSV ustunlari:** `sku,id,name,category,style,color,finish,material,sizes,price,old_price,stock,low_stock,active,is_new,bestseller,image,short,description,views,sold,created_at` (o'lchamlar `|` bilan; import faqat mavjud ustunlarni o'zgartiradi).
+
 ## Mobil versiya
 
 `assets/css/mobile.css` faqat ≤960px da yuklanadi (`<link media>`), shuning uchun desktop o'zgarmaydi. Tarkibi: ixcham sticky navbar (logo, mavzu, menyu), **pastki navigatsiya paneli** (Bosh sahifa, Katalog, Sevimlilar, Savat, Profil — faol sahifa va sonlar bilan; `app.js` dagi `BOTTOM_NAV`), 2 ustunli mahsulot kartochkalari (≤339px da 1 ustun), yopishqoq qidiruv/saralash paneli, pastdan chiqadigan filtr oynasi, mahsulot sahifasida pastki panel ustida yopishqoq «Savatga» paneli, yuklanishda skeleton kartochkalar, tugmalarga bosilganda yengil javob, `prefers-reduced-motion` hurmat qilinadi. 3D konstruktor sahifasida pastki panel yashirin (o'zining paneli bor). Admin panelda jadvallar telefonda kartochkaga aylanadi, modal oynalar pastdan chiqadi. 320/360/390/430/768px da gorizontal scroll yo'qligi tekshirilgan.
