@@ -63,7 +63,7 @@
   body:has(input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):focus, textarea:focus, select:focus) .bottom-nav { transform: translateY(110%); transition-delay: 0s; }
   /* 3D konstruktorning o‘z pastki paneli bor */
   body[data-page="configurator"] .bottom-nav { display: none; }
-  body[data-page="configurator"] { padding-bottom: 0; }
+  body[data-page="configurator"] { padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px)); }
 
   .toast-wrap { bottom: calc(var(--bn-h) + 14px + env(safe-area-inset-bottom, 0px)); }
   .to-top { right: 14px; bottom: calc(var(--bn-h) + 14px + env(safe-area-inset-bottom, 0px)); width: 46px; height: 46px; }
@@ -228,4 +228,20 @@
   .catalog-toolbar { flex-wrap: wrap; }
   .catalog-toolbar .select { flex: 1 1 0; min-width: 0; }
   #openFilters { flex: 0 0 auto; padding: 0 16px; white-space: nowrap; }
+}
+
+/* Tor ekranlarda header yon tomonga chiqib ketmasin: logo qisqaradi, tugmalar ixchamlashadi */
+@media (max-width: 420px) {
+  .nav { gap: 6px; }
+  .nav-actions { gap: 6px; flex: none; }
+  .nav .logo { min-width: 0; flex: 0 1 auto; }
+  .logo { font-size: 17px; gap: 8px; }
+  .logo-mark { width: 32px; height: 32px; }
+  .icon-btn, .menu-toggle { width: 40px; height: 40px; }
+}
+@media (max-width: 340px) {
+  .logo { font-size: 15.5px; gap: 6px; }
+  .logo-mark { width: 28px; height: 28px; }
+  .icon-btn, .menu-toggle { width: 36px; height: 36px; }
+  .nav-actions, .nav { gap: 4px; }
 }

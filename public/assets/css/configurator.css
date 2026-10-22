@@ -156,8 +156,19 @@
 @media (max-width: 900px) {
   .cfg { padding-top: 16px; }
   .cfg-layout { grid-template-columns: 1fr; gap: 16px; }
-  .cfg-stage { top: calc(var(--header-h) + 8px); z-index: 20; }
-  .cfg-viewport { height: min(54vh, 520px); min-height: 360px; border-radius: 22px; }
+  /* Faqat 3D oyna yopishqoq: tugmalar (Oldingi holat, Boshidan boshlash…) oddiy oqimda aylanadi va
+     yopishqoq oyna ostida matn bilan ustma-ust tushmaydi. Oyna to‘liq shaffof emas va tepasidagi 8px tirqish bilan yopilgan. */
+  .cfg-stage { display: contents; }
+  .cfg-viewport {
+    position: sticky; top: calc(var(--header-h) + 8px); z-index: 20;
+    height: min(40vh, 360px); min-height: 240px; border-radius: 22px;
+    box-shadow: 0 -10px 0 0 var(--bg), var(--shadow-lg);
+  }
+  .cfg-tools { margin-top: -4px; }
+  /* Ixcham sarlavha: 3D oyna va tugmalar birinchi ekranda «Sozlash» tugmasi ostida qolmasin */
+  .cfg-hero { padding: 10px 0 6px; }
+  .cfg-hero .breadcrumb, .cfg-hero p { display: none; }
+  .cfg-hero .title-lg { font-size: 24px; margin: 0; }
   .cfg-summary { grid-column: auto; }
   .cfg-hint { display: none; }
   .cfg-viewbar { bottom: 12px; }
@@ -180,7 +191,8 @@
   body.cfg-sheet-on .cfg-sheet-backdrop { opacity: 1; visibility: visible; }
   /* back-to-top tugmasi "Sozlash" tugmasi bilan to'qnashmasin */
   .to-top { bottom: calc(86px + env(safe-area-inset-bottom, 0px)); }
-  body { padding-bottom: 0; }
+  /* «Sozlash» tugmasi sahifa oxiridagi matnni (footer) yopmasin */
+  body { padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px)); }
 }
 @media (max-width: 520px) {
   .cfg-card svg.cfg-mini { max-width: 62px; }

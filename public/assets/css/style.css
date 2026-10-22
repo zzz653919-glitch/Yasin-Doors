@@ -399,6 +399,8 @@ body.menu-open .drawer-backdrop { opacity: 1; visibility: visible; }
 .testimonial .stars { color: var(--gold); letter-spacing: 2px; }
 .testimonial footer { display: flex; align-items: center; gap: 12px; margin-top: auto; }
 .avatar { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: var(--gold-soft); color: var(--gold-strong); font-weight: 800; }
+/* account.css dagi umumiy .avatar (width/height:100%) sharh avatarini cho‘zib yubormasin */
+.testimonial .avatar { width: 44px; height: 44px; flex: none; background: var(--gold-soft); color: var(--gold-strong); font-size: 16px; }
 .testimonial footer small { display: block; color: var(--muted); }
 .note {
   display: flex; gap: 10px; align-items: flex-start;
