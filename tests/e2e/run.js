@@ -196,7 +196,7 @@ async function seed() {
           links: Array.from(document.querySelectorAll(".site-footer .footer-links li a")).map(a => a.getAttribute("href")).filter(h => h && h[0] === "/"), over: document.documentElement.scrollWidth - innerWidth }; });
       ok(f.tel === "+998 93 300 20 20", label + " footer: telefon tel:+998933002020 havolasi");
       ok(f.map === "https://www.google.com/maps?q=40.160167,67.833500", label + " footer: Xaritada ko'rish -> Google Maps");
-      ok(/40°09'36\.6"N 67°50'00\.6"E/.test(f.text) && /Har kuni: 09:00–17:00/.test(f.text) && /MDF eshiklar va zamonaviy dizayn yechimlari\./.test(f.text), label + " footer: manzil, ish vaqti, tavsif");
+      ok(!/40°|67°|40\.16|67\.83/.test(f.text) && /Manzilimizni xaritada ko'rish/.test(f.text.replace(/‘/g, "'")) && /Har kuni: 09:00–17:00/.test(f.text) && /MDF eshiklar va zamonaviy dizayn yechimlari\./.test(f.text), label + " footer: koordinatasiz manzil tugmasi, ish vaqti, tavsif");
       ok(["/", "/Products", "/About", "/Contact", "/Cart", "/Favorites"].every(h => f.links.includes(h)) && f.over <= 0, label + " footer: tezkor havolalar, gorizontal scroll yo'q");
       await fctx.close();
     }

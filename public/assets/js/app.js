@@ -316,8 +316,7 @@
       "<p>" + esc(SITE.footer_about || "MDF eshiklar va zamonaviy dizayn yechimlari.") + "</p>" +
       (socials ? '<div class="socials">' + socials + "</div>" : "") + "</div>" +
       '<div><h4>Bizning manzilimiz</h4><ul class="footer-links footer-contact">' +
-      "<li>" + icon("pin") + "<span>" + contactValue(CONFIG.address) +
-      '<br><a class="footer-map" href="' + esc(GEO.mapsUrl(GEO.SHOP.lat, GEO.SHOP.lng)) + '" target="_blank" rel="noopener">Xaritada ko‘rish →</a></span></li>' +
+      "<li>" + icon("pin") + '<span><a class="footer-map" href="' + esc(GEO.mapsUrl(GEO.SHOP.lat, GEO.SHOP.lng)) + '" target="_blank" rel="noopener">Manzilimizni xaritada ko‘rish →</a></span></li>' +
       "</ul></div>" +
       '<div><h4>Telefon</h4><ul class="footer-links footer-contact">' +
       "<li>" + icon("phone") + "<span>" + phoneLink + "</span></li></ul>" +
