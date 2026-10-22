@@ -16,8 +16,8 @@
   .nav-actions { gap: 8px; }
   /* Sevimlilar, savat va profil pastki panelda — yuqorida faqat mavzu va menyu qoladi */
   .nav-actions > a.icon-btn[href="/Favorites"],
-  .nav-actions > a.icon-btn[href="/Cart"],
   .auth-slot { display: none; }
+  .nav-search { display: inline-grid; }
   .site-header.is-scrolled { background: color-mix(in srgb, var(--bg) 86%, transparent); }
   .logo { font-size: 19px; }
   .logo-mark { width: 34px; height: 34px; }
@@ -30,7 +30,7 @@
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 55;
     display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px;
     padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
-    background: color-mix(in srgb, var(--surface) 90%, transparent);
+    background: color-mix(in srgb, var(--surface) 97%, transparent);
     -webkit-backdrop-filter: saturate(1.6) blur(18px); backdrop-filter: saturate(1.6) blur(18px);
     border-top: 1px solid var(--border);
     box-shadow: 0 -10px 30px -20px rgba(0, 0, 0, .35);
@@ -92,14 +92,10 @@
   .product-meta { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .fav-btn { width: 40px; height: 40px; }
   .add-btn { flex: 0 0 42px !important; width: 42px; }
-  .catalog-toolbar {
-    position: sticky; top: calc(var(--header-h) - 10px); z-index: 30; gap: 8px;
-    margin: 0 calc(var(--gutter) * -1) 12px; padding: 10px var(--gutter);
-    background: color-mix(in srgb, var(--bg) 90%, transparent);
-    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
-  }
+  /* Asboblar paneli ekranni to‘smasin: oddiy (yopishqoq emas), ixcham */
+  .catalog-toolbar { gap: 8px; margin: 0 0 10px; padding: 0; }
   .catalog-toolbar .search { flex: 1 1 100%; }
-  .catalog-toolbar .input, .catalog-toolbar .select { min-height: 46px; font-size: 16px; }
+  .catalog-toolbar .input, .catalog-toolbar .select { min-height: 44px; font-size: 16px; }
   .chip { min-height: 40px; }
   .filters { border-radius: 24px 24px 0 0; padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px)); }
   .filters::before { content: ""; display: block; width: 40px; height: 4px; margin: -4px auto 14px; border-radius: 4px; background: var(--border-strong); }
@@ -154,8 +150,11 @@
 
 /* Juda tor ekranlar (≤339px): mahsulotlar bitta ustunda */
 @media (max-width: 339px) {
-  .product-grid, .product-grid--3 { grid-template-columns: minmax(0, 1fr); }
-  .product-media { aspect-ratio: 1 / 1; }
+  /* 320px da ham 2 ustun: kartalar ixcham, nom/narx/tugma siqilmaydi */
+  .product-grid, .product-grid--3 { gap: 8px; }
+  .product-body { padding: 8px 8px 10px; }
+  .price { font-size: 14px; }
+  .add-btn::after { font-size: 12px; }
   .bn-item { font-size: 9.5px; }
   .logo span:last-child { font-size: 17px; }
   .feature-grid { grid-template-columns: minmax(0, 1fr); }
@@ -165,4 +164,68 @@
 @media (min-width: 641px) and (max-width: 960px) {
   .product-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .bottom-nav { padding-left: 15%; padding-right: 15%; }
+}
+
+
+/* =========================================================
+   Mobil takomillashtirish (telefon): ixcham sarlavha, aniq kartalar, to‘siqsiz fixed elementlar
+   ========================================================= */
+@media (max-width: 960px) {
+  /* Tajriba tugmasi («Uslublar») narx va tugmalarni yopmasin; ?style=N hali ishlaydi */
+  .pal-fab, .pal-panel { display: none !important; }
+
+  /* Katalog: sarlavha va izoh ekranni egallamasin */
+  body:has(.catalog) .page-hero { padding: 12px 0 2px; }
+  body:has(.catalog) .page-hero .breadcrumb, body:has(.catalog) .page-hero p { display: none; }
+  body:has(.catalog) .page-hero .title-lg { font-size: 24px; margin: 0; }
+  body:has(.catalog) .section--tight { padding-top: 12px; }
+
+  /* Rasmlar kesilmasin: bir xil nisbat, rasm to‘liq ko‘rinadi */
+  .product-media { background: var(--bg-soft); }
+  .product-media img { object-fit: contain; }
+
+  /* Mahsulot sahifasi: rasm ixchamroq — sarlavha va narx xarid paneli ostida qolmasin */
+  .detail-media { aspect-ratio: 5 / 6; }
+  .detail-media img { object-fit: contain; }
+  .detail-info h1 { font-size: clamp(24px, 6.4vw, 32px); }
+  /* Xarid paneli bitta ixcham qator: [Savatga qo‘shish] [Hoziroq buyurtma] [♥] */
+  .detail-buy { grid-template-columns: 1fr 1fr 46px; padding: 8px; gap: 8px; margin: 18px -4px 0; }
+  .detail-buy .btn { grid-column: auto; min-height: 46px; padding: 0 8px; font-size: 14px; gap: 6px; }
+  .detail-buy .fav-btn { grid-column: auto; grid-row: auto; width: 46px; height: 46px; border-radius: 14px; }
+}
+
+@media (max-width: 640px) {
+  /* Kartalar: ixcham, 2 qator nom va qisqa ma’lumot, aniq «Savatga» tugmasi */
+  .product-body { padding: 10px 10px 12px; }
+  .product-meta { font-size: 10px; margin-bottom: 4px; }
+  .product-title { font-size: 14.5px; margin: 0 0 4px; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .product-desc { display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 12px; line-height: 1.4; margin: 0 0 8px; }
+  .product-foot { gap: 8px; }
+  .price { font-size: 15px; font-weight: 800; }
+  .price-old { font-size: 12px; }
+  .product-actions { display: block; }
+  .product-actions .btn--outline { display: none; }
+  .add-btn { flex: 1 1 auto !important; width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; padding: 0 10px; }
+  .add-btn::after { content: "Savatga"; font-size: 13px; font-weight: 700; }
+  .add-btn.is-added::after { content: "Savatda"; }
+  .fav-btn { width: 36px; height: 36px; top: 8px; right: 8px; }
+  .badges { top: 8px; left: 8px; }
+  .badge { font-size: 10px; padding: 3px 8px; }
+  .product-grid, .product-grid--3 { gap: 10px; }
+  /* Header: logo | qidiruv | savat | menyu */
+  .nav-actions .theme-toggle { display: none; }
+}
+
+/* Tor ekranlarda (≤380px) xarid paneli ikki qatorli: tugmalar ustma-ust, yurakcha o‘ngda */
+@media (max-width: 380px) {
+  .detail-buy { grid-template-columns: minmax(0, 1fr) 46px; }
+  .detail-buy .btn { grid-column: 1; min-width: 0; }
+  .detail-buy .fav-btn { grid-column: 2; grid-row: 1 / span 2; height: 100%; min-height: 46px; }
+}
+
+/* Saralash va «Filtrlar» bitta qatorda (320px da ham) */
+@media (max-width: 960px) {
+  .catalog-toolbar { flex-wrap: wrap; }
+  .catalog-toolbar .select { flex: 1 1 0; min-width: 0; }
+  #openFilters { flex: 0 0 auto; padding: 0 16px; white-space: nowrap; }
 }

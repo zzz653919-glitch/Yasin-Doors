@@ -21,3 +21,24 @@
 .yd-pin--bad i { background: var(--danger); }
 .yd-pin-label { font-weight: 700; font-size: 12px; }
 @media (max-width: 640px) { .delivery-map { height: 320px; } .map-cards { grid-template-columns: 1fr; } }
+
+/* Buyurtma bosqichlari va jami summa */
+.order-steps { display: flex; gap: 6px; list-style: none; margin: 0 0 18px; padding: 0; }
+.order-steps li { flex: 1; display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 12px; font-size: 13px; font-weight: 700; color: var(--muted); background: var(--bg-soft); border: 1px solid transparent; }
+.order-steps li span { display: grid; place-items: center; width: 22px; height: 22px; flex: none; border-radius: 50%; font-size: 12px; background: var(--border); color: var(--text); }
+.order-steps li.is-current { color: var(--text); border-color: var(--gold); }
+.order-steps li.is-current span { background: var(--gold); color: #161411; }
+.order-steps li.is-done { color: var(--text); }
+.order-steps li.is-done span { background: var(--success, #2f9e6e); color: #fff; font-size: 0; }
+.order-steps li.is-done span::before { content: "✓"; font-size: 12px; }
+.submit-total { display: flex; justify-content: space-between; align-items: baseline; margin-top: 18px; padding: 12px 14px; border-radius: 12px; background: var(--bg-soft); font-size: 15px; }
+.submit-total b { font-size: 19px; }
+@media (max-width: 960px) {
+  /* Mobil: buyurtma tarkibi ixcham, forma tezroq ko‘rinadi; pastki panel tugmani yopmaydi */
+  .cart-layout { gap: 16px; }
+  .order-steps li { font-size: 12px; padding: 7px 8px; gap: 6px; }
+  #submitBtn { min-height: 52px; font-size: 16px; }
+  #orderForm { padding-bottom: 20px; scroll-margin-bottom: calc(var(--bn-h, 64px) + 16px); }
+  #submitBtn { scroll-margin-bottom: calc(var(--bn-h, 64px) + 24px); }
+}
+@media (max-width: 400px) { .order-steps li { flex-direction: column; text-align: center; gap: 3px; } }

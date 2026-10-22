@@ -162,4 +162,12 @@ YD.whenReady(function () {
   });
 
   render();
+
+  /* Header'dagi qidiruv tugmasi: qidiruv maydoniga o‘tadi va klaviaturani ochadi */
+  function focusSearch() {
+    searchInput.scrollIntoView({ block: "center", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    searchInput.focus({ preventScroll: true });
+  }
+  document.querySelectorAll(".nav-search").forEach(function (a) { a.addEventListener("click", function (e) { e.preventDefault(); focusSearch(); }); });
+  if (YD.param("focus") === "search") setTimeout(focusSearch, 250);
 });

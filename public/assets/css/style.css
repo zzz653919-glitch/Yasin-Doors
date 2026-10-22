@@ -311,6 +311,7 @@ body.menu-open .drawer-backdrop { opacity: 1; visibility: visible; }
 .cat-card:hover .icon { transform: translateX(4px); }
 
 /* ---------- Product cards ---------- */
+.nav-search { display: none; }
 .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
 .product-grid--3 { grid-template-columns: repeat(3, 1fr); }
 .product-card {

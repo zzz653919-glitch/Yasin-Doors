@@ -39,6 +39,11 @@
         <div class="cart-layout">
           <form class="card" id="orderForm" novalidate>
             <div class="hours-note" id="hoursNote" role="status" hidden></div>
+            <ol class="order-steps" id="orderSteps" aria-label="Buyurtma bosqichlari">
+              <li data-step="1"><span>1</span>Ma’lumot</li>
+              <li data-step="2"><span>2</span>Manzil</li>
+              <li data-step="3"><span>3</span>Tasdiq</li>
+            </ol>
             <h2 class="title-md">Mijoz ma’lumotlari</h2>
             <div class="form-grid" style="margin-top:20px">
               <div class="field">
@@ -96,7 +101,8 @@
               <div class="hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
             </div>
             <div class="form-alert" id="formAlert" role="alert" style="margin-top:20px"></div>
-            <button class="btn btn--gold btn--block" type="submit" id="submitBtn" style="margin-top:22px">Buyurtmani yuborish</button>
+            <div class="submit-total"><span>Jami to‘lov</span><b id="submitTotal">0 so‘m</b></div>
+            <button class="btn btn--gold btn--block" type="submit" id="submitBtn" style="margin-top:12px">Buyurtmani yuborish</button>
           </form>
 
           <aside class="card summary" aria-label="Tanlangan mahsulotlar">

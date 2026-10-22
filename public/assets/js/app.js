@@ -279,6 +279,7 @@
       '<div class="container nav">' + logoHTML() +
       '<nav class="nav-links" aria-label="Asosiy menyu">' + links + "</nav>" +
       '<div class="nav-actions">' +
+      '<a class="icon-btn nav-search" href="/Products?focus=search" aria-label="Qidiruv">' + icon("search") + "</a>" +
       '<button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Rejimni almashtirish (yorug‘ / qorong‘i)">' + icon("sun", "i-sun") + icon("moon", "i-moon") + "</button>" +
       '<a class="icon-btn" href="/Favorites" aria-label="Sevimlilar">' + icon("heart") + '<span class="count" data-fav-count>0</span></a>' +
       '<a class="icon-btn" href="/Cart" aria-label="Savat">' + icon("bag") + '<span class="count" data-cart-count>0</span></a>' +

@@ -200,6 +200,60 @@ async function seed() {
       ok(["/", "/Products", "/About", "/Contact", "/Cart", "/Favorites"].every(h => f.links.includes(h)) && f.over <= 0, label + " footer: tezkor havolalar, gorizontal scroll yo'q");
       await fctx.close();
     }
+    /* 4d) Mobil katalog: 2 ustun, kartalar, qidiruv/filtr/saralash, savat va sevimlilar, fixed elementlar to'smasligi */
+    for (const w of [320, 360, 375, 390, 430]) {
+      const mctx = await newCtx({ viewport: { width: w, height: 800 }, isMobile: true, hasTouch: true }); const mp = await mctx.newPage();
+      await mp.goto(B + "/Products"); await mp.waitForSelector(".product-card");
+      const g = await mp.evaluate(() => {
+        const cards = Array.from(document.querySelectorAll(".product-card")), c = cards[0], r = c.getBoundingClientRect(), img = c.querySelector("img");
+        const cols = new Set(cards.map(x => Math.round(x.getBoundingClientRect().left))).size;
+        return { cols, fav: !!c.querySelector(".fav-btn"), add: !!c.querySelector(".add-btn"), price: !!c.querySelector(".price"), lazy: img.getAttribute("loading"), fit: getComputedStyle(img).objectFit,
+          ratio: Math.round(c.querySelector(".product-media").getBoundingClientRect().width / c.querySelector(".product-media").getBoundingClientRect().height * 100) / 100,
+          over: document.documentElement.scrollWidth - innerWidth, addH: Math.round(c.querySelector(".add-btn").getBoundingClientRect().height), right: Math.round(r.right), pal: !!document.querySelector(".pal-fab") && getComputedStyle(document.querySelector(".pal-fab")).display !== "none" };
+      });
+      ok(g.cols === 2, w + "px mobil katalog: 2 ustun (" + g.cols + ")");
+      ok(g.fav && g.add && g.price && g.lazy === "lazy" && g.fit === "contain", w + "px karta: sevimli, savat, narx, lazy, rasm kesilmaydi");
+      ok(g.over <= 0 && g.right <= w && g.addH >= 36 && !g.pal, w + "px: gorizontal scroll yo'q, tugma ≥36px, 'Uslublar' tugmasi to'smaydi");
+      if (w === 390) {
+        const total = await mp.locator(".product-card").count();
+        // qidiruv
+        await mp.fill("#searchInput", "zzzz-yoq"); await mp.waitForTimeout(400);
+        ok((await mp.locator(".product-card").count()) === 0, "qidiruv: mos kelmasa natija bo'sh");
+        await mp.fill("#searchInput", ""); await mp.waitForTimeout(400);
+        const firstName = (await mp.locator(".product-card .product-title").first().innerText()).trim();
+        await mp.fill("#searchInput", firstName.slice(0, 6)); await mp.waitForTimeout(400);
+        ok((await mp.locator(".product-card").count()) >= 1 && (await mp.locator(".product-card").count()) <= total, "qidiruv: nom bo'yicha topdi");
+        await mp.fill("#searchInput", ""); await mp.waitForTimeout(400);
+        // filtrlar paneli ochiladi, narx filtri natijani yangilaydi, tozalash tiklaydi
+        await mp.click("#openFilters"); ok(await mp.locator("#filters").isVisible(), "filtrlar paneli ochildi");
+        await mp.waitForTimeout(400);
+        const prices = await mp.$$eval(".product-card .price", els => els.map(e => Number(e.textContent.replace(/\D/g, "").slice(-9))));
+        await mp.fill("#priceMax", "1"); await mp.waitForTimeout(400);
+        ok((await mp.locator(".product-card").count()) === 0, "filtr: narx bo'yicha mahsulotlar yangilandi");
+        await mp.click("#resetFilters"); await mp.waitForTimeout(400);
+        ok((await mp.locator(".product-card").count()) === total, "filtr: tozalash hammasini qaytardi");
+        await mp.click("#filters .filters-open-btn"); await mp.waitForTimeout(300);
+        // saralash
+        await mp.selectOption("#sortSelect", "price-desc"); await mp.waitForTimeout(400);
+        const ps = await mp.$$eval(".product-card .price", els => els.map(e => Number(e.lastChild.textContent.replace(/\D/g, ""))));
+        ok(ps.length > 1 && ps.every((v, i) => i === 0 || ps[i - 1] >= v), "saralash: narx kamayish tartibida");
+        // savat va sevimlilar
+        await mp.locator(".product-card .add-btn").first().click(); await mp.waitForTimeout(400);
+        ok((await mp.evaluate(() => JSON.parse(localStorage.getItem("yd_cart_v1") || "[]").length)) === 1, "savatga qo'shildi (Savatga tugmasi)");
+        await mp.locator(".product-card .fav-btn").first().click(); await mp.waitForTimeout(300);
+        ok((await mp.locator(".product-card .fav-btn.is-active").count()) === 1, "sevimlilarga qo'shildi (yurakcha)");
+        // pastki navigatsiya: 5 band, to'g'ri havolalar, faol = Katalog, kartani yopmaydi
+        const nav = await mp.evaluate(() => Array.from(document.querySelectorAll(".bottom-nav .bn-item")).map(a => [a.getAttribute("href"), a.classList.contains("is-active")]));
+        ok(nav.length === 5 && ["/", "/Products", "/Favorites", "/Cart", "/Profile"].every((h, i) => nav[i][0] === h) && nav[1][1], "pastki navigatsiya: 5 band, faol — Katalog");
+        // header: logo, qidiruv, savat, menyu
+        ok(await mp.evaluate(() => ["a.logo", ".nav-search", 'a[href="/Cart"]', ".menu-toggle"].every(s => { const e = document.querySelector(".site-header " + s); return e && e.getBoundingClientRect().width > 0; })), "header: logo, qidiruv, savat, menyu ko'rinadi");
+        // fixed pastki panel oxirgi kartaning tugmasini yopmaydi (sahifa oxiriga o'tganda)
+        await mp.locator(".product-card .add-btn").last().scrollIntoViewIfNeeded(); await mp.waitForTimeout(300);
+        const hit = await mp.evaluate(() => { const b = Array.from(document.querySelectorAll(".product-card .add-btn")).pop(), r = b.getBoundingClientRect(), e = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !!e && (e === b || b.contains(e)); });
+        ok(hit, "fixed elementlar karta tugmasini to'smaydi");
+      }
+      await mctx.close();
+    }
     /* 5) CSP bilan 3D konstruktor va sahifalar xatosiz yuklanadi */
     ctx = await newCtx({ viewport: { width: 1280, height: 800 } }); p = await ctx.newPage();
     const cspErr = []; p.on("console", m => { if (/Content Security Policy|Refused to/.test(m.text())) cspErr.push(m.text().slice(0, 100)); });

@@ -35,6 +35,7 @@ YD.whenReady(function () {
     }).join("");
     document.getElementById("summaryCount").textContent = YD.store.cartCount() + " ta";
     document.getElementById("summaryTotal").textContent = fmt(YD.store.cartTotal());
+    document.getElementById("submitTotal").textContent = fmt(YD.store.cartTotal());
     return true;
   }
 
@@ -52,6 +53,26 @@ YD.whenReady(function () {
     agree: function (v) { return v === true; }
   };
   YDForm.liveValidate(form, rules);
+
+  /* Bosqichlar: 1 Ma’lumot (ism, telefon) → 2 Manzil (hudud, manzil) → 3 Tasdiq (rozilik). Joriy bosqich ajratiladi. */
+  var stepEls = document.querySelectorAll("#orderSteps li");
+  function updateSteps() {
+    var f = form.elements;
+    var done = [
+      rules.name(f.name.value.trim()) && rules.phone(f.phone.value.trim()),
+      !!f.region.value && rules.address(f.address.value.trim()),
+      f.agree.checked
+    ];
+    var current = done.indexOf(false);
+    stepEls.forEach(function (li, i) {
+      li.classList.toggle("is-done", done[i]);
+      li.classList.toggle("is-current", i === current);
+      if (i === current) li.setAttribute("aria-current", "step"); else li.removeAttribute("aria-current");
+    });
+  }
+  form.addEventListener("input", updateSteps);
+  form.addEventListener("change", updateSteps);
+  updateSteps();
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
