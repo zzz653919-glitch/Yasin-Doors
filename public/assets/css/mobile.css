@@ -18,7 +18,7 @@
   .nav-actions > a.icon-btn[href="/Favorites"],
   .auth-slot { display: none; }
   .nav-search { display: inline-grid; }
-  .site-header.is-scrolled { background: color-mix(in srgb, var(--bg) 86%, transparent); }
+  .site-header.is-scrolled { background: color-mix(in srgb, var(--bg) 96%, transparent); }
   .logo { font-size: 19px; }
   .logo-mark { width: 34px; height: 34px; }
   .icon-btn, .menu-toggle { width: 42px; height: 42px; }
