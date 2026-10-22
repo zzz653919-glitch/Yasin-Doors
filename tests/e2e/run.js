@@ -254,6 +254,27 @@ async function seed() {
       }
       await mctx.close();
     }
+    /* 4e) Mobil joylashuv regressiyalari (370x726): header chetdan chiqmaydi, sharh avatari dumaloq, 3D konstruktorda tugmalar ustma-ust tushmaydi, Aloqa sahifasi sakramaydi */
+    { const rctx = await newCtx({ viewport: { width: 370, height: 726 }, isMobile: true, hasTouch: true });
+      await rctx.addInitScript(() => { window.__cls = 0; try { new PerformanceObserver(l => { for (const e of l.getEntries()) if (!e.hadRecentInput) window.__cls += e.value; }).observe({ type: "layout-shift", buffered: true }); } catch (e) { /* yo'q */ } });
+      const rp = await rctx.newPage();
+      await rp.goto(B + "/"); await rp.waitForSelector(".testimonial .avatar");
+      const hdr = await rp.evaluate(() => ({ right: document.querySelector(".site-header .menu-toggle").getBoundingClientRect().right, w: innerWidth, av: (r => [Math.round(r.width), Math.round(r.height)])(document.querySelector(".testimonial .avatar").getBoundingClientRect()) }));
+      ok(hdr.right <= hdr.w - 8, "370px: header menyu tugmasi ekrandan chiqmaydi (" + Math.round(hdr.right) + "/" + hdr.w + ")");
+      ok(hdr.av[0] === 44 && hdr.av[1] === 44, "370px: sharh avatari 44x44 (dumaloq)");
+      const dots = await rp.locator(".dc-dot").count();
+      ok(dots > 0 && dots <= 12, "bosh sahifa karuseli ≤12 slayd (" + dots + ")");
+      await rp.goto(B + "/Configurator"); await rp.waitForSelector(".cfg-tools"); await rp.waitForTimeout(800);
+      const cfg = await rp.evaluate(() => { const v = document.querySelector(".cfg-viewport").getBoundingClientRect(), t = document.querySelector(".cfg-tools").getBoundingClientRect();
+        return { stage: getComputedStyle(document.querySelector(".cfg-stage")).display, vpos: getComputedStyle(document.querySelector(".cfg-viewport")).position, gap: Math.round(t.top - v.bottom), over: document.documentElement.scrollWidth - innerWidth }; });
+      ok(cfg.stage === "contents" && cfg.vpos === "sticky" && cfg.gap >= 0 && cfg.over <= 0, "3D konstruktor (mobil): faqat oyna yopishqoq, tugmalar oyna ostida, gorizontal scroll yo'q");
+      await rp.evaluate(() => scrollTo(0, 700)); await rp.waitForTimeout(500);
+      const cover = await rp.evaluate(() => { const v = document.querySelector(".cfg-viewport").getBoundingClientRect(), s = document.querySelector("#cfgSummary").getBoundingClientRect(); const hit = document.elementFromPoint(v.left + v.width / 2, v.top + 20); return !!hit && !!hit.closest(".cfg-viewport") && v.top >= 0; });
+      ok(cover, "3D konstruktor: aylantirganda oyna tepada qoladi, matn uning ustida chiqmaydi");
+      await rp.goto(B + "/Contact"); await rp.waitForTimeout(1800); await rp.evaluate(() => scrollTo(0, 600)); await rp.waitForTimeout(400);
+      const cls = await rp.evaluate(() => window.__cls);
+      ok(cls < 0.02, "Aloqa sahifasi: yuklanganda kontent sakramaydi (CLS " + cls.toFixed(3) + ")");
+      await rctx.close(); }
     /* 5) CSP bilan 3D konstruktor va sahifalar xatosiz yuklanadi */
     ctx = await newCtx({ viewport: { width: 1280, height: 800 } }); p = await ctx.newPage();
     const cspErr = []; p.on("console", m => { if (/Content Security Policy|Refused to/.test(m.text())) cspErr.push(m.text().slice(0, 100)); });
