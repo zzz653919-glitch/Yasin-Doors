@@ -294,3 +294,21 @@ Geokodlash xizmati yo‘q, shuning uchun mijoz matnga yozgan haqiqiy joyni 100% 
   ruxsat etilgan 4 viloyatdan biriga tushishini tekshiradi. Chegaralar soddalashtirilgan: aniq chegara yaqinida bir necha km xatolik mumkin.
 - Aloqa: `public/assets/js/config.js` (telefon `+998 93 300 20 20`, ish vaqti 09:00–17:00, `Asia/Tashkent`). Ish vaqtidan tashqarida checkout
   sahifasida xabar chiqadi, buyurtma bloklanmaydi.
+
+## Mobil ilova (PWA)
+
+YasinDoors telefonda **o‘rnatiladigan ilova (PWA)** sifatida ishlaydi — alohida kod bazasi yo‘q: mavjud sayt, API, admin panel, buyurtma, Telegram va 3D konstruktor o‘zgarishsiz.
+
+**Nega PWA?** Loyiha React emas — vanilla JS + Node/libSQL. React Native/Expo uchun hamma ekran va API mijozini qayta yozish kerak bo‘lardi, ishlayotgan
+funksiyalar (xarita, hududlar, buyurtma, admin) xavf ostida qolardi. PWA bitta kod bazasi bilan Android (Chrome) va iOS (Safari) da bosh ekranga o‘rnatiladi,
+alohida do‘kon talab qilmaydi. Do‘kon (Google Play/App Store) uchun keyinchalik shu PWA’ni Capacitor yoki TWA bilan o‘rash mumkin.
+
+- Fayllar: `public/manifest.webmanifest`, `public/sw.js`, `public/offline.html`, `public/assets/js/pwa.js`, `public/assets/css/app.css`, `public/assets/icons/*`.
+- Offline: katalog (`/api/catalog`) va ochilgan sahifalar keshlanadi; internet bo‘lmasa tushunarli xabar chiqadi. **Hisob, admin va buyurtma so‘rovlari hech qachon keshlanmaydi.**
+- Android: Chrome → «Ilovani o‘rnatish» (drawer/profil/bosh sahifadagi tugma) yoki menyu → «Bosh ekranga qo‘shish».
+- iOS: Safari → Ulashish → «Bosh ekranga qo‘shish» (tugma ko‘rsatma oynasini ochadi).
+- Service worker faqat HTTPS (yoki localhost) da ishlaydi. Yangi versiya chiqqanda `sw.js` ichidagi `VERSION` ni oshiring.
+- Ishga tushirish: `npm run dev` → http://localhost:3000 ; testlar: `npm test`, `npm run test:e2e`.
+
+**Push-bildirishnomalar, onlayn to‘lov, real vaqt kuzatuv** hozir yo‘q: ular uchun tashqari xizmat va kalit kerak (Web Push uchun VAPID kalitlari + obuna jadvali,
+to‘lov uchun Payme/Click kabi provayder). Buyurtma holati profilda har ochilganda serverdan olinadi.

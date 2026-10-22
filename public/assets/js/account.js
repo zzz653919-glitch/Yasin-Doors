@@ -1,5 +1,5 @@
 /* =========================================================
-   YasinDoors — mijoz akkaunti (Вход / Регистрация)
+   YasinDoors — mijoz akkaunti (Kirish / Ro‘yxatdan o‘tish)
    Sessiya holati (HttpOnly cookie serverda; bu yerda faqat /api/account/me natijasi), navbar menyusi,
    sevimlilarni akkaunt bilan sinxronlash. Barcha sahifalarda app.js dan keyin yuklanadi.
    ========================================================= */
@@ -22,13 +22,13 @@
   function lsDel(k) { try { window.localStorage.removeItem(k); } catch (e) { /* e’tiborsiz */ } }
 
   /* ---------- API ---------- */
-  var NETWORK_MSG = "Не удалось связаться с сервером. Проверьте интернет и повторите попытку.";
-  var GENERIC_MSG = "Не удалось выполнить запрос. Обновите страницу и повторите попытку.";
+  var NETWORK_MSG = "Serverga ulanib bo‘lmadi. Internetni tekshirib, qayta urinib ko‘ring.";
+  var GENERIC_MSG = "So‘rovni bajarib bo‘lmadi. Sahifani yangilab, qayta urinib ko‘ring.";
 
   function apiError(status, data) {
     data = data || {};
-    // Сообщения наших обработчиков — на русском; служебные сообщения роутера (другой язык) заменяем общим
-    var msg = typeof data.error === "string" && /[А-Яа-яЁё]/.test(data.error) ? data.error : (status === 429 ? "Слишком много попыток. Попробуйте позже." : GENERIC_MSG);
+    // Bizning handlerlar xabarlari o‘zbek tilida; router xizmat xabarlari (boshqa tilda) umumiy xabar bilan almashtiriladi
+    var msg = typeof data.error === "string" && /[A-Za-z\u0400-\u04FF]/.test(data.error) ? data.error : (status === 429 ? "Urinishlar juda ko‘p. Keyinroq qayta urinib ko‘ring." : GENERIC_MSG);
     var err = new Error(msg);
     err.status = status;
     err.code = data.code || "";
@@ -159,34 +159,34 @@
   function slotHTML(hintInitial) {
     var u = state.user;
     if (!u && !hintInitial) {
-      return '<a class="auth-link" href="/Login">Вход</a>' +
-        '<a class="btn btn--sm btn--gold auth-register" href="/Register">Регистрация</a>' +
-        '<a class="icon-btn auth-icon" href="/Login" aria-label="Вход">' + icon("user") + "</a>";
+      return '<a class="auth-link" href="/Login">Kirish</a>' +
+        '<a class="btn btn--sm btn--gold auth-register" href="/Register">Ro‘yxatdan o‘tish</a>' +
+        '<a class="icon-btn auth-icon" href="/Login" aria-label="Kirish">' + icon("user") + "</a>";
     }
     var initial = u ? (u.first_name || "?").charAt(0).toUpperCase() : hintInitial;
     var menu = u ?
       '<div class="user-dd-head"><strong>' + esc(displayName(u)) + "</strong><span>" + esc(u.email) + "</span></div>" +
-      '<a role="menuitem" href="/Profile">' + icon("user") + "Профиль</a>" +
-      '<a role="menuitem" href="/Profile#orders">' + icon("box") + "Мои заказы</a>" +
-      '<a role="menuitem" href="/Favorites">' + icon("heart") + "Избранное</a>" +
-      '<button role="menuitem" type="button" data-account-logout>' + icon("logout") + "Выйти из аккаунта</button>" : "";
+      '<a role="menuitem" href="/Profile">' + icon("user") + "Profil</a>" +
+      '<a role="menuitem" href="/Profile#orders">' + icon("box") + "Buyurtmalarim</a>" +
+      '<a role="menuitem" href="/Favorites">' + icon("heart") + "Sevimlilar</a>" +
+      '<button role="menuitem" type="button" data-account-logout>' + icon("logout") + "Hisobdan chiqish</button>" : "";
     return '<div class="user-menu">' +
-      '<button class="icon-btn user-btn" type="button" data-user-toggle aria-haspopup="menu" aria-expanded="false" aria-controls="userMenu" aria-label="Меню профиля">' +
+      '<button class="icon-btn user-btn" type="button" data-user-toggle aria-haspopup="menu" aria-expanded="false" aria-controls="userMenu" aria-label="Profil menyusi">' +
       '<span class="avatar">' + esc(initial) + "</span></button>" +
       '<div class="user-dropdown" id="userMenu" role="menu" hidden>' + menu + "</div></div>";
   }
   function drawerHTML(hintInitial) {
     var u = state.user;
     if (!u && !hintInitial) {
-      return '<a class="btn btn--gold btn--block" href="/Register">Регистрация</a>' +
-        '<a class="btn btn--outline btn--block" href="/Login">Вход</a>';
+      return '<a class="btn btn--gold btn--block" href="/Register">Ro‘yxatdan o‘tish</a>' +
+        '<a class="btn btn--outline btn--block" href="/Login">Kirish</a>';
     }
     if (!u) return '<div class="drawer-user"><span class="avatar">' + esc(hintInitial) + "</span></div>";
     return '<div class="drawer-user"><span class="avatar">' + esc((u.first_name || "?").charAt(0).toUpperCase()) + "</span>" +
       "<div><strong>" + esc(displayName(u)) + "</strong><span>" + esc(u.email) + "</span></div></div>" +
-      '<div class="drawer-auth-actions"><a class="btn btn--outline btn--sm" href="/Profile">Профиль</a>' +
-      '<a class="btn btn--outline btn--sm" href="/Profile#orders">Заказы</a>' +
-      '<button class="btn btn--outline btn--sm" type="button" data-account-logout>Выйти</button></div>';
+      '<div class="drawer-auth-actions"><a class="btn btn--outline btn--sm" href="/Profile">Profil</a>' +
+      '<a class="btn btn--outline btn--sm" href="/Profile#orders">Buyurtmalar</a>' +
+      '<button class="btn btn--outline btn--sm" type="button" data-account-logout>Chiqish</button></div>';
   }
   function renderHeader() {
     var hint = state.ready || state.user ? null : lsGet(HINT_KEY);
@@ -220,7 +220,7 @@
       if (e.target.closest("[data-account-logout]")) {
         e.preventDefault();
         logout().then(function () {
-          YD.toast("Вы вышли из аккаунта");
+          YD.toast("Hisobdan chiqdingiz");
           if (document.body.getAttribute("data-protected") === "1") window.location.href = "/";
         });
         return;
@@ -244,9 +244,9 @@
 
   /* ---------- Buyurtma berishdan oldin kirish talab qilinadi ----------
      gate(next, proceed): tizimga kirgan bo‘lsa proceed() chaqiriladi; kirmagan bo‘lsa modal oyna chiqadi.
-     «Войти» / «Регистрация» ?next=<sahifa> bilan ochiladi — kirgach foydalanuvchi shu sahifaga qaytadi.
+     «Kirish» / «Ro‘yxatdan o‘tish» ?next=<sahifa> bilan ochiladi — kirgach foydalanuvchi shu sahifaga qaytadi.
      Savat localStorage’da saqlanadi (kirish uni o‘zgartirmaydi). Server buyurtmani baribir autentifikatsiyasiz rad etadi. */
-  var GATE_TEXT = "Для оформления заказа необходимо войти в аккаунт или зарегистрироваться.";
+  var GATE_TEXT = "Buyurtma berish uchun hisobingizga kiring yoki ro‘yxatdan o‘ting.";
   var gateEl = null, gateReturnFocus = null;
 
   function buildGate() {
@@ -261,9 +261,9 @@
       '<div class="gate-card"><div class="gate-icon">' + icon("user") + "</div>" +
       '<p class="gate-text" id="gateText"></p>' +
       '<div class="gate-actions">' +
-      '<a class="btn btn--gold" data-gate-login href="/Login">Войти</a>' +
-      '<a class="btn" data-gate-register href="/Register">Регистрация</a>' +
-      '<button class="btn btn--outline" type="button" data-gate-close>Отмена</button></div></div>';
+      '<a class="btn btn--gold" data-gate-login href="/Login">Kirish</a>' +
+      '<a class="btn" data-gate-register href="/Register">Ro‘yxatdan o‘tish</a>' +
+      '<button class="btn btn--outline" type="button" data-gate-close>Bekor qilish</button></div></div>';
     gateEl.querySelector("#gateText").textContent = GATE_TEXT;
     document.body.appendChild(gateEl);
     gateEl.addEventListener("click", function (e) { if (e.target.closest("[data-gate-close]")) hideGate(); });

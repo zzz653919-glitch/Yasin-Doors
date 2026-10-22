@@ -4,7 +4,7 @@
   var A = window.A, esc = A.esc, $ = A.$;
 
   var NAV = [
-    ["Asosiy", [["dashboard", "Dashboard"], ["orders", "Заказы"], ["products", "Mahsulotlar"], ["customers", "Mijozlar"], ["accounts", "Пользователи"]]],
+    ["Asosiy", [["dashboard", "Dashboard"], ["orders", "Buyurtmalar"], ["products", "Mahsulotlar"], ["customers", "Mijozlar"], ["accounts", "Foydalanuvchilar"]]],
     ["Boshqaruv", [["categories", "Kategoriyalar"], ["inventory", "Ombor"]]],
     ["Tizim", [["users", "Administratorlar"], ["settings", "Sozlamalar"], ["audit", "Audit log"]]]
   ];

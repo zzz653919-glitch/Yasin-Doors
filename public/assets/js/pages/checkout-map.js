@@ -88,5 +88,5 @@ YD.whenReady(function () {
   window.addEventListener("resize", function () { map.invalidateSize(); });
   setTimeout(function () { map.invalidateSize(); }, 300);
 
-  window.YDCheckoutMap = { map: map, error: function () { return invalid; } };
+  window.YDCheckoutMap = { map: map, error: function () { return invalid; }, setPoint: function (lat, lng) { place(lat, lng); map.setView([lat, lng], Math.max(map.getZoom(), 9)); }, clear: clear };
 });

@@ -1,0 +1,26 @@
+{
+  "name": "YasinDoors — MDF eshiklar",
+  "short_name": "YasinDoors",
+  "description": "Premium MDF eshiklar internet-do‘koni: katalog, 3D konstruktor, buyurtma va yetkazib berish.",
+  "lang": "uz",
+  "dir": "ltr",
+  "id": "/",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f7f5f1",
+  "theme_color": "#151515",
+  "categories": ["shopping", "lifestyle"],
+  "icons": [
+    { "src": "/assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Katalog", "url": "/Products?source=pwa", "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Savat", "url": "/Cart?source=pwa", "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Sevimlilar", "url": "/Favorites?source=pwa", "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "3D konstruktor", "url": "/Configurator?source=pwa", "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

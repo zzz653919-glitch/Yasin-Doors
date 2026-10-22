@@ -45,6 +45,32 @@ YD.whenReady(function () {
   if (!renderSummary()) return;
   document.addEventListener("yd:change", renderSummary);
 
+  /* Saqlangan manzillar: tanlansa hudud, manzil va (bo‘lsa) xarita nuqtasi to‘ldiriladi */
+  var savedAddrs = [];
+  var savedBox = document.getElementById("savedAddrBox"), savedSel = document.getElementById("savedAddr");
+  var REGLBL = { samarqand: "Samarqand viloyati", sirdaryo: "Sirdaryo viloyati", toshkent: "Toshkent viloyati", navoiy: "Navoiy viloyati" };
+  YD.account.onReady(function (st) {
+    if (!st.user || !savedSel) return;
+    YD.account.request("GET", "/api/account/addresses").then(function (res) {
+      savedAddrs = res.items || [];
+      if (!savedAddrs.length) return;
+      savedSel.innerHTML = '<option value="">Yangi manzil kiritaman</option>' + savedAddrs.map(function (a) {
+        return '<option value="' + a.id + '">' + esc(a.label) + " — " + esc(REGLBL[a.region] || a.region) + ", " + esc(a.address) + "</option>";
+      }).join("");
+      savedBox.hidden = false;
+    }).catch(function () { /* manzillarsiz ham buyurtma berish mumkin */ });
+  });
+  if (savedSel) savedSel.addEventListener("change", function () {
+    var a = savedAddrs.filter(function (x) { return String(x.id) === savedSel.value; })[0];
+    if (!a) { if (window.YDCheckoutMap) window.YDCheckoutMap.clear(); return; }
+    form.elements.region.value = a.region;
+    form.elements.address.value = a.address;
+    form.elements.region.dispatchEvent(new Event("change", { bubbles: true }));
+    form.elements.address.dispatchEvent(new Event("input", { bubbles: true }));
+    if (window.YDCheckoutMap) { if (a.lat != null && a.lng != null) window.YDCheckoutMap.setPoint(a.lat, a.lng); else window.YDCheckoutMap.clear(); }
+    form.elements.region.value = a.region;
+  });
+
   var rules = {
     name: function (v) { return v.replace(/\s/g, "").length >= 2; },
     phone: function (v) { return YDForm.isValidPhone(v); },
@@ -116,8 +142,11 @@ YD.whenReady(function () {
     submitBtn.disabled = true;
     submitBtn.textContent = "Yuborilmoqda…";
 
+    var saveIt = document.getElementById("saveAddr") && document.getElementById("saveAddr").checked && !savedSel.value;
     YDForm.postJSON("/api/order", payload).then(function (res) {
       YD.store.clearCart();
+      // Buyurtma saqlangandan keyingina manzil saqlanadi; xato bo‘lsa buyurtmaga ta’sir qilmaydi
+      if (saveIt) YD.account.request("POST", "/api/account/addresses", { label: "Manzil", region: payload.customer.region, address: payload.customer.address, lat: payload.customer.lat, lng: payload.customer.lng }).catch(function () {});
       root.innerHTML =
         '<div class="empty-state success-box">' +
           '<div class="empty-icon">' + YD.icon("check") + "</div>" +

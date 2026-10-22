@@ -99,7 +99,7 @@ async function seed() {
     await ctx.close();
 
     /* 4) Buyurtma faqat kirgan mijozdan: modal, tugmalar, qaytish, savat saqlanishi, qo'sh yuborish */
-    const GATE = "Для оформления заказа необходимо войти в аккаунт или зарегистрироваться.";
+    const GATE = "Buyurtma berish uchun hisobingizga kiring yoki ro‘yxatdan o‘ting.";
     ctx = await newCtx({ viewport: { width: 1280, height: 900 } }); p = await ctx.newPage();
     const errs = []; p.on("pageerror", e => errs.push(e.message));
     const cat = (await (await p.request.get(B + "/api/catalog")).json()).products;
@@ -114,10 +114,10 @@ async function seed() {
     ok(await gateVisible(), "1) mehmon 'Hoziroq buyurtma' bosdi: aniq matnli modal chiqdi");
     ok(p.url().includes("/Product"), "   sahifa o'zgarmadi");
     const btns = await p.locator("#authGate .gate-actions >> text=/./").allInnerTexts();
-    ok(JSON.stringify(btns) === JSON.stringify(["Войти", "Регистрация", "Отмена"]), "   tugmalar: Войти / Регистрация / Отмена " + JSON.stringify(btns));
-    // 4.2 Отмена yopadi
+    ok(JSON.stringify(btns) === JSON.stringify(["Kirish", "Ro‘yxatdan o‘tish", "Bekor qilish"]), "   tugmalar: Kirish / Ro‘yxatdan o‘tish / Bekor qilish " + JSON.stringify(btns));
+    // 4.2 Bekor qilish yopadi
     await p.click("#authGate [data-gate-close].btn"); await p.waitForTimeout(250);
-    ok(!(await p.locator("#authGate").isVisible()), "Отмена modalni yopadi");
+    ok(!(await p.locator("#authGate").isVisible()), "Bekor qilish modalni yopadi");
     // 4.3 Savat havolasi va checkout
     await p.goto(B + "/Cart"); await p.waitForTimeout(800);
     await p.click("a.btn[href='/Checkout']"); await p.waitForTimeout(400);
@@ -126,13 +126,13 @@ async function seed() {
     ok(!(await p.locator("#authGate").isVisible()), "Escape modalni yopadi");
     await p.goto(B + "/Checkout"); await p.waitForTimeout(1200);
     ok(await gateVisible(), "checkout sahifasiga to'g'ridan-to'g'ri kirish: modal chiqdi");
-    // 4.4 Войти -> /Login?next=%2FCheckout
+    // 4.4 Kirish -> /Login?next=%2FCheckout
     await p.click("[data-gate-login]"); await p.waitForURL(/Login/i);
-    ok(p.url().includes("next=%2FCheckout"), "2) 'Войти' kirish sahifasini ochdi (?next=%2FCheckout)");
-    // 4.5 Регистрация -> register
+    ok(p.url().includes("next=%2FCheckout"), "2) 'Kirish' kirish sahifasini ochdi (?next=%2FCheckout)");
+    // 4.5 Ro‘yxatdan o‘tish -> register
     await p.goto(B + "/Checkout"); await p.waitForTimeout(1000);
     await p.click("[data-gate-register]"); await p.waitForURL(/Register/i);
-    ok(p.url().includes("next=%2FCheckout"), "3) 'Регистрация' ro'yxatdan o'tish sahifasini ochdi");
+    ok(p.url().includes("next=%2FCheckout"), "3) 'Ro‘yxatdan o‘tish' ro'yxatdan o'tish sahifasini ochdi");
     // 4.6 Ro'yxatdan o'tgach checkout'ga qaytadi, savat saqlangan, forma to'ldirilgan
     await p.fill("#first_name", "Заказ"); await p.fill("#last_name", "Тестов"); await p.fill("#email", "e2e-order@example.com"); await p.fill("#phone", "+998 90 555 01 03");
     await p.fill("#password", PW); await p.fill("#password2", PW); await p.check("#consent");
@@ -147,6 +147,13 @@ async function seed() {
     await p.waitForSelector("#deliveryMap .leaflet-marker-icon", { timeout: 8000 });
     ok((await p.locator("#shopCoords").innerText()).includes("40°09'36.6\"N"), "xarita: bizning manzil koordinatalari ko'rinadi");
     ok((await p.getAttribute('#deliveryMap + .map-cards a[href*="google.com/maps"]', "href")) === "https://www.google.com/maps?q=40.160167,67.833500", "xarita: Google Maps havolasi (40.160167, 67.833500)");
+    // Saqlangan manzil: API orqali qo'shiladi, checkout'da tanlansa forma to'ladi
+    await p.evaluate(() => YD.account.request("POST", "/api/account/addresses", { label: "Sinov", region: "samarqand", address: "Registon ko'chasi 9" }));
+    await p.reload(); await p.waitForSelector("#savedAddrBox:not([hidden])", { timeout: 8000 });
+    await p.selectOption("#savedAddr", { index: 1 }); await p.waitForTimeout(300);
+    ok((await p.inputValue("#region")) === "samarqand" && (await p.inputValue("#address")) === "Registon ko'chasi 9", "checkout: saqlangan manzil tanlansa hudud va manzil to'ladi");
+    await p.selectOption("#savedAddr", ""); await p.fill("#address", "");
+    await p.waitForSelector("#deliveryMap .leaflet-marker-icon", { timeout: 8000 });
     await p.locator("#deliveryMap").scrollIntoViewIfNeeded(); await p.waitForTimeout(1200);
     const clickLL = async (lat, lng) => { await p.locator("#deliveryMap").scrollIntoViewIfNeeded(); await p.waitForTimeout(700); const q = await p.evaluate(([a, b]) => { const m = window.YDCheckoutMap.map, pt = m.latLngToContainerPoint([a, b]), r = m.getContainer().getBoundingClientRect(); return { x: r.left + pt.x, y: r.top + pt.y }; }, [lat, lng]); await p.mouse.click(q.x, q.y); await p.waitForTimeout(250); };
     await clickLL(39.77, 64.42); // Buxoro — zonadan tashqari

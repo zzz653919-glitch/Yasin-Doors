@@ -294,6 +294,7 @@
       '<div class="drawer-auth" data-auth-drawer></div>' +
       drawerLinks +
       '<div class="drawer-foot">' +
+      '<button class="btn btn--outline btn--block" type="button" data-install hidden>' + icon("grid") + " Ilovani o‘rnatish</button>" +
       '<button class="btn btn--outline btn--block" type="button" data-theme-toggle>' + icon("moon") + " Rejimni almashtirish</button>" +
       '<a class="btn btn--gold btn--block" href="/Products">Mahsulotlarni ko‘rish</a>' +
       "</div></aside>";
@@ -368,6 +369,27 @@
     applyTheme(next);
     try { localStorage.setItem(THEME_KEY, next); } catch (e) { /* e’tiborsiz */ }
   }
+
+  /* ---------- Oxirgi ko‘rilgan mahsulotlar va qidiruv tarixi (faqat shu qurilmada) ---------- */
+  function lsGet(key) { try { var v = JSON.parse(localStorage.getItem(key) || "[]"); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
+  function lsSet(key, v) { try { localStorage.setItem(key, JSON.stringify(v)); } catch (e) { /* e’tiborsiz */ } }
+  var recent = {
+    key: "yd_recent_v1",
+    list: function () { return lsGet(this.key).filter(function (x) { return typeof x === "string"; }).slice(0, 12); },
+    add: function (id) { var l = this.list().filter(function (x) { return x !== id; }); l.unshift(String(id)); lsSet(this.key, l.slice(0, 12)); },
+    clear: function () { lsSet(this.key, []); }
+  };
+  var searchHistory = {
+    key: "yd_search_v1",
+    list: function () { return lsGet(this.key).filter(function (x) { return typeof x === "string"; }).slice(0, 6); },
+    add: function (q) {
+      q = String(q || "").trim().slice(0, 60);
+      if (q.length < 2) return;
+      var l = this.list().filter(function (x) { return x.toLowerCase() !== q.toLowerCase(); });
+      l.unshift(q); lsSet(this.key, l.slice(0, 6));
+    },
+    clear: function () { lsSet(this.key, []); }
+  };
 
   /* ---------- Toast ---------- */
   function toast(message, link) {
@@ -578,6 +600,8 @@
     data: DATA,
     config: CONFIG,
     store: store,
+    recent: recent,
+    searchHistory: searchHistory,
     esc: esc,
     icon: icon,
     param: param,

@@ -135,6 +135,9 @@ YD.whenReady(function () {
   // Fav tugmasi holatini yangilash uchun
   document.dispatchEvent(new CustomEvent("yd:change"));
 
+  // Oxirgi ko‘rilganlar ro‘yxatiga yozish
+  YD.recent.add(p.id);
+
   // O‘xshash mahsulotlar
   var related = D.PRODUCTS.filter(function (x) { return x.id !== p.id && (x.style === p.style || x.color === p.color); });
   D.PRODUCTS.forEach(function (x) { if (related.length < 4 && x.id !== p.id && related.indexOf(x) === -1) related.push(x); });

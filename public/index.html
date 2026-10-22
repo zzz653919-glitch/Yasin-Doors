@@ -2,7 +2,7 @@
 <html lang="uz" class="no-js">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>YasinDoors — Premium MDF eshiklar</title>
   <meta name="description" content="YasinDoors — uyingiz uchun zamonaviy dizayndagi, yuqori sifatli MDF eshiklar. Katalog, buyurtma asosida tayyorlash, yetkazib berish va o‘rnatish.">
   <meta name="theme-color" content="#f7f5f1">
@@ -10,19 +10,43 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Archivo:wght@600;800&family=Fraunces:wght@500;600;700&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@500;600&family=Jost:wght@300;400;500;600&family=Lora:wght@500;600;700&family=Nunito:wght@600;800&family=Outfit:wght@400;600;800&family=Playfair+Display:wght@500;600;700&family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@400;600;700&family=Syne:wght@600;800&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="YasinDoors">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="stylesheet" href="/assets/css/style.css">
   <link rel="stylesheet" href="/assets/css/styles.css">
   <link rel="stylesheet" href="/assets/css/fx.css">
   <link rel="stylesheet" href="/assets/css/account.css">
   <link rel="stylesheet" href="/assets/css/mobile.css" media="(max-width: 960px)">
   <link rel="stylesheet" href="/assets/css/loader.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
   <script src="/assets/js/theme-init.js"></script>
+  <script src="/assets/js/pwa.js"></script>
   <script src="/assets/js/loader.js"></script>
 </head>
 <body data-page="home">
   <div data-include="header"></div>
 
   <main>
+    <form class="home-search" action="/Products" method="get" role="search" aria-label="Eshik qidirish">
+      <div class="container">
+        <label class="search">
+          <span class="sr-only">Eshik nomi yoki modelini qidirish</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-search"></use></svg>
+          <input class="input" type="search" name="q" placeholder="Eshik nomi yoki modelini qidirish…" autocomplete="off" enterkeyhint="search" maxlength="60">
+        </label>
+      </div>
+    </form>
+    <div class="container home-install">
+      <div class="install-card" data-install-card hidden>
+        <img class="install-ico" src="/assets/icons/icon-192.png" alt="" width="44" height="44">
+        <div><strong>YasinDoors ilovasi</strong>Bosh ekranga qo‘shing — tezroq ochiladi, internetsiz ham katalog.</div>
+        <button class="btn btn--gold btn--sm" type="button" data-install>O‘rnatish</button>
+      </div>
+    </div>
     <!-- HERO -->
     <section class="hero hero--video" aria-labelledby="heroTitle">
       <div class="container">
@@ -69,6 +93,39 @@
       <div id="doorShowcase"></div>
     </section>
 
+    <!-- ESHIK KATEGORIYALARI (katalogdagi haqiqiy kategoriyalar) -->
+    <section class="section section--tight" id="homeCatsSec" hidden>
+      <div class="container">
+        <div class="section-head section-head--row reveal">
+          <div><span class="eyebrow">Katalog</span><h2 class="title-lg">Eshik kategoriyalari</h2></div>
+          <a class="btn btn--outline hide-mobile" href="/Products">Hammasi <svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg></a>
+        </div>
+        <div class="cat-circles" id="homeCats" role="list"></div>
+      </div>
+    </section>
+
+    <!-- CHEGIRMADAGI ESHIKLAR -->
+    <section class="section section--tight" id="saleSec" hidden>
+      <div class="container">
+        <div class="section-head section-head--row reveal">
+          <div><span class="eyebrow">Aksiya</span><h2 class="title-lg">Chegirmadagi eshiklar</h2></div>
+          <a class="btn btn--outline" href="/Products?badge=sale&amp;sort=price-asc">Barchasi <svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg></a>
+        </div>
+        <div class="product-grid" id="saleGrid"></div>
+      </div>
+    </section>
+
+    <!-- YANGI MAHSULOTLAR -->
+    <section class="section section--tight" id="newSec" hidden>
+      <div class="container">
+        <div class="section-head section-head--row reveal">
+          <div><span class="eyebrow">Yangiliklar</span><h2 class="title-lg">Yangi mahsulotlar</h2></div>
+          <a class="btn btn--outline" href="/Products?badge=new">Barchasi <svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg></a>
+        </div>
+        <div class="product-grid" id="newGrid"></div>
+      </div>
+    </section>
+
     <!-- KATEGORIYALAR -->
     <section class="section section--tight">
       <div class="container">
@@ -111,6 +168,27 @@
           <a class="btn btn--outline" href="/Products">Barcha mahsulotlar <svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg></a>
         </div>
         <div class="product-grid" id="bestsellers"></div>
+      </div>
+    </section>
+
+    <!-- SIZ UCHUN TAVSIYA -->
+    <section class="section section--tight" id="recoSec" hidden>
+      <div class="container">
+        <div class="section-head section-head--row reveal">
+          <div><span class="eyebrow">Siz uchun</span><h2 class="title-lg" id="recoTitle">Tavsiya etilgan eshiklar</h2></div>
+        </div>
+        <div class="product-grid" id="recoGrid"></div>
+      </div>
+    </section>
+
+    <!-- OXIRGI KO‘RILGANLAR -->
+    <section class="section section--tight" id="recentSec" hidden>
+      <div class="container">
+        <div class="section-head section-head--row reveal">
+          <div><span class="eyebrow">Davom eting</span><h2 class="title-lg">Oxirgi ko‘rilganlar</h2></div>
+          <button class="btn btn--outline btn--sm" type="button" id="recentClear">Tozalash</button>
+        </div>
+        <div class="product-grid" id="recentGrid"></div>
       </div>
     </section>
 
