@@ -1,10 +1,10 @@
-/* YasinDoors AI — saytdagi chat yordamchisi.
-   Javoblar serverdan (POST /api/assistant): haqiqiy katalog/sozlamalar asosida; AI kaliti brauzerda yo‘q.
-   Tarix faqat shu qurilmada (localStorage, 7 kun), telefon/email yashiriladi. */
+/* YasinDoors AI — saytdagi chat yordamchisi (faqat standart savollar).
+   Mijoz matn yozmaydi: tezkor savol va tavsiya tugmalari bosiladi; javoblar serverdan (POST /api/assistant), haqiqiy katalog/sozlamalar asosida.
+   Tarix faqat shu qurilmada (localStorage, 7 kun). */
 (function () {
   "use strict";
   if (/^\/admin(\/|$)/i.test(location.pathname)) return;
-  var KEY = "yd_ai_v1", MAX_SAVED = 30, TTL = 7 * 24 * 3600 * 1000, MAX_LEN = 500;
+  var KEY = "yd_ai_v1", MAX_SAVED = 30, TTL = 7 * 24 * 3600 * 1000;
   var QUICK = [
     ["price", "MDF eshiklar narxi qancha?"], ["models", "Qanday eshik modellari bor?"], ["recommend", "Qaysi eshikni tanlashni tavsiya qilasiz?"],
     ["sizes", "Eshiklarning o‘lchamlari qanday?"], ["colors", "Qanday ranglar mavjud?"], ["material", "MDF eshik nimadan tayyorlanadi?"],
@@ -13,7 +13,7 @@
     ["contact", "Siz bilan qanday bog‘lanish mumkin?"], ["hours", "Ish vaqtingiz qanday?"], ["other", "Boshqa savolim bor."]
   ];
   var PHONE = { text: "+998 93 300 20 20", tel: "+998933002020" };
-  var GREETING = "Assalomu alaykum! Men YasinDoors AI yordamchisiman. MDF eshiklar, narx, yetkazib berish va buyurtma bo‘yicha savollaringizga javob beraman va sizga mos eshikni tanlashda yordam beraman. Savolni tanlang yoki o‘zingiz yozing.";
+  var GREETING = "Assalomu alaykum! Men YasinDoors AI yordamchisiman. MDF eshiklar, narx, yetkazib berish va buyurtma bo‘yicha savollaringizga javob beraman va sizga mos eshikni tanlashda yordam beraman. Quyidagi savollardan birini tanlang.";
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   var msgs = [], busy = false, lastPayload = null, built = false, open = false;
@@ -21,10 +21,6 @@
 
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function money(n) { return String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " so‘m"; }
-  function redact(s) {
-    return String(s || "").replace(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g, "[email yashirildi]")
-      .replace(/\+?\d[\d\s\-()]{6,}\d/g, function (m) { return m.replace(/\D/g, "").length >= 7 ? "[raqam yashirildi]" : m; });
-  }
   function ls(fn) { try { return fn(); } catch (e) { return null; } }
 
   /* ---------- Tarix (faqat shu qurilmada) ---------- */
@@ -86,6 +82,11 @@
     if (m.suggestions && m.suggestions.length) {
       var sg = document.createElement("div"); sg.className = "ai-suggest";
       m.suggestions.forEach(function (s) { sg.appendChild(chip(s.label, s)); });
+      if (!m.welcome && m.suggestions.length < QUICK.length) {   // har javobdan keyin 15 ta savolning hammasiga qaytish imkoni
+        var all = document.createElement("button"); all.type = "button"; all.className = "ai-chip ai-chip--all"; all.textContent = "Barcha savollar";
+        all.addEventListener("click", function () { sg.innerHTML = ""; QUICK.forEach(function (q) { sg.appendChild(chip(q[1], { intent: q[0] })); }); scrollDown(); });
+        sg.appendChild(all);
+      }
       bubble.appendChild(sg);
     }
     row.appendChild(bubble);
@@ -118,38 +119,26 @@
   }
 
   /* ---------- Yuborish ---------- */
-  function history() {
-    return msgs.filter(function (m) { return !m.error && !m.welcome; }).slice(-8).map(function (m) { return { role: m.role === "user" ? "user" : "assistant", text: redact(m.text).slice(0, 600) }; });
-  }
   function send(payload, display) {
-    if (busy) return;
-    var hint = "";
-    if (payload.text != null) {
-      var clean = redact(String(payload.text).slice(0, MAX_LEN));
-      if (clean !== String(payload.text).slice(0, MAX_LEN)) hint = "Shaxsiy ma’lumotlar (telefon/email) yashirildi.";
-      payload = { text: clean }; display = clean;
-    }
-    if (!display) return;
+    if (busy || !display) return;
     clearSuggestions();
     msgs.push({ role: "user", text: display });
     renderMsg(msgs[msgs.length - 1], { animate: true });
-    if (hint) { var h = document.createElement("div"); h.className = "ai-hint"; h.textContent = hint; el.log.appendChild(h); }
     save(); scrollDown();
-    lastPayload = payload;
-    request(payload);
+    lastPayload = { intent: payload.intent, action: payload.action, criteria: payload.criteria };
+    request(lastPayload);
   }
   function request(payload) {
     busy = true; setBusy(true); showTyping();
     var ctrl = typeof AbortController === "function" ? new AbortController() : null;
     var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, 22000) : 0;
-    var body = Object.assign({}, payload, { history: history().slice(0, -1) });
+    var body = payload;
     fetch("/api/assistant", { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(body), signal: ctrl ? ctrl.signal : undefined })
       .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok || !j.ok) { var e = new Error(j.error || "xato"); e.status = r.status; e.msg = j.error; throw e; } return j; }); })
       .then(function (j) {
         clearTimeout(timer); hideTyping();
         var m = { role: "bot", text: j.reply || "", products: j.products, links: j.links, suggestions: j.suggestions };
         msgs.push(m); renderMsg(m, { animate: true }); save(); scrollDown();
-        if (j.focus) el.input.focus();
       })
       .catch(function (err) {
         clearTimeout(timer); hideTyping();
@@ -159,7 +148,7 @@
       })
       .then(function () { busy = false; setBusy(false); });
   }
-  function setBusy(b) { el.send.disabled = b; el.panel.setAttribute("aria-busy", b ? "true" : "false"); }
+  function setBusy(b) { el.panel.setAttribute("aria-busy", b ? "true" : "false"); }
 
   /* ---------- Oyna ---------- */
   function build() {
@@ -173,25 +162,9 @@
       '<button type="button" class="ai-icon" data-ai-clear aria-label="Chat tarixini tozalash" title="Tarixni tozalash"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6"/></svg></button>' +
       '<button type="button" class="ai-icon" data-ai-close aria-label="Chatni yopish" title="Yopish"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></header>' +
       '<div class="ai-log" id="aiLog" role="log" aria-live="polite" aria-relevant="additions" tabindex="0"></div>' +
-      '<form class="ai-form" novalidate><label class="sr-only" for="aiInput">Savol yozing</label>' +
-      '<textarea id="aiInput" class="ai-input" rows="1" maxlength="' + MAX_LEN + '" placeholder="Savol yozing..." enterkeyhint="send" autocomplete="off"></textarea>' +
-      '<button type="submit" class="ai-send" aria-label="Yuborish"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></button></form>' +
-      '<p class="ai-note">Telefon raqam va manzilingizni chatga yozmang — ularni faqat buyurtma formasiga kiriting. Chat tarixi faqat shu qurilmada saqlanadi.</p>';
+      '<p class="ai-note">Savolni tugma bilan tanlang. Chat tarixi faqat shu qurilmada saqlanadi. Boshqa savol: +998 93 300 20 20.</p>';
     document.body.appendChild(panel);
-    el.panel = panel; el.log = panel.querySelector(".ai-log"); el.input = panel.querySelector(".ai-input"); el.send = panel.querySelector(".ai-send");
-    var form = panel.querySelector("form");
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var v = el.input.value.trim();
-      if (!v || busy) return;
-      el.input.value = ""; autoGrow();
-      send({ text: v });
-    });
-    el.input.addEventListener("keydown", function (e) {
-      if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event("submit", { cancelable: true })); }
-    });
-    el.input.addEventListener("input", autoGrow);
-    el.input.addEventListener("focus", function () { setTimeout(scrollDown, 250); });
+    el.panel = panel; el.log = panel.querySelector(".ai-log");
     panel.querySelector("[data-ai-close]").addEventListener("click", function () { toggle(false); });
     panel.querySelector("[data-ai-clear]").addEventListener("click", function () {
       ls(function () { localStorage.removeItem(KEY); }); lastPayload = null; welcome(); announce("Chat tarixi tozalandi");
@@ -209,17 +182,9 @@
     msgs = load();
     if (msgs.length) {
       var last = msgs[msgs.length - 1];
-      if (last.role === "bot") last.suggestions = QUICK.slice(0, 6).map(function (q) { return { label: q[1], intent: q[0] }; }).concat([{ label: "Barcha savollar", text: "", all: true }]);
+      if (last.role === "bot") last.suggestions = QUICK.slice(0, 5).map(function (q) { return { label: q[1], intent: q[0] }; });
       renderAll();
     } else welcome();
-    // "Barcha savollar" tugmasi tarixdan keyin to‘liq ro‘yxatni ko‘rsatadi
-    el.log.addEventListener("click", function (e) {
-      var b = e.target.closest && e.target.closest(".ai-chip");
-      if (b && b.textContent === "Barcha savollar") {
-        e.stopPropagation();
-        var sg = b.parentNode; sg.innerHTML = ""; QUICK.forEach(function (q) { sg.appendChild(chip(q[1], { intent: q[0] })); });
-      }
-    }, true);
     if (window.visualViewport) {
       var fit = function () {
         if (!open || window.innerWidth > 640) { panel.style.removeProperty("height"); panel.style.removeProperty("top"); return; }
@@ -229,7 +194,6 @@
       el.fit = fit;
     }
   }
-  function autoGrow() { el.input.style.height = "auto"; el.input.style.height = Math.min(el.input.scrollHeight, 110) + "px"; }
   function announce(t) { var n = document.createElement("div"); n.className = "ai-hint"; n.textContent = t; el.log.appendChild(n); scrollDown(); setTimeout(function () { n.remove(); }, 2500); }
 
   function toggle(force) {
@@ -240,7 +204,7 @@
     document.documentElement.classList.toggle("ai-open", open);
     if (open) {
       el.panel.classList.add("is-open");
-      setTimeout(function () { if (msgs.length === 1 && msgs[0].welcome) el.log.scrollTop = 0; else scrollDown(); if (window.innerWidth > 640) el.input.focus(); else el.panel.querySelector("[data-ai-close]").focus(); }, 30);
+      setTimeout(function () { if (msgs.length === 1 && msgs[0].welcome) el.log.scrollTop = 0; else scrollDown(); el.panel.querySelector("[data-ai-close]").focus(); }, 30);
       if (el.fit) el.fit();
     } else {
       el.panel.style.removeProperty("height"); el.panel.style.removeProperty("top");

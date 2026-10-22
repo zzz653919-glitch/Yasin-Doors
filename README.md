@@ -317,16 +317,12 @@ to‘lov uchun Payme/Click kabi provayder). Buyurtma holati profilda har ochilga
 
 Saytning pastki o‘ng burchagidagi **«AI yordam»** tugmasi chat oynasini ochadi (barcha ochiq sahifalarda; admin panelda yo‘q).
 
-**Qanday ishlaydi** (`lib/assistant.js`, `POST /api/assistant`, `public/assets/js/assistant.js`):
-1. **Tezkor javoblar (kalitsiz ham ishlaydi):** 15 ta standart savol va ularga yaqin erkin matnlar saytning haqiqiy ma’lumotlari asosida javoblanadi:
-   katalog (narx oralig‘i, uslub, rang, o‘lcham), sozlamalar (telefon, ish vaqti, yetkazib berish/kafolat shartlari — admin panelda kiritilgan bo‘lsa), 4 ta viloyat, xarita havolasi.
-   Ma’lumot saytda yo‘q bo‘lsa (kafolat, o‘rnatish/yetkazib berish narxi, to‘lov) — «saytda belgilanmagan, menejerdan so‘rang» deyiladi, raqam o‘ylab topilmaydi.
-2. **Mahsulot tavsiyasi:** uslub → rang → kenglik → budjet bo‘yicha qadamma-qadam yoki erkin matndan («qora zamonaviy eshik 3 mln gacha»). Natija — katalogdagi haqiqiy mahsulotlar
-   (rasm, nom, narx, sahifa havolasi). Mos eshik bo‘lmasa buni ochiq aytadi va eng yaqin variantlarni ko‘rsatadi.
-3. **Generativ AI (ixtiyoriy):** qoidalar tushunmagan erkin savol uchun. Kalit faqat serverda: `ANTHROPIC_API_KEY` (Vercel → Settings → Environment Variables), model: `AI_MODEL`
-   (standart `claude-haiku-5-5`). AI’ga faqat tekshirilgan faktlar va savolga yaqin mahsulotlar beriladi; buyurtma yaratish/bekor qilish/to‘lov vositalari yo‘q; telefon va email
-   yuborishdan oldin yashiriladi; javobdagi begona havolalar olib tashlanadi. Kalit bo‘lmasa yoki AI xato bersa — tezkor javoblar rejimi.
-4. **Xavfsizlik va maxfiylik:** chat matni bazaga yozilmaydi va logga chiqmaydi; tarix faqat foydalanuvchi qurilmasida (7 kun), telefon/email yashiriladi; ichki ko‘rsatma/kalit so‘rovlari
-   rad etiladi; IP bo‘yicha cheklov (10 daqiqada 40 xabar, generativ AI uchun 12).
+**Faqat standart savollar rejimi** (`lib/assistant.js`, `POST /api/assistant`, `public/assets/js/assistant.js`): mijoz matn yozmaydi, 15 ta standart savol tugmasidan birini tanlaydi
+(narx, modellar, tavsiya, o‘lcham, rang, material, buyurtma berish, yetkazib berish, viloyatlar, yetkazib berish narxi, o‘rnatish, buyurtma holati, aloqa, ish vaqti, boshqa savol).
+- Javoblar saytning haqiqiy ma’lumotlaridan tuziladi: katalog (narx oralig‘i, uslub, rang, o‘lcham), sozlamalar (telefon, ish vaqti, yetkazib berish/kafolat shartlari — admin panelda
+  kiritilgan bo‘lsa), 4 ta viloyat, xarita havolasi. Ma’lumot saytda yo‘q bo‘lsa (o‘rnatish/yetkazib berish narxi) — «saytda belgilanmagan, menejerdan so‘rang» deyiladi, raqam o‘ylab topilmaydi.
+- **Tavsiya** tugmalar orqali: uslub → rang → kenglik → budjet; natija — katalogdagi haqiqiy mahsulotlar (rasm, nom, narx, sahifa havolasi). Mos eshik bo‘lmasa ochiq aytiladi.
+- **Tashqi AI xizmati yo‘q:** API kaliti ham, to‘lov ham kerak emas. Chat matni bazaga yozilmaydi, logga chiqmaydi; tarix faqat foydalanuvchi qurilmasida (7 kun).
+- IP bo‘yicha cheklov: 10 daqiqada 60 so‘rov.
 
 Tekshirish: `npm test` (tests/assistant.test.js), `npm run test:e2e`.

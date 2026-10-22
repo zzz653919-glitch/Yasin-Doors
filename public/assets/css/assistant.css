@@ -4,7 +4,7 @@
   box-shadow: 0 14px 30px -10px rgba(0, 0, 0, .5), 0 0 0 1px color-mix(in srgb, #000 10%, transparent); cursor: pointer; transition: transform .2s var(--ease, ease), box-shadow .2s; }
 .ai-fab:hover { transform: translateY(-2px); }
 .ai-fab:active { transform: scale(.96); }
-.ai-fab:focus-visible, .ai-icon:focus-visible, .ai-chip:focus-visible, .ai-send:focus-visible, .ai-input:focus-visible, .ai-card:focus-visible, .ai-link:focus-visible, .ai-retry:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+.ai-fab:focus-visible, .ai-icon:focus-visible, .ai-chip:focus-visible, .ai-card:focus-visible, .ai-link:focus-visible, .ai-retry:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
 html.ai-open .ai-fab { display: none; }
 @media (max-width: 960px) {
   .ai-fab { right: 14px; bottom: calc(var(--bn-h, 64px) + 14px + env(safe-area-inset-bottom, 0px)); height: 52px; min-width: 52px; padding: 0; width: 52px; justify-content: center; }
@@ -65,13 +65,7 @@ html.ai-open .ai-fab { display: none; }
 .ai-dot:nth-child(2) { animation-delay: .15s; } .ai-dot:nth-child(3) { animation-delay: .3s; }
 @keyframes ai-bounce { 0%, 60%, 100% { transform: translateY(0); opacity: .45; } 30% { transform: translateY(-5px); opacity: 1; } }
 
-.ai-form { display: flex; align-items: flex-end; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--border); background: var(--surface); flex: none; }
-.ai-input { flex: 1; min-width: 0; resize: none; max-height: 110px; padding: 11px 14px; border-radius: 18px; border: 1px solid var(--border-strong, var(--border)); background: var(--bg-soft, var(--bg)); color: var(--text); font: 400 16px/1.4 inherit; }
-.ai-input::placeholder { color: var(--muted); }
-.ai-send { width: 44px; height: 44px; flex: none; border-radius: 50%; border: 0; background: var(--gold); color: #161411; display: grid; place-items: center; cursor: pointer; transition: transform .15s, opacity .15s; }
-.ai-send:active { transform: scale(.93); }
-.ai-send:disabled { opacity: .5; cursor: default; }
-.ai-note { margin: 0; padding: 0 14px calc(10px + env(safe-area-inset-bottom, 0px)); font-size: 11.5px; line-height: 1.4; color: var(--muted); background: var(--surface); flex: none; }
+.ai-note { margin: 0; padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px)); font-size: 11.5px; line-height: 1.4; color: var(--muted); background: var(--surface); flex: none; }
 
 /* Telefon: butun ekran oynasi; klaviatura ochilganda JS balandlikni visualViewport ga moslaydi */
 @media (max-width: 640px) {
@@ -82,3 +76,5 @@ html.ai-open .ai-fab { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .ai-panel.is-open, .ai-row.is-new, .ai-dot { animation: none !important; } .ai-fab, .ai-chip, .ai-card { transition: none; } }
 html.ai-open .section-nav, html.ai-open .to-top { display: none; }
+
+.ai-chip--all { border-style: dashed; color: var(--gold-strong, var(--text)); }
