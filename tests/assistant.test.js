@@ -84,6 +84,7 @@ test("ish vaqti: Asia/Tashkent bo'yicha ochiq / yopiq", async () => {
   assert.match(open.reply, /ish vaqti ichidamiz/);
   const closed = await A.handle({ intent: "hours" }, { ctx, now: new Date("2026-10-22T15:00:00Z") }); // 20:00
   assert.match(closed.reply, /ish vaqtidan tashqaridamiz/); assert.match(closed.reply, /buyurtmani hozir ham qoldirishingiz mumkin/i);
+  assert.doesNotMatch(closed.reply, /bog‘lanadi/, "menejer bog'lanishi va'da qilinmaydi");
 });
 
 test("noma'lum ma'lumotlar o'ylab topilmaydi: yetkazish/o'rnatish narxi va boshqa savol", async () => {
@@ -133,4 +134,11 @@ test("frontend: matn kiritish maydoni yo'q, kalit/ichki ko'rsatma yo'q", () => {
   assert.doesNotMatch(js, /<textarea|<input|contenteditable|ANTHROPIC|sk-ant|x-api-key|api\.anthropic/i);
   assert.match(js, /POST/); assert.ok(js.includes("/api/assistant"));
   for (const f of ["assets/css/assistant.css", "sw.js"]) assert.doesNotMatch(fs.readFileSync(path.join(root, f), "utf8"), /ANTHROPIC|sk-ant|x-api-key|api\.anthropic/i, f);
+});
+
+test("yordamchi menejer bog'lanishini va'da qilmaydi (tasdiqlash/qo'ng'iroq va'dasi yo'q)", async () => {
+  for (const id of A.QUICK_ORDER) for (const now of [new Date("2026-10-22T07:00:00Z"), new Date("2026-10-22T15:00:00Z")]) {
+    const r = await A.handle({ intent: id }, { ctx, now });
+    assert.doesNotMatch(r.reply, /bog‘lanadi|bog‘lanib|siz bilan bog‘lan|tasdiqlash uchun/i, id);
+  }
 });
