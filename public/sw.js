@@ -4,7 +4,7 @@
    - Katalog (/api/catalog): avval tarmoq, internet yo‘q bo‘lsa — oxirgi kesh.
    - Hisob, admin va buyurtma so‘rovlari HECH QACHON keshlanmaydi (maxfiylik va to‘g‘rilik). */
 "use strict";
-const VERSION = "yd-v2";
+const VERSION = "yd-v3";
 const SHELL_CACHE = VERSION + "-shell";
 const PAGE_CACHE = VERSION + "-pages";
 const DATA_CACHE = VERSION + "-data";
@@ -12,7 +12,7 @@ const SHELL = [
   "/offline.html", "/manifest.webmanifest", "/assets/css/offline.css", "/assets/js/offline.js",
   "/assets/css/style.css", "/assets/css/styles.css", "/assets/css/mobile.css", "/assets/css/account.css", "/assets/css/loader.css", "/assets/css/fx.css", "/assets/css/app.css",
   "/assets/js/theme-init.js", "/assets/js/loader.js", "/assets/js/config.js", "/assets/js/geo-regions.js", "/assets/js/products.js", "/assets/js/app.js",
-  "/assets/js/account.js", "/assets/js/scroll.js", "/assets/js/fx.js", "/assets/js/styles.js", "/assets/js/pwa.js", "/assets/js/form-utils.js",
+  "/assets/js/account.js", "/assets/js/scroll.js", "/assets/js/fx.js", "/assets/js/styles.js", "/assets/js/pwa.js", "/assets/js/assistant.js", "/assets/css/assistant.css", "/assets/js/form-utils.js",
   "/assets/img/favicon.svg", "/assets/img/fallback.svg", "/assets/icons/icon-192.png"
 ];
 const NEVER = /^\/api\/(account|admin|order|configurator|contact|catalog\/view)|^\/(Admin|admin)(\/|$)/;

@@ -282,6 +282,53 @@ async function seed() {
       const cls = await rp.evaluate(() => window.__cls);
       ok(cls < 0.02, "Aloqa sahifasi: yuklanganda kontent sakramaydi (CLS " + cls.toFixed(3) + ")");
       await rctx.close(); }
+    /* 4h) AI yordamchi: tugma joylashuvi, tezkor savollar, tavsiya suhbati, xato/qayta urinish, tarix, klaviatura */
+    for (const [label, vp, mob] of [["desktop", { width: 1440, height: 900 }, false], ["mobil", { width: 390, height: 844 }, true]]) {
+      const actx = await newCtx({ viewport: vp, isMobile: mob, hasTouch: mob }); const ap = await actx.newPage();
+      const aerrs = []; ap.on("pageerror", e => aerrs.push(e.message));
+      await ap.goto(B + "/"); await ap.waitForSelector("#aiFab");
+      const g = await ap.evaluate(() => { const f = document.getElementById("aiFab").getBoundingClientRect(), t = document.querySelector(".to-top"), tr = t && t.getBoundingClientRect(), nav = document.querySelector(".bottom-nav"), nr = nav && nav.getBoundingClientRect();
+        const hit = (a, b) => a && b && a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+        return { inView: f.right <= innerWidth && f.bottom <= innerHeight && f.left >= 0, overToTop: hit(f, tr), overNav: nr && nr.height > 0 ? hit(f, nr) : false, name: document.getElementById("aiFab").getAttribute("aria-label") }; });
+      ok(g.inView && !g.overToTop && !g.overNav && /AI/.test(g.name), label + " AI: tugma pastki o'ngda, 'sahifa boshiga' va pastki panelni yopmaydi");
+      await ap.click("#aiFab"); await ap.waitForSelector(".ai-panel:not([hidden])");
+      const pn = await ap.evaluate(() => { const r = document.querySelector(".ai-panel").getBoundingClientRect(); return { w: Math.round(r.width), h: Math.round(r.height), over: document.documentElement.scrollWidth - innerWidth, chips: document.querySelectorAll(".ai-suggest .ai-chip").length, title: document.querySelector(".ai-title strong").textContent }; });
+      ok(pn.title === "YasinDoors AI" && pn.chips === 15 && pn.over <= 0 && (mob ? pn.w === 390 : pn.w <= 392), label + " AI: oyna ochildi, 15 ta tezkor savol, gorizontal scroll yo'q (" + pn.w + "×" + pn.h + ")");
+      // tezkor savol → haqiqiy ma'lumot + mahsulot kartasi (rasm, nom, narx, havola)
+      await ap.locator(".ai-chip", { hasText: "MDF eshiklar narxi qancha?" }).click(); await ap.waitForSelector(".ai-card");
+      const card = await ap.evaluate(() => { const c = document.querySelector(".ai-card"); return { href: c.getAttribute("href"), img: !!c.querySelector("img").getAttribute("src"), price: /so‘m/.test(c.textContent), reply: document.querySelector(".ai-row--bot:last-of-type .ai-text, .ai-row--bot .ai-text:last-child") && "" }; });
+      ok(/^\/Product\?id=/.test(card.href) && card.img && card.price, label + " AI: tavsiya kartasi rasm, narx va mahsulot havolasi bilan");
+      for (const [q, re] of [["Qaysi viloyatlarga yetkazib berasiz?", /Samarqand.*Sirdaryo.*Toshkent.*Navoiy/s], ["Ish vaqtingiz qanday?", /09:00–17:00/], ["Siz bilan qanday bog‘lanish mumkin?", /\+998 93 300 20 20/]]) {
+        await ap.locator(".ai-chip", { hasText: q }).first().click(); await ap.waitForTimeout(700);
+        const txt = await ap.evaluate(() => Array.from(document.querySelectorAll(".ai-row--bot .ai-text")).pop().textContent);
+        ok(re.test(txt), label + " AI: «" + q + "» → to'g'ri javob");
+      }
+      ok(await ap.evaluate(() => !!document.querySelector('.ai-link[href="tel:+998933002020"]') && !!document.querySelector('.ai-link[href^="https://www.google.com/maps?q=40.160167,67.833500"]')), label + " AI: telefon va Google Maps havolalari");
+      // erkin matn + PII yashirilishi
+      await ap.fill("#aiInput", "qora zamonaviy eshik kerak, raqamim +998 90 123 45 67"); await ap.press("#aiInput", "Enter"); await ap.waitForTimeout(900);
+      const user = await ap.evaluate(() => Array.from(document.querySelectorAll(".ai-row--user .ai-text")).pop().textContent);
+      ok(/raqam yashirildi/.test(user) && !/123 45 67/.test(user), label + " AI: telefon raqami yuborilmadi va tarixda saqlanmadi");
+      ok(!(await ap.evaluate(() => localStorage.getItem("yd_ai_v1") || "")).includes("123 45 67"), label + " AI: localStorage'da telefon yo'q");
+      // tavsiya suhbati
+      await ap.fill("#aiInput", "Tavsiya kerak"); await ap.press("#aiInput", "Enter"); await ap.waitForTimeout(700);
+      for (let i = 0; i < 4; i++) { const c = ap.locator(".ai-suggest .ai-chip").first(); if (!(await c.count())) break; await c.click(); await ap.waitForTimeout(600); }
+      ok((await ap.locator(".ai-card").count()) >= 1, label + " AI: tavsiya suhbati oxirida mahsulotlar ko'rsatildi");
+      // xato → qayta urinish
+      await ap.route("**/api/assistant", r => r.abort());
+      await ap.fill("#aiInput", "salom"); await ap.press("#aiInput", "Enter"); await ap.waitForSelector(".ai-retry", { timeout: 8000 });
+      await ap.unroute("**/api/assistant");
+      await ap.click(".ai-retry"); await ap.waitForTimeout(900);
+      ok((await ap.locator(".ai-retry").count()) === 0 && /Assalomu alaykum/.test(await ap.evaluate(() => Array.from(document.querySelectorAll(".ai-row--bot .ai-text")).pop().textContent)), label + " AI: xatodan keyin «Qayta urinish» ishladi");
+      // tarix: qayta yuklashdan keyin saqlanadi; tozalash ishlaydi; Escape yopadi, fokus tugmaga qaytadi
+      await ap.reload(); await ap.waitForSelector("#aiFab"); await ap.click("#aiFab"); await ap.waitForSelector(".ai-panel:not([hidden])");
+      ok((await ap.locator(".ai-row--user").count()) >= 3, label + " AI: chat tarixi qayta yuklashdan keyin saqlangan");
+      await ap.click("[data-ai-clear]"); await ap.waitForTimeout(300);
+      ok((await ap.locator(".ai-row--user").count()) === 0 && !(await ap.evaluate(() => localStorage.getItem("yd_ai_v1"))), label + " AI: tarixni tozalash ishladi");
+      await ap.keyboard.press("Escape"); await ap.waitForTimeout(300);
+      ok((await ap.locator(".ai-panel:not([hidden])").count()) === 0 && (await ap.evaluate(() => document.activeElement.id)) === "aiFab", label + " AI: Escape yopadi, fokus tugmaga qaytadi");
+      ok(aerrs.length === 0, label + " AI: JS xatolari yo'q " + JSON.stringify(aerrs.slice(0, 2)));
+      await actx.close();
+    }
     /* 5) CSP bilan 3D konstruktor va sahifalar xatosiz yuklanadi */
     ctx = await newCtx({ viewport: { width: 1280, height: 800 } }); p = await ctx.newPage();
     const cspErr = []; p.on("console", m => { if (/Content Security Policy|Refused to/.test(m.text())) cspErr.push(m.text().slice(0, 100)); });

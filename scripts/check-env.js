@@ -37,6 +37,8 @@ const line = (ok, label, hint) => { console.log((ok ? "  ✓ " : "  ✗ ") + lab
   } catch (e) {
     line(false, "Bazaga ulanib bo'lmadi: " + String(e.message).replace(/(token|password)=\S+/gi, "$1=***").slice(0, 120), "DATABASE_URL / DATABASE_AUTH_TOKEN ni tekshiring");
   }
+  console.log("AI yordamchi (ixtiyoriy)");
+  line(set("ANTHROPIC_API_KEY"), "ANTHROPIC_API_KEY", "sozlanmasa AI yordamchi faqat tezkor javoblar (FAQ) rejimida ishlaydi");
   console.log("Parolni tiklash emaili");
   line(set("RESEND_API_KEY") && set("MAIL_FROM"), "RESEND_API_KEY va MAIL_FROM", "sozlanmasa «Parolni unutdingizmi?» ishlamaydi");
   line(set("APP_URL") || set("VERCEL_PROJECT_PRODUCTION_URL") || !process.env.VERCEL, "APP_URL (tiklash havolasi uchun)", "masalan https://yasindoors.uz");
