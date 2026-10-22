@@ -299,7 +299,7 @@ async function seed() {
       const card = await ap.evaluate(() => { const c = document.querySelector(".ai-card"); return { href: c.getAttribute("href"), img: !!c.querySelector("img").getAttribute("src"), price: /so‘m/.test(c.textContent), reply: document.querySelector(".ai-row--bot:last-of-type .ai-text, .ai-row--bot .ai-text:last-child") && "" }; });
       ok(/^\/Product\?id=/.test(card.href) && card.img && card.price, label + " AI: tavsiya kartasi rasm, narx va mahsulot havolasi bilan");
       for (const [q, re] of [["Qaysi viloyatlarga yetkazib berasiz?", /Samarqand.*Sirdaryo.*Toshkent.*Navoiy/s], ["Ish vaqtingiz qanday?", /09:00–17:00/], ["Siz bilan qanday bog‘lanish mumkin?", /\+998 93 300 20 20/]]) {
-        await ap.locator(".ai-chip", { hasText: q }).first().click(); await ap.waitForTimeout(700);
+        await ap.fill("#aiInput", q); await ap.press("#aiInput", "Enter"); await ap.waitForTimeout(900);
         const txt = await ap.evaluate(() => Array.from(document.querySelectorAll(".ai-row--bot .ai-text")).pop().textContent);
         ok(re.test(txt), label + " AI: «" + q + "» → to'g'ri javob");
       }
