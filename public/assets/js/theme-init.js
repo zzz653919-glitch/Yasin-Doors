@@ -8,12 +8,12 @@
   document.documentElement.setAttribute("data-theme", theme);
 })();
 
-/* Uslub: ?style=N yoki tanlangan uslub; hech narsa tanlanmagan bo‘lsa — asosiy Artistic (13); 0 — eski ko‘rinish */
+/* Uslub: ?style=N yoki tanlangan uslub; hech narsa tanlanmagan bo‘lsa — eski (asosiy) ko‘rinish */
 (function () {
   try {
     var q = /[?&]style=(\d+)/.exec(location.search);
-    var n = q ? Number(q[1]) : Number(localStorage.getItem("yd_style") === null ? 13 : localStorage.getItem("yd_style"));
+    var n = q ? Number(q[1]) : Number(localStorage.getItem("yd_style"));
     if (q) localStorage.setItem("yd_style", String(n));
     if (n >= 1 && n <= 20) document.documentElement.setAttribute("data-style", String(n));
-  } catch (e) { document.documentElement.setAttribute("data-style", "13"); }
+  } catch (e) { /* e‘tiborsiz */ }
 })();
