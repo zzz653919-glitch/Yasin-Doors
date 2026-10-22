@@ -1,4 +1,4 @@
-/* Вход / Регистрация / Восстановление пароля — формы, проверка полей, отправка на сервер */
+/* Kirish / Ro‘yxatdan o‘tish / Parolni tiklash — formalar, maydonlarni tekshirish, serverga yuborish */
 (function () {
   "use strict";
 
@@ -16,23 +16,23 @@
 
   function val(name) { var el = form.elements[name]; return el ? (el.type === "checkbox" ? el.checked : el.value) : ""; }
   function pw2Err() {
-    if (!val("password2")) return "Повторите пароль.";
-    return val("password2") === val("password") ? "" : "Пароли не совпадают.";
+    if (!val("password2")) return "Parolni takrorlang.";
+    return val("password2") === val("password") ? "" : "Parollar mos kelmadi.";
   }
 
   var RULES = {
     login: {
-      identifier: function () { return val("identifier").trim() ? "" : "Введите email или номер телефона."; },
-      password: function () { return val("password") ? "" : "Введите пароль."; }
+      identifier: function () { return val("identifier").trim() ? "" : "Email yoki telefon raqamini kiriting."; },
+      password: function () { return val("password") ? "" : "Parolni kiriting."; }
     },
     register: {
-      first_name: function () { return U.nameErr(val("first_name"), "имя"); },
-      last_name: function () { return U.nameErr(val("last_name"), "фамилию"); },
+      first_name: function () { return U.nameErr(val("first_name"), "ism"); },
+      last_name: function () { return U.nameErr(val("last_name"), "familiya"); },
       email: function () { return U.emailErr(val("email")); },
       phone: function () { return U.phoneErr(val("phone")); },
       password: function () { return U.passwordErr(val("password")); },
       password2: pw2Err,
-      consent: function () { return val("consent") ? "" : "Необходимо согласие с политикой конфиденциальности и условиями использования."; }
+      consent: function () { return val("consent") ? "" : "Maxfiylik siyosati va foydalanish shartlariga rozilik kerak."; }
     },
     forgot: { email: function () { return U.emailErr(val("email")); } },
     reset: { password: function () { return U.passwordErr(val("password")); }, password2: pw2Err }
@@ -41,7 +41,7 @@
   function check(name) {
     var msg = RULES[name]();
     U.setError(form, name, msg, touched);
-    // "Проверьте выделенные поля" — все поля исправлены, сообщение больше не нужно
+    // "Belgilangan maydonlarni tekshiring" — barcha maydonlar tuzatildi, xabar endi kerak emas
     if (alertEl.dataset.generic && !form.querySelector(".has-error")) { U.hideAlert(alertEl); delete alertEl.dataset.generic; }
     return !msg;
   }
@@ -49,7 +49,7 @@
   U.bindPwToggles(form);
   U.bindMeter(form, "password");
 
-  /* ---------- Проверка при вводе ---------- */
+  /* ---------- Kiritish paytida tekshirish ---------- */
   Object.keys(RULES).forEach(function (name) {
     var el = form.elements[name];
     if (!el) return;
@@ -64,13 +64,13 @@
     });
   });
 
-  /* ---------- Отправка ---------- */
+  /* ---------- Yuborish ---------- */
   function fail(err, firstField) {
     U.setBusy(submitBtn, false);
     busy = false;
     if (err.fields) Object.keys(err.fields).forEach(function (n) { U.setError(form, n, err.fields[n], touched); });
     if (err.status === 409 && kind === "register") {
-      U.showAlert(alertEl, "error", "", 'Аккаунт с такими данными уже существует. <a href="/Login">Войти</a> или <a href="/Forgot-Password">восстановить пароль</a>.');
+      U.showAlert(alertEl, "error", "", 'Bunday ma’lumotlar bilan hisob allaqachon mavjud. <a href="/Login">Kirish</a> yoki <a href="/Forgot-Password">parolni tiklash</a>.');
     } else {
       U.showAlert(alertEl, "error", err.message);
     }
@@ -90,8 +90,8 @@
     h.focus();
   }
   function invalidLink() {
-    stateCard("error", "info", "Ссылка недействительна",
-      "Срок действия ссылки истёк или она уже была использована. Запросите восстановление пароля заново.", "/Forgot-Password", "Запросить новую ссылку");
+    stateCard("error", "info", "Havola yaroqsiz",
+      "Havola muddati tugagan yoki allaqachon ishlatilgan. Parolni tiklashni qaytadan so‘rang.", "/Forgot-Password", "Yangi havola so‘rash");
   }
 
   var handlers = {
@@ -113,20 +113,20 @@
     },
     forgot: function () {
       return A.request("POST", "/api/account/forgot", { email: val("email").trim() }).then(function () {
-        stateCard("success", "mail", "Проверьте почту",
-          "Если аккаунт с адресом " + val("email").trim() + " существует, мы отправили письмо со ссылкой для смены пароля. Ссылка действует 1 час. Не пришло? Загляните в папку «Спам».",
-          "/Login", "Вернуться ко входу");
+        stateCard("success", "mail", "Pochtangizni tekshiring",
+          "Agar " + val("email").trim() + " manzilli hisob mavjud bo‘lsa, parolni almashtirish havolasi bilan xat yubordik. Havola 1 soat amal qiladi. Kelmadimi? «Spam» papkasini tekshiring.",
+          "/Login", "Kirishga qaytish");
       }).catch(function (err) { fail(err, "email"); });
     },
     reset: function () {
       return A.request("POST", "/api/account/reset", { token: token, password: val("password"), password2: val("password2") }).then(function () {
-        stateCard("success", "check", "Пароль изменён", "Теперь вы можете войти с новым паролем. На всех устройствах потребуется войти заново.", "/Login", "Войти");
+        stateCard("success", "check", "Parol o‘zgartirildi", "Endi yangi parol bilan kirishingiz mumkin. Barcha qurilmalarda qaytadan kirish talab qilinadi.", "/Login", "Kirish");
       }).catch(function (err) {
         if (err.code === "invalid_token") invalidLink(); else fail(err, "password");
       });
     }
   };
-  var BUSY_TEXT = { login: "Входим…", register: "Создаём аккаунт…", forgot: "Отправляем…", reset: "Сохраняем…" };
+  var BUSY_TEXT = { login: "Kirilmoqda…", register: "Hisob yaratilmoqda…", forgot: "Yuborilmoqda…", reset: "Saqlanmoqda…" };
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
@@ -138,7 +138,7 @@
       if (!check(name) && !first) first = name;
     });
     if (first) {
-      U.showAlert(alertEl, "error", "Проверьте выделенные поля.");
+      U.showAlert(alertEl, "error", "Belgilangan maydonlarni tekshiring.");
       alertEl.dataset.generic = "1";
       form.elements[first].focus();
       return;
@@ -148,7 +148,7 @@
     handlers[kind]();
   });
 
-  /* ---------- Особенности страниц ---------- */
+  /* ---------- Sahifa xususiyatlari ---------- */
   function unavailable(text) {
     U.showAlert(alertEl, "error", text);
     submitBtn.disabled = true;
@@ -166,11 +166,11 @@
 
   A.onReady(function (state) {
     if (state.user && (kind === "login" || kind === "register")) { window.location.replace(A.safeNext(params.get("next"))); return; }
-    if (!state.available) unavailable("Вход и регистрация временно недоступны. Попробуйте позже или свяжитесь с нами.");
-    else if (kind === "forgot" && !state.mail) unavailable("Восстановление пароля по email сейчас недоступно: отправка писем не настроена. Свяжитесь с нами — мы поможем сменить пароль.");
+    if (!state.available) unavailable("Kirish va ro‘yxatdan o‘tish vaqtincha mavjud emas. Keyinroq urinib ko‘ring yoki biz bilan bog‘laning.");
+    else if (kind === "forgot" && !state.mail) unavailable("Email orqali parolni tiklash hozir mavjud emas: xat yuborish sozlanmagan. Biz bilan bog‘laning — parolni almashtirishda yordam beramiz.");
   });
 
-  // «Войти» / «Зарегистрироваться» сохраняют адрес возврата
+  // «Kirish» / «Ro‘yxatdan o‘tish» qaytish manzilini saqlaydi
   var next = params.get("next");
   if (next && A.safeNext(next, "") === next) {
     document.querySelectorAll("[data-keep-next]").forEach(function (a) { a.href += "?next=" + encodeURIComponent(next); });

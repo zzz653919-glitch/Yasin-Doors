@@ -38,7 +38,7 @@ const line = (ok, label, hint) => { console.log((ok ? "  ✓ " : "  ✗ ") + lab
     line(false, "Bazaga ulanib bo'lmadi: " + String(e.message).replace(/(token|password)=\S+/gi, "$1=***").slice(0, 120), "DATABASE_URL / DATABASE_AUTH_TOKEN ni tekshiring");
   }
   console.log("Parolni tiklash emaili");
-  line(set("RESEND_API_KEY") && set("MAIL_FROM"), "RESEND_API_KEY va MAIL_FROM", "sozlanmasa «Забыли пароль?» ishlamaydi");
+  line(set("RESEND_API_KEY") && set("MAIL_FROM"), "RESEND_API_KEY va MAIL_FROM", "sozlanmasa «Parolni unutdingizmi?» ishlamaydi");
   line(set("APP_URL") || set("VERCEL_PROJECT_PRODUCTION_URL") || !process.env.VERCEL, "APP_URL (tiklash havolasi uchun)", "masalan https://yasindoors.uz");
   console.log("Telegram (ixtiyoriy)");
   line(set("TELEGRAM_BOT_TOKEN") && set("TELEGRAM_CHAT_ID"), "TELEGRAM_BOT_TOKEN va TELEGRAM_CHAT_ID", "sozlanmasa buyurtma xabarlari yuborilmaydi (buyurtmalar baribir bazaga yoziladi)");

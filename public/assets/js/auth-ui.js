@@ -1,33 +1,34 @@
-/* Auth formalari uchun umumiy yordamchilar: tekshiruv qoidalari, xato ko‘rsatish, yuklanish holati, "Показать пароль", parol kuchi */
+/* Auth formalari uchun umumiy yordamchilar: tekshiruv qoidalari, xato ko‘rsatish, yuklanish holati, "Parolni ko‘rsatish", parol kuchi */
 (function () {
   "use strict";
 
+  function cap(t) { t = String(t || ""); return t.charAt(0).toUpperCase() + t.slice(1); }
   var NAME_RE = /^[\p{L}][\p{L}\p{M}'’ʻ`. -]*$/u;
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
   /* Qoidalar serverdagi bilan bir xil (server har doim qayta tekshiradi) */
   function nameErr(v, label) {
     v = String(v).trim().replace(/\s+/g, " ");
-    if (v.length < 2) return "Введите " + label + " (не короче 2 букв).";
-    if (v.length > 40 || !NAME_RE.test(v)) return label.charAt(0).toUpperCase() + label.slice(1) + " может содержать только буквы, пробел и дефис.";
+    if (v.length < 2) return cap(label) + " kiriting (kamida 2 ta harf).";
+    if (v.length > 40 || !NAME_RE.test(v)) return cap(label) + " faqat harf, bo‘sh joy va defisdan iborat bo‘lishi mumkin.";
     return "";
   }
   function emailErr(v) {
     v = String(v).trim();
-    if (!v) return "Введите email.";
-    if (v.length > 254 || !EMAIL_RE.test(v)) return "Введите корректный email, например name@example.com.";
+    if (!v) return "Email kiriting.";
+    if (v.length > 254 || !EMAIL_RE.test(v)) return "To‘g‘ri email kiriting, masalan: name@example.com.";
     return "";
   }
   function phoneErr(v) {
-    if (!String(v).trim()) return "Введите номер телефона.";
-    if (!window.YDForm || !window.YDForm.isValidPhone(v)) return "Введите номер в формате +998 90 123 45 67.";
+    if (!String(v).trim()) return "Telefon raqamini kiriting.";
+    if (!window.YDForm || !window.YDForm.isValidPhone(v)) return "Raqamni +998 90 123 45 67 formatida kiriting.";
     return "";
   }
   function passwordErr(v) {
-    if (!v) return "Введите пароль.";
-    if (v.length < 8) return "Пароль должен содержать не менее 8 символов.";
-    if (v.length > 128) return "Пароль слишком длинный (максимум 128 символов).";
-    if (!/\p{L}/u.test(v) || !/[0-9]/.test(v)) return "Пароль должен содержать буквы и цифры.";
+    if (!v) return "Parolni kiriting.";
+    if (v.length < 8) return "Parol kamida 8 ta belgidan iborat bo‘lishi kerak.";
+    if (v.length > 128) return "Parol juda uzun (ko‘pi bilan 128 ta belgi).";
+    if (!/\p{L}/u.test(v) || !/[0-9]/.test(v)) return "Parolda harflar va raqamlar bo‘lishi kerak.";
     return "";
   }
 
@@ -59,7 +60,7 @@
     if (on) {
       btn.dataset.label = btn.textContent;
       btn.innerHTML = '<span class="spin" aria-hidden="true"></span><span></span>';
-      btn.lastChild.textContent = label || "Подождите…";
+      btn.lastChild.textContent = label || "Kuting…";
     } else if (btn.dataset.label) {
       btn.textContent = btn.dataset.label;
     }
@@ -75,8 +76,8 @@
         var show = input.type === "password";
         input.type = show ? "text" : "password";
         btn.setAttribute("aria-pressed", String(show));
-        btn.setAttribute("aria-label", show ? "Скрыть пароль" : "Показать пароль");
-        btn.querySelector("span").textContent = show ? "Скрыть пароль" : "Показать пароль";
+        btn.setAttribute("aria-label", show ? "Parolni yashirish" : "Parolni ko‘rsatish");
+        btn.querySelector("span").textContent = show ? "Parolni yashirish" : "Parolni ko‘rsatish";
         btn.querySelector("use").setAttribute("href", show ? "#i-eye-off" : "#i-eye");
         input.focus();
       });
@@ -87,7 +88,7 @@
   function bindMeter(form, inputName) {
     var meter = form.querySelector("[data-pw-meter]");
     if (!meter) return function () {};
-    var labels = ["", "Слабый пароль", "Средний пароль", "Хороший пароль", "Надёжный пароль"];
+    var labels = ["", "Kuchsiz parol", "O‘rtacha parol", "Yaxshi parol", "Ishonchli parol"];
     function update() {
       var v = form.elements[inputName].value;
       var has = { len: v.length >= 8, letter: /\p{L}/u.test(v), digit: /[0-9]/.test(v) };

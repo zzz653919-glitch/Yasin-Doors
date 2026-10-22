@@ -1,23 +1,32 @@
 <!doctype html>
-<html lang="ru" class="no-js">
+<html lang="uz" class="no-js">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Личный кабинет — YasinDoors</title>
-  <meta name="description" content="Личный кабинет YasinDoors: профиль, избранное и заказы.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Shaxsiy kabinet — YasinDoors</title>
+  <meta name="description" content="YasinDoors shaxsiy kabineti: profil, sevimlilar, manzillar va buyurtmalar.">
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#f7f5f1">
   <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Archivo:wght@600;800&family=Fraunces:wght@500;600;700&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@500;600&family=Jost:wght@300;400;500;600&family=Lora:wght@500;600;700&family=Nunito:wght@600;800&family=Outfit:wght@400;600;800&family=Playfair+Display:wght@500;600;700&family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@400;600;700&family=Syne:wght@600;800&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="YasinDoors">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="stylesheet" href="/assets/css/style.css">
   <link rel="stylesheet" href="/assets/css/styles.css">
   <link rel="stylesheet" href="/assets/css/fx.css">
   <link rel="stylesheet" href="/assets/css/account.css">
   <link rel="stylesheet" href="/assets/css/mobile.css" media="(max-width: 960px)">
   <link rel="stylesheet" href="/assets/css/loader.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/assistant.css">
   <script src="/assets/js/theme-init.js"></script>
+  <script src="/assets/js/pwa.js"></script>
   <script src="/assets/js/loader.js"></script>
 </head>
 <body data-page="profile" data-protected="1">
@@ -26,95 +35,122 @@
   <main>
     <section class="page-hero">
       <div class="container">
-        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Bosh sahifa</a><span>/</span><span aria-current="page">Личный кабинет</span></nav>
-        <h1 class="title-lg">Личный кабинет</h1>
-        <p id="profileSub">Ваши данные, избранное и история заказов.</p>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Bosh sahifa</a><span>/</span><span aria-current="page">Shaxsiy kabinet</span></nav>
+        <h1 class="title-lg">Shaxsiy kabinet</h1>
+        <p id="profileSub">Ma’lumotlaringiz, manzillar, sevimlilar va buyurtmalar tarixi.</p>
       </div>
     </section>
     <section class="section section--tight">
       <div class="container">
         <div class="profile-layout" id="profileRoot" hidden>
-          <aside class="card profile-side" aria-label="Разделы кабинета">
+          <aside class="card profile-side" aria-label="Kabinet bo‘limlari">
             <div class="profile-who"><span class="avatar" id="pAvatar"></span><div><strong id="pName"></strong><span id="pEmail"></span></div></div>
-            <button class="profile-tab" type="button" data-tab="profile"><svg class="icon" aria-hidden="true"><use href="#i-user"></use></svg>Профиль</button>
-            <button class="profile-tab" type="button" data-tab="favorites"><svg class="icon" aria-hidden="true"><use href="#i-heart"></use></svg>Избранное</button>
-            <button class="profile-tab" type="button" data-tab="orders"><svg class="icon" aria-hidden="true"><use href="#i-box"></use></svg>Заказы</button>
-            <button class="profile-tab profile-tab--out" type="button" data-account-logout><svg class="icon" aria-hidden="true"><use href="#i-logout"></use></svg>Выйти из аккаунта</button>
+            <button class="profile-tab" type="button" data-tab="profile"><svg class="icon" aria-hidden="true"><use href="#i-user"></use></svg>Profil</button>
+            <button class="profile-tab" type="button" data-tab="addresses"><svg class="icon" aria-hidden="true"><use href="#i-pin"></use></svg>Manzillar</button>
+            <button class="profile-tab" type="button" data-tab="favorites"><svg class="icon" aria-hidden="true"><use href="#i-heart"></use></svg>Sevimlilar</button>
+            <button class="profile-tab" type="button" data-tab="orders"><svg class="icon" aria-hidden="true"><use href="#i-box"></use></svg>Buyurtmalar</button>
+            <button class="profile-tab profile-tab--out" type="button" data-account-logout><svg class="icon" aria-hidden="true"><use href="#i-logout"></use></svg>Hisobdan chiqish</button>
           </aside>
 
           <div class="profile-main">
             <div class="card profile-panel" data-panel="profile">
-              <h2>Личные данные</h2>
-              <p class="sub">Эти данные подставляются при оформлении заказа.</p>
+              <h2>Shaxsiy ma’lumotlar</h2>
+              <p class="sub">Bu ma’lumotlar buyurtma berishda avtomatik to‘ldiriladi.</p>
               <form class="auth-form" id="profileForm" data-profile-form novalidate>
                 <div class="row2">
-                  <div class="field"><label for="first_name">Имя</label><input class="input" id="first_name" name="first_name" type="text" autocomplete="given-name" maxlength="40"></div>
-                  <div class="field"><label for="last_name">Фамилия</label><input class="input" id="last_name" name="last_name" type="text" autocomplete="family-name" maxlength="40"></div>
+                  <div class="field"><label for="first_name">Ism</label><input class="input" id="first_name" name="first_name" type="text" autocomplete="given-name" maxlength="40"></div>
+                  <div class="field"><label for="last_name">Familiya</label><input class="input" id="last_name" name="last_name" type="text" autocomplete="family-name" maxlength="40"></div>
                 </div>
                 <div class="field"><label for="email">Email</label><input class="input" id="email" name="email" type="email" autocomplete="email" autocapitalize="none" spellcheck="false" maxlength="254"></div>
-                <div class="field"><label for="phone">Телефон</label><input class="input" id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="20"></div>
+                <div class="field"><label for="phone">Telefon</label><input class="input" id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="20"></div>
                 <div class="field" id="curPwField" hidden>
-                  <label for="current_password">Текущий пароль</label>
+                  <label for="current_password">Joriy parol</label>
                   <div class="pw-wrap">
                     <input class="input" id="current_password" name="current_password" type="password" autocomplete="current-password" maxlength="128">
-                    <button class="pw-toggle" type="button" data-pw-toggle aria-pressed="false" aria-label="Показать пароль"><svg class="icon" aria-hidden="true"><use href="#i-eye"></use></svg><span>Показать пароль</span></button>
+                    <button class="pw-toggle" type="button" data-pw-toggle aria-pressed="false" aria-label="Parolni ko‘rsatish"><svg class="icon" aria-hidden="true"><use href="#i-eye"></use></svg><span>Parolni ko‘rsatish</span></button>
                   </div>
-                  <span class="hint">Для смены email или телефона подтвердите себя паролем.</span>
+                  <span class="hint">Email yoki telefonni o‘zgartirish uchun parolni tasdiqlang.</span>
                 </div>
                 <div class="form-alert" aria-live="polite"></div>
-                <div class="profile-actions"><button class="btn btn--gold" type="submit">Сохранить изменения</button></div>
+                <div class="profile-actions"><button class="btn btn--gold" type="submit">O‘zgarishlarni saqlash</button></div>
               </form>
             </div>
 
             <div class="card profile-panel" data-panel="profile">
-              <h2>Смена пароля</h2>
-              <p class="sub">После смены вы останетесь в аккаунте только на этом устройстве.</p>
+              <h2>Parolni almashtirish</h2>
+              <p class="sub">Almashtirgandan so‘ng faqat shu qurilmada hisobda qolasiz.</p>
               <form class="auth-form" id="passwordForm" data-profile-form novalidate>
                 <div class="field">
-                  <label for="pw_current">Текущий пароль</label>
+                  <label for="pw_current">Joriy parol</label>
                   <div class="pw-wrap">
                     <input class="input" id="pw_current" name="current_password" type="password" autocomplete="current-password" maxlength="128">
-                    <button class="pw-toggle" type="button" data-pw-toggle aria-pressed="false" aria-label="Показать пароль"><svg class="icon" aria-hidden="true"><use href="#i-eye"></use></svg><span>Показать пароль</span></button>
+                    <button class="pw-toggle" type="button" data-pw-toggle aria-pressed="false" aria-label="Parolni ko‘rsatish"><svg class="icon" aria-hidden="true"><use href="#i-eye"></use></svg><span>Parolni ko‘rsatish</span></button>
                   </div>
                 </div>
                 <div class="field">
-                  <label for="pw_new">Новый пароль</label>
+                  <label for="pw_new">Yangi parol</label>
                   <div class="pw-wrap">
                     <input class="input" id="pw_new" name="new_password" type="password" autocomplete="new-password" maxlength="128">
-                    <button class="pw-toggle" type="button" data-pw-toggle aria-pressed="false" aria-label="Показать пароль"><svg class="icon" aria-hidden="true"><use href="#i-eye"></use></svg><span>Показать пароль</span></button>
+                    <button class="pw-toggle" type="button" data-pw-toggle aria-pressed="false" aria-label="Parolni ko‘rsatish"><svg class="icon" aria-hidden="true"><use href="#i-eye"></use></svg><span>Parolni ko‘rsatish</span></button>
                   </div>
                 </div>
                 <div class="pw-meter" data-pw-meter data-score="0" aria-live="polite">
                   <div class="pw-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
                   <div class="pw-meter-label" data-pw-label></div>
-                  <ul class="pw-rules"><li data-rule="len">8+ символов</li><li data-rule="letter">Буквы</li><li data-rule="digit">Цифры</li></ul>
+                  <ul class="pw-rules"><li data-rule="len">8+ belgi</li><li data-rule="letter">Harflar</li><li data-rule="digit">Raqamlar</li></ul>
                 </div>
                 <div class="field">
-                  <label for="pw_new2">Повторите новый пароль</label>
+                  <label for="pw_new2">Yangi parolni takrorlang</label>
                   <div class="pw-wrap">
                     <input class="input" id="pw_new2" name="new_password2" type="password" autocomplete="new-password" maxlength="128">
-                    <button class="pw-toggle" type="button" data-pw-toggle aria-pressed="false" aria-label="Показать пароль"><svg class="icon" aria-hidden="true"><use href="#i-eye"></use></svg><span>Показать пароль</span></button>
+                    <button class="pw-toggle" type="button" data-pw-toggle aria-pressed="false" aria-label="Parolni ko‘rsatish"><svg class="icon" aria-hidden="true"><use href="#i-eye"></use></svg><span>Parolni ko‘rsatish</span></button>
                   </div>
                 </div>
                 <div class="form-alert" aria-live="polite"></div>
-                <div class="profile-actions"><button class="btn btn--gold" type="submit">Изменить пароль</button></div>
+                <div class="profile-actions"><button class="btn btn--gold" type="submit">Parolni o‘zgartirish</button></div>
+              </form>
+            </div>
+
+            <div class="card profile-panel" data-panel="addresses" hidden>
+              <h2>Saqlangan manzillar</h2>
+              <p class="sub">Yetkazib berish manzillarini saqlang — buyurtma berishda bir bosishda tanlanadi. Yetkazib berish: Samarqand, Sirdaryo, Toshkent va Navoiy viloyatlari.</p>
+              <div id="addrBox"></div>
+              <form class="auth-form" id="addrForm" novalidate>
+                <h3 class="addr-new">Yangi manzil qo‘shish</h3>
+                <div class="row2">
+                  <div class="field"><label for="a_label">Nomi</label><input class="input" id="a_label" name="label" type="text" maxlength="40" placeholder="Uy, ish…"></div>
+                  <div class="field"><label for="a_region">Hudud</label>
+                    <select class="select" id="a_region" name="region"><option value="">Viloyatni tanlang</option><option value="samarqand">Samarqand viloyati</option><option value="sirdaryo">Sirdaryo viloyati</option><option value="toshkent">Toshkent viloyati</option><option value="navoiy">Navoiy viloyati</option></select>
+                  </div>
+                </div>
+                <div class="field"><label for="a_address">Manzil</label><input class="input" id="a_address" name="address" type="text" maxlength="200" placeholder="Shahar, tuman, ko‘cha, uy" autocomplete="street-address"></div>
+                <div class="form-alert" aria-live="polite"></div>
+                <div class="profile-actions"><button class="btn btn--gold" type="submit">Manzilni saqlash</button></div>
               </form>
             </div>
 
             <div class="card profile-panel" data-panel="favorites" hidden>
-              <h2>Избранное</h2>
-              <p class="sub" id="favSub">Модели, которые вы сохранили.</p>
+              <h2>Sevimlilar</h2>
+              <p class="sub" id="favSub">Siz saqlagan modellar.</p>
               <div id="favBox"></div>
             </div>
 
+            <div class="profile-panel" data-panel="profile" data-install-wrap>
+              <div class="card install-panel" data-install-card hidden>
+                <h2>Ilovani o‘rnatish</h2>
+                <p class="sub">YasinDoors’ni telefoningiz bosh ekraniga qo‘shing: tez ochiladi, internet uzilsa ham katalogni ko‘rasiz.</p>
+                <button class="btn btn--gold" type="button" data-install>Ilovani o‘rnatish</button>
+              </div>
+            </div>
+
             <div class="card profile-panel" data-panel="orders" hidden>
-              <h2>История заказов</h2>
-              <p class="sub">Заказы, оформленные из вашего аккаунта.</p>
+              <h2>Buyurtmalar tarixi</h2>
+              <p class="sub">Hisobingizdan berilgan buyurtmalar va ularning holati.</p>
               <div id="ordersBox"></div>
             </div>
           </div>
         </div>
-        <div id="profileGate" class="auth-state" style="padding:48px 0"><p class="muted">Загрузка…</p></div>
+        <div id="profileGate" class="auth-state" style="padding:48px 0"><p class="muted">Yuklanmoqda…</p></div>
       </div>
     </section>
   </main>
@@ -128,6 +164,7 @@
   <script src="/assets/js/account.js"></script>
   <script src="/assets/js/scroll.js"></script>
   <script src="/assets/js/fx.js"></script>
+  <script src="/assets/js/assistant.js"></script>
   <script src="/assets/js/styles.js"></script>
   <script src="/assets/js/form-utils.js"></script>
   <script src="/assets/js/auth-ui.js"></script>

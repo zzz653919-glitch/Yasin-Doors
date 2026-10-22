@@ -1,0 +1,12 @@
+:root { color-scheme: light dark; --bg: #f7f5f1; --text: #151515; --muted: #6b655c; --gold: #b8935a; }
+@media (prefers-color-scheme: dark) { :root { --bg: #0e0e0f; --text: #f3efe8; --muted: #a9a296; --gold: #c9a66b; } }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.off { max-width: 420px; text-align: center; }
+.off-ico { width: 72px; height: 72px; }
+h1 { font-size: 26px; margin: 20px 0 8px; }
+p { color: var(--muted); line-height: 1.55; margin: 0 0 18px; }
+.off-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 22px; }
+.off-actions button, .off-actions a { min-height: 46px; padding: 0 20px; border-radius: 999px; border: 1px solid var(--gold); background: transparent; color: var(--text); font: 600 15px inherit; display: inline-flex; align-items: center; text-decoration: none; cursor: pointer; }
+.off-actions button { background: var(--gold); color: #161411; }
+.off-phone a { color: var(--gold); font-weight: 700; }

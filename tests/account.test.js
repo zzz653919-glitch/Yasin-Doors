@@ -1,5 +1,5 @@
 /**
- * Mijoz akkauntlari (Вход / Регистрация) testlari: ro'yxatdan o'tish, kirish, rate limit, profil, parol tiklash,
+ * Mijoz akkauntlari (Kirish / Ro‘yxatdan o‘tish) testlari: ro'yxatdan o'tish, kirish, rate limit, profil, parol tiklash,
  * sevimlilar, buyurtmalar tarixi, admin ruxsatlari. Ishga tushirish: npm test
  */
 "use strict";
@@ -74,23 +74,23 @@ test("registratsiya: muvaffaqiyatli, HttpOnly + SameSite cookie, parol xeshlanga
   assert.equal(Number((await db.get("SELECT COUNT(*) AS n FROM users")).n), 0);
 });
 
-test("registratsiya: validatsiya xatolari rus tilida, maydonlar bo'yicha", async () => {
+test("registratsiya: validatsiya xatolari o‘zbek tilida, maydonlar bo'yicha", async () => {
   const r = await reg({ first_name: "", email: "noto'g'ri", phone: "123", password: "qisqa", password2: "boshqa", consent: false }, { ip: "10.1.1.2" });
   assert.equal(r.status, 422);
   const f = r.json.fields;
-  assert.match(f.first_name, /имя/); assert.match(f.email, /email/); assert.match(f.phone, /\+998/);
-  assert.match(f.password, /8 символов/); assert.match(f.consent, /согласие/);
+  assert.match(f.first_name, /Ism/); assert.match(f.email, /email/); assert.match(f.phone, /\+998/);
+  assert.match(f.password, /8 ta belgi/); assert.match(f.consent, /rozilik/);
   const weak = await reg({ email: "weak@example.com", phone: "+998901110000", password: "abcdefgh", password2: "abcdefgh" }, { ip: "10.1.1.2" });
-  assert.match(weak.json.fields.password, /буквы и цифры/);
+  assert.match(weak.json.fields.password, /harflar va raqamlar/);
   const mism = await reg({ email: "mm@example.com", phone: "+998901110001", password2: "Sinov-8421-Boshqa" }, { ip: "10.1.1.2" });
-  assert.match(mism.json.fields.password2, /не совпадают/);
+  assert.match(mism.json.fields.password2, /mos kelmadi/);
 });
 
 test("registratsiya: takroriy email / telefon 409", async () => {
   const a = await reg({ phone: "+998 91 000 00 01" }, { ip: "10.1.1.3" });
-  assert.equal(a.status, 409); assert.match(a.json.fields.email, /уже существует/);
+  assert.equal(a.status, 409); assert.match(a.json.fields.email, /allaqachon mavjud/);
   const b = await reg({ email: "other@example.com" }, { ip: "10.1.1.3" });
-  assert.equal(b.status, 409); assert.match(b.json.fields.phone, /уже существует/);
+  assert.equal(b.status, 409); assert.match(b.json.fields.phone, /allaqachon mavjud/);
   const c = await reg({ email: "ALISHER@Example.com", phone: "+998 91 000 00 02" }, { ip: "10.1.1.3" });
   assert.equal(c.status, 409); // email registrga bog'liq emas
   assert.equal(Number((await db.get("SELECT COUNT(*) AS n FROM accounts")).n), 1);
@@ -115,7 +115,7 @@ test("me / himoyalangan marshrutlar: sessiyasiz 401, CSRF talab qilinadi", async
 
 test("kirish: email yoki telefon bilan, noto'g'ri parol rad, remember me", async () => {
   const bad = await call("POST", "/api/account/login", { body: { identifier: "alisher@example.com", password: "Xato12345" }, ip: "10.1.2.1" });
-  assert.equal(bad.status, 401); assert.match(bad.json.error, /Неверный/);
+  assert.equal(bad.status, 401); assert.match(bad.json.error, /noto‘g‘ri/);
   assert.equal(bad.headers["set-cookie"], undefined);
   const nobody = await call("POST", "/api/account/login", { body: { identifier: "yoq@example.com", password: "Xato12345" }, ip: "10.1.2.1" });
   assert.equal(nobody.status, 401); assert.equal(nobody.json.error, bad.json.error); // mavjudligi sezilmaydi
@@ -391,7 +391,7 @@ test("buyurtma: autentifikatsiyasiz /api/order va /api/configurator/order rad et
     const r = await call("POST", url, { body: orderBody, ip: "10.20.0.1" });
     assert.equal(r.status, 401, url);
     assert.equal(r.json.code, "login_required");
-    assert.equal(r.json.error, "Для оформления заказа необходимо войти в аккаунт или зарегистрироваться.");
+    assert.equal(r.json.error, "Buyurtma berish uchun hisobingizga kiring yoki ro‘yxatdan o‘ting.");
     // soxta/yaroqsiz cookie ham ishlamaydi
     const fake = await call("POST", url, { body: orderBody, ip: "10.20.0.2", cookie: "yd_acc=" + "x".repeat(43), csrf: "y" });
     assert.equal(fake.status, 401, url + " (soxta cookie)");

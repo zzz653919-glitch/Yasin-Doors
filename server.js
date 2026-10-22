@@ -35,6 +35,7 @@ const MIME = {
   ".css": "text/css; charset=utf-8",
   ".js": "application/javascript; charset=utf-8",
   ".json": "application/json; charset=utf-8",
+  ".webmanifest": "application/manifest+json; charset=utf-8",
   ".svg": "image/svg+xml",
   ".png": "image/png",
   ".jpg": "image/jpeg",
@@ -81,7 +82,7 @@ function serveStatic(req, res, pathname, search) {
     const headers = Object.assign({
       "Content-Type": MIME[ext] || "application/octet-stream",
       // HTML/CSS/JS har doim yangilansin (o‘zgarishlar darhol ko‘rinadi), rasmlar 1 soat keshda
-      "Cache-Control": [".html", ".css", ".js"].includes(ext) ? "no-cache" : "public, max-age=3600",
+      "Cache-Control": [".html", ".css", ".js", ".webmanifest"].includes(ext) ? "no-cache" : "public, max-age=3600",
       "X-Content-Type-Options": "nosniff"
     }, SITE_HEADERS, pathname.startsWith("/admin/") ? ADMIN_HEADERS : {});
 

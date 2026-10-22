@@ -25,7 +25,7 @@ YD.whenReady(function () {
     sort: YD.param("sort") || "default",
     styles: listParam("style").filter(function (s) { return D.STYLES[s]; }),
     colors: listParam("color").filter(function (c) { return D.COLORS[c]; }),
-    badges: listParam("badge").filter(function (b) { return b === "new" || b === "popular"; }),
+    badges: listParam("badge").filter(function (b) { return b === "new" || b === "popular" || b === "sale"; }),
     cats: listParam("cat"),
     min: Number(YD.param("min")) || 0,
     max: Number(YD.param("max")) || 0
@@ -91,7 +91,7 @@ YD.whenReady(function () {
       if (state.max && p.price > state.max) return false;
       if (state.styles.length && state.styles.indexOf(p.style) === -1) return false;
       if (state.colors.length && state.colors.indexOf(p.color) === -1) return false;
-      if (state.badges.length && !state.badges.every(function (b) { return p.badges.indexOf(b) !== -1; })) return false;
+      if (state.badges.length && !state.badges.every(function (b) { return b === "sale" ? (p.oldPrice && p.oldPrice > p.price) : p.badges.indexOf(b) !== -1; })) return false;
       return true;
     });
 
@@ -170,4 +170,32 @@ YD.whenReady(function () {
   }
   document.querySelectorAll(".nav-search").forEach(function (a) { a.addEventListener("click", function (e) { e.preventDefault(); focusSearch(); }); });
   if (YD.param("focus") === "search") setTimeout(focusSearch, 250);
+
+  /* ---------- Qidiruv tarixi: maydon bo‘sh va fokusda bo‘lganda oxirgi so‘rovlar chiqadi ---------- */
+  var histBox = document.createElement("div");
+  histBox.className = "search-history"; histBox.hidden = true;
+  searchInput.closest(".search").insertAdjacentElement("afterend", histBox);
+  function showHistory() {
+    var l = YD.searchHistory.list();
+    if (!l.length || searchInput.value) { histBox.hidden = true; return; }
+    histBox.innerHTML = '<span class="sh-title">Oxirgi qidiruvlar</span>' +
+      l.map(function (q) { return '<button type="button" class="chip" data-hq="' + YD.esc(q) + '">' + YD.esc(q) + "</button>"; }).join("") +
+      '<button type="button" class="sh-clear" data-hclear>Tozalash</button>';
+    histBox.hidden = false;
+  }
+  searchInput.addEventListener("focus", showHistory);
+  searchInput.addEventListener("input", function () { if (searchInput.value) histBox.hidden = true; else showHistory(); });
+  searchInput.addEventListener("keydown", function (e) { if (e.key === "Enter") YD.searchHistory.add(searchInput.value); });
+  searchInput.addEventListener("search", function () { if (searchInput.value) YD.searchHistory.add(searchInput.value); showHistory(); });
+  searchInput.addEventListener("blur", function () {
+    YD.searchHistory.add(searchInput.value);
+    setTimeout(function () { histBox.hidden = true; }, 200);
+  });
+  histBox.addEventListener("mousedown", function (e) { e.preventDefault(); });   // blur bo‘lmasin
+  histBox.addEventListener("click", function (e) {
+    var q = e.target.closest("[data-hq]");
+    if (q) { searchInput.value = q.getAttribute("data-hq"); state.q = searchInput.value; histBox.hidden = true; render(); return; }
+    if (e.target.closest("[data-hclear]")) { YD.searchHistory.clear(); histBox.hidden = true; }
+  });
+  if (YD.param("q")) YD.searchHistory.add(YD.param("q"));
 });

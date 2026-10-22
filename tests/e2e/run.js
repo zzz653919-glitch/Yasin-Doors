@@ -99,7 +99,7 @@ async function seed() {
     await ctx.close();
 
     /* 4) Buyurtma faqat kirgan mijozdan: modal, tugmalar, qaytish, savat saqlanishi, qo'sh yuborish */
-    const GATE = "Для оформления заказа необходимо войти в аккаунт или зарегистрироваться.";
+    const GATE = "Buyurtma berish uchun hisobingizga kiring yoki ro‘yxatdan o‘ting.";
     ctx = await newCtx({ viewport: { width: 1280, height: 900 } }); p = await ctx.newPage();
     const errs = []; p.on("pageerror", e => errs.push(e.message));
     const cat = (await (await p.request.get(B + "/api/catalog")).json()).products;
@@ -114,10 +114,10 @@ async function seed() {
     ok(await gateVisible(), "1) mehmon 'Hoziroq buyurtma' bosdi: aniq matnli modal chiqdi");
     ok(p.url().includes("/Product"), "   sahifa o'zgarmadi");
     const btns = await p.locator("#authGate .gate-actions >> text=/./").allInnerTexts();
-    ok(JSON.stringify(btns) === JSON.stringify(["Войти", "Регистрация", "Отмена"]), "   tugmalar: Войти / Регистрация / Отмена " + JSON.stringify(btns));
-    // 4.2 Отмена yopadi
+    ok(JSON.stringify(btns) === JSON.stringify(["Kirish", "Ro‘yxatdan o‘tish", "Bekor qilish"]), "   tugmalar: Kirish / Ro‘yxatdan o‘tish / Bekor qilish " + JSON.stringify(btns));
+    // 4.2 Bekor qilish yopadi
     await p.click("#authGate [data-gate-close].btn"); await p.waitForTimeout(250);
-    ok(!(await p.locator("#authGate").isVisible()), "Отмена modalni yopadi");
+    ok(!(await p.locator("#authGate").isVisible()), "Bekor qilish modalni yopadi");
     // 4.3 Savat havolasi va checkout
     await p.goto(B + "/Cart"); await p.waitForTimeout(800);
     await p.click("a.btn[href='/Checkout']"); await p.waitForTimeout(400);
@@ -126,13 +126,13 @@ async function seed() {
     ok(!(await p.locator("#authGate").isVisible()), "Escape modalni yopadi");
     await p.goto(B + "/Checkout"); await p.waitForTimeout(1200);
     ok(await gateVisible(), "checkout sahifasiga to'g'ridan-to'g'ri kirish: modal chiqdi");
-    // 4.4 Войти -> /Login?next=%2FCheckout
+    // 4.4 Kirish -> /Login?next=%2FCheckout
     await p.click("[data-gate-login]"); await p.waitForURL(/Login/i);
-    ok(p.url().includes("next=%2FCheckout"), "2) 'Войти' kirish sahifasini ochdi (?next=%2FCheckout)");
-    // 4.5 Регистрация -> register
+    ok(p.url().includes("next=%2FCheckout"), "2) 'Kirish' kirish sahifasini ochdi (?next=%2FCheckout)");
+    // 4.5 Ro‘yxatdan o‘tish -> register
     await p.goto(B + "/Checkout"); await p.waitForTimeout(1000);
     await p.click("[data-gate-register]"); await p.waitForURL(/Register/i);
-    ok(p.url().includes("next=%2FCheckout"), "3) 'Регистрация' ro'yxatdan o'tish sahifasini ochdi");
+    ok(p.url().includes("next=%2FCheckout"), "3) 'Ro‘yxatdan o‘tish' ro'yxatdan o'tish sahifasini ochdi");
     // 4.6 Ro'yxatdan o'tgach checkout'ga qaytadi, savat saqlangan, forma to'ldirilgan
     await p.fill("#first_name", "Заказ"); await p.fill("#last_name", "Тестов"); await p.fill("#email", "e2e-order@example.com"); await p.fill("#phone", "+998 90 555 01 03");
     await p.fill("#password", PW); await p.fill("#password2", PW); await p.check("#consent");
@@ -147,6 +147,13 @@ async function seed() {
     await p.waitForSelector("#deliveryMap .leaflet-marker-icon", { timeout: 8000 });
     ok((await p.locator("#shopCoords").innerText()).includes("40°09'36.6\"N"), "xarita: bizning manzil koordinatalari ko'rinadi");
     ok((await p.getAttribute('#deliveryMap + .map-cards a[href*="google.com/maps"]', "href")) === "https://www.google.com/maps?q=40.160167,67.833500", "xarita: Google Maps havolasi (40.160167, 67.833500)");
+    // Saqlangan manzil: API orqali qo'shiladi, checkout'da tanlansa forma to'ladi
+    await p.evaluate(() => YD.account.request("POST", "/api/account/addresses", { label: "Sinov", region: "samarqand", address: "Registon ko'chasi 9" }));
+    await p.reload(); await p.waitForSelector("#savedAddrBox:not([hidden])", { timeout: 8000 });
+    await p.selectOption("#savedAddr", { index: 1 }); await p.waitForTimeout(300);
+    ok((await p.inputValue("#region")) === "samarqand" && (await p.inputValue("#address")) === "Registon ko'chasi 9", "checkout: saqlangan manzil tanlansa hudud va manzil to'ladi");
+    await p.selectOption("#savedAddr", ""); await p.fill("#address", "");
+    await p.waitForSelector("#deliveryMap .leaflet-marker-icon", { timeout: 8000 });
     await p.locator("#deliveryMap").scrollIntoViewIfNeeded(); await p.waitForTimeout(1200);
     const clickLL = async (lat, lng) => { await p.locator("#deliveryMap").scrollIntoViewIfNeeded(); await p.waitForTimeout(700); const q = await p.evaluate(([a, b]) => { const m = window.YDCheckoutMap.map, pt = m.latLngToContainerPoint([a, b]), r = m.getContainer().getBoundingClientRect(); return { x: r.left + pt.x, y: r.top + pt.y }; }, [lat, lng]); await p.mouse.click(q.x, q.y); await p.waitForTimeout(250); };
     await clickLL(39.77, 64.42); // Buxoro — zonadan tashqari
@@ -275,6 +282,62 @@ async function seed() {
       const cls = await rp.evaluate(() => window.__cls);
       ok(cls < 0.02, "Aloqa sahifasi: yuklanganda kontent sakramaydi (CLS " + cls.toFixed(3) + ")");
       await rctx.close(); }
+    /* 4h) AI yordamchi (faqat standart savollar): tugma joylashuvi, tezkor savollar, tavsiya, xato/qayta urinish, tarix, klaviatura */
+    for (const [label, vp, mob] of [["desktop", { width: 1440, height: 900 }, false], ["mobil", { width: 390, height: 844 }, true]]) {
+      const actx = await newCtx({ viewport: vp, isMobile: mob, hasTouch: mob }); const ap = await actx.newPage();
+      const aerrs = []; ap.on("pageerror", e => aerrs.push(e.message));
+      await ap.goto(B + "/"); await ap.waitForSelector("#aiFab");
+      const g = await ap.evaluate(() => { const f = document.getElementById("aiFab").getBoundingClientRect(), t = document.querySelector(".to-top"), tr = t && t.getBoundingClientRect(), nav = document.querySelector(".bottom-nav"), nr = nav && nav.getBoundingClientRect();
+        const hit = (a, b) => a && b && a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+        return { inView: f.right <= innerWidth && f.bottom <= innerHeight && f.left >= 0, overToTop: hit(f, tr), overNav: nr && nr.height > 0 ? hit(f, nr) : false, name: document.getElementById("aiFab").getAttribute("aria-label") }; });
+      ok(g.inView && !g.overToTop && !g.overNav && /AI/.test(g.name), label + " AI: tugma pastki o'ngda, 'sahifa boshiga' va pastki panelni yopmaydi");
+      await ap.click("#aiFab"); await ap.waitForSelector(".ai-panel:not([hidden])"); await ap.waitForTimeout(500);   // ochilish animatsiyasi tugasin
+      const pn = await ap.evaluate(() => { const r = document.querySelector(".ai-panel").getBoundingClientRect(); return { w: Math.round(r.width), h: Math.round(r.height), over: document.documentElement.scrollWidth - innerWidth, chips: document.querySelectorAll(".ai-suggest .ai-chip").length, title: document.querySelector(".ai-title strong").textContent, inputs: document.querySelectorAll(".ai-panel textarea, .ai-panel input").length }; });
+      ok(pn.title === "YasinDoors AI" && pn.chips === 14 && pn.over <= 0 && (mob ? pn.w === 390 : pn.w <= 392), label + " AI: oyna ochildi, 14 ta tezkor savol, gorizontal scroll yo'q (" + pn.w + "×" + pn.h + ")");
+      ok(pn.inputs === 0, label + " AI: erkin matn kiritish maydoni yo'q");
+      // tezkor savol → haqiqiy ma'lumot + mahsulot kartasi
+      await ap.locator(".ai-chip", { hasText: "MDF eshiklar narxi qancha?" }).click(); await ap.waitForSelector(".ai-card");
+      const card = await ap.evaluate(() => { const c = document.querySelector(".ai-card"); return { href: c.getAttribute("href"), img: !!c.querySelector("img").getAttribute("src"), price: /so‘m/.test(c.textContent) }; });
+      ok(/^\/Product\?id=/.test(card.href) && card.img && card.price, label + " AI: kartada rasm, narx va mahsulot havolasi");
+      // har javobdan keyin «Barcha savollar» → 14 ta savolning hammasi qaytadi
+      for (const [q, re] of [["Qaysi viloyatlarga yetkazib berasiz?", /Samarqand.*Sirdaryo.*Toshkent.*Navoiy/s], ["Ish vaqtingiz qanday?", /09:00–17:00/], ["Siz bilan qanday bog‘lanish mumkin?", /\+998 93 300 20 20/], ["Boshqa savolim bor.", /menejerimiz javob beradi/]]) {
+        await ap.locator(".ai-chip--all").last().click(); await ap.waitForTimeout(200);
+        ok((await ap.locator(".ai-suggest .ai-chip").count()) === 14, label + " AI: «Barcha savollar» 14 ta savolni qaytardi");
+        await ap.locator(".ai-chip", { hasText: q }).last().click(); await ap.waitForTimeout(700);
+        const txt = await ap.evaluate(() => Array.from(document.querySelectorAll(".ai-row--bot .ai-text")).pop().textContent);
+        ok(re.test(txt), label + " AI: «" + q + "» → to'g'ri javob");
+      }
+      ok(await ap.evaluate(() => !!document.querySelector('.ai-link[href="tel:+998933002020"]') && !!document.querySelector('.ai-link[href^="https://www.google.com/maps?q=40.160167,67.833500"]')), label + " AI: telefon va Google Maps havolalari");
+      // tavsiya suhbati (faqat tugmalar)
+      await ap.locator(".ai-chip--all").last().click(); await ap.locator(".ai-chip", { hasText: "Qaysi eshikni tanlashni tavsiya qilasiz?" }).last().click(); await ap.waitForTimeout(600);
+      for (let i = 0; i < 4; i++) { const c = ap.locator(".ai-suggest .ai-chip:not(.ai-chip--all)").first(); if (!(await c.count())) break; await c.click(); await ap.waitForTimeout(600); }
+      ok((await ap.locator(".ai-card").count()) >= 2, label + " AI: tavsiya suhbati oxirida mahsulotlar ko'rsatildi");
+      // «Butun ekran» (kompyuterda): panel butun oynani egallaydi, qayta bosilsa qaytadi; telefonda tugma yo'q
+      if (!mob) {
+        await ap.click("[data-ai-full]"); await ap.waitForTimeout(300);
+        const full = await ap.evaluate(() => { const r = document.querySelector(".ai-panel").getBoundingClientRect(); return { w: Math.round(r.width), h: Math.round(r.height), iw: innerWidth, ih: innerHeight, pressed: document.querySelector("[data-ai-full]").getAttribute("aria-pressed"), over: document.documentElement.scrollWidth - innerWidth }; });
+        ok(full.w === full.iw && full.h === full.ih && full.pressed === "true" && full.over <= 0, "desktop AI: «Butun ekran» panelni butun oynaga kengaytirdi");
+        await ap.keyboard.press("Escape"); await ap.waitForTimeout(300);
+        const back = await ap.evaluate(() => ({ w: Math.round(document.querySelector(".ai-panel").getBoundingClientRect().width), open: !document.querySelector(".ai-panel").hidden }));
+        ok(back.open && back.w <= 392, "desktop AI: Esc butun ekrandan chiqaradi (chat yopilmaydi)");
+        await ap.click("[data-ai-full]"); await ap.click("[data-ai-full]"); await ap.waitForTimeout(200);
+      } else ok(!(await ap.locator("[data-ai-full]").isVisible()), "mobil AI: «Butun ekran» tugmasi yo'q (oyna allaqachon to'liq ekran)");
+      // xato → qayta urinish
+      await ap.route("**/api/assistant", r => r.abort());
+      await ap.locator(".ai-chip--all").last().click(); await ap.locator(".ai-chip", { hasText: "Ish vaqtingiz qanday?" }).last().click(); await ap.waitForSelector(".ai-retry", { timeout: 8000 });
+      await ap.unroute("**/api/assistant");
+      await ap.click(".ai-retry"); await ap.waitForTimeout(900);
+      ok((await ap.locator(".ai-retry").count()) === 0 && /09:00–17:00/.test(await ap.evaluate(() => Array.from(document.querySelectorAll(".ai-row--bot .ai-text")).pop().textContent)), label + " AI: xatodan keyin «Qayta urinish» ishladi");
+      // tarix: qayta yuklashdan keyin saqlanadi; tozalash ishlaydi; Escape yopadi, fokus tugmaga qaytadi
+      await ap.reload(); await ap.waitForSelector("#aiFab"); await ap.click("#aiFab"); await ap.waitForSelector(".ai-panel:not([hidden])");
+      ok((await ap.locator(".ai-row--user").count()) >= 3, label + " AI: chat tarixi qayta yuklashdan keyin saqlangan");
+      await ap.click("[data-ai-clear]"); await ap.waitForTimeout(300);
+      ok((await ap.locator(".ai-row--user").count()) === 0 && !(await ap.evaluate(() => localStorage.getItem("yd_ai_v1"))), label + " AI: tarixni tozalash ishladi");
+      await ap.keyboard.press("Escape"); await ap.waitForTimeout(300);
+      ok((await ap.locator(".ai-panel:not([hidden])").count()) === 0 && (await ap.evaluate(() => document.activeElement.id)) === "aiFab", label + " AI: Escape yopadi, fokus tugmaga qaytadi");
+      ok(aerrs.length === 0, label + " AI: JS xatolari yo'q " + JSON.stringify(aerrs.slice(0, 2)));
+      await actx.close();
+    }
     /* 5) CSP bilan 3D konstruktor va sahifalar xatosiz yuklanadi */
     ctx = await newCtx({ viewport: { width: 1280, height: 800 } }); p = await ctx.newPage();
     const cspErr = []; p.on("console", m => { if (/Content Security Policy|Refused to/.test(m.text())) cspErr.push(m.text().slice(0, 100)); });

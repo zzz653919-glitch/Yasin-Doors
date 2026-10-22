@@ -34,7 +34,7 @@
   };
 
   /* ---------- Holat nomlari ---------- */
-  A.STATUS = { new: "Новый", accepted: "В обработке", preparing: "Готовится", delivering: "Доставляется", completed: "Завершён", cancelled: "Отменён" };
+  A.STATUS = { new: "Yangi", accepted: "Tasdiqlandi", preparing: "Tayyorlanmoqda", delivering: "Yetkazilmoqda", completed: "Yakunlandi", cancelled: "Bekor qilindi" };
   A.PAYMENT = { unpaid: "To'lanmagan", paid: "To'langan", refunded: "Qaytarilgan" };
   A.DELIVERY = { pending: "Kutilmoqda", in_transit: "Yo'lda", delivered: "Yetkazildi", cancelled: "Bekor" };
   A.STATUS_COLORS = { new: "#d19a2b", accepted: "#3b82c4", preparing: "#8b5cf6", delivering: "#14a89b", completed: "#3fa66b", cancelled: "#d9534f" };

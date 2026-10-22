@@ -1,5 +1,5 @@
 /* =========================================================
-   YasinDoors — akkaunt: navbar menyusi, Вход / Регистрация formalari, profil
+   YasinDoors — akkaunt: navbar menyusi, Kirish / Ro‘yxatdan o‘tish formalari, profil
    Ranglar va o‘lchamlar style.css dagi tokenlardan (yorug‘/qorong‘i rejim avtomatik)
    ========================================================= */
 
@@ -91,7 +91,7 @@
 .auth-form .form-alert { margin: 0; }
 .auth-form .form-alert[role] { scroll-margin-top: 100px; }
 
-/* Parol maydoni + "Показать пароль" */
+/* Parol maydoni + "Parolni ko‘rsatish" */
 .pw-wrap { position: relative; }
 .pw-wrap .input { padding-right: 132px; }
 .pw-toggle {
