@@ -209,7 +209,7 @@ test("ochiq katalog: faol mahsulotlar, nofaollari yashirin; baza bo'sh bo'lsa 's
 
 /* ---------- Buyurtma va ombor ---------- */
 let orderId, orderNumber;
-const customer = { name: "Sinov Mijoz", phone: "90 123 45 67", address: "Toshkent, Sinov ko'chasi 1", comment: "<b>izoh</b>", install: true };
+const customer = { name: "Sinov Mijoz", phone: "90 123 45 67", region: "toshkent", address: "Toshkent, Sinov ko'chasi 1", comment: "<b>izoh</b>", install: true };
 
 test("ochiq buyurtma: narx bazadan olinadi, mijoz yaratiladi, ombor hali o'zgarmaydi", async () => {
   const r = await call("POST", "/api/order", {
@@ -232,7 +232,7 @@ test("ochiq buyurtma: narx bazadan olinadi, mijoz yaratiladi, ombor hali o'zgarm
 });
 
 test("ochiq buyurtma: noto'g'ri ma'lumotlar rad etiladi", async () => {
-  const noPhone = await call("POST", "/api/order", { body: { customer: { name: "Ali", phone: "123", address: "Toshkent 12" }, items: [{ id: productId, size: "800 × 2000", qty: 1 }] }, ip: "10.5.5.2" });
+  const noPhone = await call("POST", "/api/order", { body: { customer: { name: "Ali", phone: "123", region: "toshkent", address: "Toshkent 12" }, items: [{ id: productId, size: "800 × 2000", qty: 1 }] }, ip: "10.5.5.2" });
   assert.equal(noPhone.status, 422);
   const noProd = await call("POST", "/api/order", { body: { customer, items: [{ id: "yoq", size: "800 × 2000", qty: 1 }] }, ip: "10.5.5.2" });
   assert.equal(noProd.status, 422);

@@ -49,6 +49,11 @@
                 <span class="error" id="phone-error">Telefon raqamini to‘g‘ri kiriting, masalan: +998 90 123 45 67.</span>
               </div>
               <div class="field full">
+                <label for="region">Yetkazib berish hududi <span class="req">*</span></label>
+                <select class="select" id="region" name="region"><option value="">Viloyatni tanlang</option><option value="samarqand">Samarqand viloyati</option><option value="sirdaryo">Sirdaryo viloyati</option><option value="toshkent">Toshkent viloyati</option><option value="navoiy">Navoiy viloyati</option></select>
+                <span class="error" id="region-error">Hududni tanlang. Yetkazib berish: Samarqand, Sirdaryo, Toshkent va Navoiy viloyatlari.</span>
+              </div>
+              <div class="field full">
                 <label for="address">Yetkazib berish manzili <span class="req">*</span></label>
                 <input class="input" id="address" name="address" type="text" autocomplete="street-address" maxlength="200" placeholder="Shahar, tuman, ko‘cha, uy">
                 <span class="error" id="address-error">Iltimos, yetkazib berish manzilini kiriting.</span>

@@ -47,6 +47,7 @@ YD.whenReady(function () {
   var rules = {
     name: function (v) { return v.replace(/\s/g, "").length >= 2; },
     phone: function (v) { return YDForm.isValidPhone(v); },
+    region: function (v) { return !!v; },
     address: function (v) { return v.length >= 5; },
     agree: function (v) { return v === true; }
   };
@@ -70,6 +71,7 @@ YD.whenReady(function () {
       customer: {
         name: form.elements.name.value.trim(),
         phone: YDForm.formatPhone(form.elements.phone.value),
+        region: form.elements.region.value,
         address: form.elements.address.value.trim(),
         comment: form.elements.comment.value.trim(),
         install: form.elements.install.checked

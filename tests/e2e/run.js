@@ -142,7 +142,7 @@ async function seed() {
     ok((await p.locator("#summaryTotal").innerText()).replace(/\D/g, "") === String(price * 2), "6) ro'yxatdan o'tgach savat saqlangan (jami = 2 x narx)");
     ok((await p.inputValue("#name")) === "Заказ Тестов", "   ism avtomatik to'ldirildi");
     // 4.7 Kirgan foydalanuvchi buyurtma beradi, qo'sh bosish = bitta so'rov
-    await p.fill("#address", "Ташкент, ул. 1"); await p.check("#agree");
+    await p.selectOption("#region", "toshkent"); await p.fill("#address", "Ташкент, ул. 1"); await p.check("#agree");
     let posts = 0; await p.route("**/api/order", async r => { posts++; await new Promise(x => setTimeout(x, 400)); r.continue(); });
     await p.dblclick("#submitBtn"); await p.waitForSelector(".success-box", { timeout: 8000 });
     ok(posts === 1, "4) kirgan foydalanuvchi buyurtma berdi, qo'sh bosish = 1 ta so'rov");
@@ -152,7 +152,7 @@ async function seed() {
     await p.click("#buyNow"); await p.waitForURL(/Checkout/i, { timeout: 5000 });
     ok(!(await p.locator("#authGate").isVisible().catch(() => false)), "kirgan foydalanuvchi: 'Hoziroq buyurtma' modalsiz checkout'ga o'tadi");
     // 4.9 Backend: autentifikatsiyasiz so'rov rad etiladi (brauzerdan, cookie'siz kontekst)
-    const anon = await (await browser.newContext()).request.post(B + "/api/order", { data: { customer: { name: "Mehmon", phone: "+998901112299", address: "Ташкент, ул. 1" }, items: [{ id: "classic-royal", size: "800 × 2000", qty: 1 }] } });
+    const anon = await (await browser.newContext()).request.post(B + "/api/order", { data: { customer: { name: "Mehmon", phone: "+998901112299", region: "toshkent", address: "Ташкент, ул. 1" }, items: [{ id: "classic-royal", size: "800 × 2000", qty: 1 }] } });
     ok(anon.status() === 401 && (await anon.json()).code === "login_required", "5) backend: autentifikatsiyasiz buyurtma 401 login_required");
     const anonCfg = await (await browser.newContext()).request.post(B + "/api/configurator/order", { data: {} });
     ok(anonCfg.status() === 401, "   backend: konstruktor buyurtmasi ham 401");

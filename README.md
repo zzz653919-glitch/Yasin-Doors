@@ -278,3 +278,10 @@ Baza ulanmagan bo'lsa: ochiq sayt statik katalog bilan ishlayveradi, buyurtmalar
 - [ ] Bosh sahifadagi «Mijozlar fikrlari» namunaviy matnlarini (`public/index.html`) haqiqiy fikrlarga almashtiring yoki bo'limni olib tashlang.
 - [ ] `public/about.html` dagi `[to'ldiriladi]` joylar. Sertifikat yoki kafolatni faqat rasman mavjud bo'lsa yozing.
 - [ ] Mahsulot rasmlarini haqiqiy fotolar bilan almashtiring (admin panel orqali yuklanadi, avtomatik kichraytiriladi).
+
+## Yetkazib berish hududlari
+
+Buyurtma faqat **Samarqand, Sirdaryo, Toshkent va Navoiy viloyatlari** uchun qabul qilinadi (`lib/regions.js`).
+Mijoz buyurtma formasida hududni tanlaydi (`region`); server (`/api/order`, `/api/configurator/order`) tanlovni va manzil matnida
+boshqa viloyat nomi yo‘qligini tekshiradi, manzilga hudud nomi qo‘shib saqlaydi (Telegram xabarida ham shu ko‘rinadi).
+Geokodlash xizmati yo‘q, shuning uchun mijoz matnga yozgan haqiqiy joyni 100% tasdiqlab bo‘lmaydi — bu menejer tasdiqlashi bilan to‘ldiriladi.
