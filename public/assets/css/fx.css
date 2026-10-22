@@ -1,0 +1,19 @@
+/* YasinDoors — videodagi effektlar: halqa kursor, kontur "ruh" so‘z (parallax). Faqat qo‘shimcha qatlam. */
+.fx-cursor { position: fixed; left: 0; top: 0; z-index: 9998; width: 42px; height: 42px; margin: -21px 0 0 -21px; border-radius: 50%;
+  border: 1px solid var(--gold); pointer-events: none; opacity: 0; transform: translate3d(-100px,-100px,0);
+  transition: opacity .25s, width .25s var(--ease, ease), height .25s var(--ease, ease), margin .25s var(--ease, ease), background-color .25s; will-change: transform; }
+.fx-cursor.is-on { opacity: .9; }
+.fx-cursor.is-hot { width: 64px; height: 64px; margin: -32px 0 0 -32px; background: color-mix(in srgb, var(--gold) 14%, transparent); }
+.fx-cursor.is-down { width: 30px; height: 30px; margin: -15px 0 0 -15px; }
+
+.fx-ghost-sec { position: relative; overflow: hidden; }
+.fx-ghost { position: absolute; left: 0; top: 50%; z-index: 0; margin: 0; white-space: nowrap; pointer-events: none; user-select: none;
+  font-family: "Archivo", system-ui, sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: -.02em; line-height: .9;
+  font-size: clamp(96px, 20vw, 300px); color: transparent; -webkit-text-stroke: 1px color-mix(in srgb, var(--text) 16%, transparent);
+  transform: translate3d(var(--gx, 0px), -50%, 0); transition: opacity .35s; will-change: transform; }
+.fx-ghost.is-swap { opacity: 0; }
+.fx-ghost-sec > .container { position: relative; z-index: 1; }
+
+@media (hover: none), (pointer: coarse) { .fx-cursor { display: none; } }
+@media (max-width: 640px) { .fx-ghost { font-size: clamp(72px, 26vw, 140px); } }
+@media (prefers-reduced-motion: reduce) { .fx-cursor { display: none; } .fx-ghost { transition: none; } }
