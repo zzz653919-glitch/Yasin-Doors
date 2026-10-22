@@ -293,16 +293,16 @@ async function seed() {
       ok(g.inView && !g.overToTop && !g.overNav && /AI/.test(g.name), label + " AI: tugma pastki o'ngda, 'sahifa boshiga' va pastki panelni yopmaydi");
       await ap.click("#aiFab"); await ap.waitForSelector(".ai-panel:not([hidden])"); await ap.waitForTimeout(500);   // ochilish animatsiyasi tugasin
       const pn = await ap.evaluate(() => { const r = document.querySelector(".ai-panel").getBoundingClientRect(); return { w: Math.round(r.width), h: Math.round(r.height), over: document.documentElement.scrollWidth - innerWidth, chips: document.querySelectorAll(".ai-suggest .ai-chip").length, title: document.querySelector(".ai-title strong").textContent, inputs: document.querySelectorAll(".ai-panel textarea, .ai-panel input").length }; });
-      ok(pn.title === "YasinDoors AI" && pn.chips === 15 && pn.over <= 0 && (mob ? pn.w === 390 : pn.w <= 392), label + " AI: oyna ochildi, 15 ta tezkor savol, gorizontal scroll yo'q (" + pn.w + "×" + pn.h + ")");
+      ok(pn.title === "YasinDoors AI" && pn.chips === 14 && pn.over <= 0 && (mob ? pn.w === 390 : pn.w <= 392), label + " AI: oyna ochildi, 14 ta tezkor savol, gorizontal scroll yo'q (" + pn.w + "×" + pn.h + ")");
       ok(pn.inputs === 0, label + " AI: erkin matn kiritish maydoni yo'q");
       // tezkor savol → haqiqiy ma'lumot + mahsulot kartasi
       await ap.locator(".ai-chip", { hasText: "MDF eshiklar narxi qancha?" }).click(); await ap.waitForSelector(".ai-card");
       const card = await ap.evaluate(() => { const c = document.querySelector(".ai-card"); return { href: c.getAttribute("href"), img: !!c.querySelector("img").getAttribute("src"), price: /so‘m/.test(c.textContent) }; });
       ok(/^\/Product\?id=/.test(card.href) && card.img && card.price, label + " AI: kartada rasm, narx va mahsulot havolasi");
-      // har javobdan keyin «Barcha savollar» → 15 ta savolning hammasi qaytadi
+      // har javobdan keyin «Barcha savollar» → 14 ta savolning hammasi qaytadi
       for (const [q, re] of [["Qaysi viloyatlarga yetkazib berasiz?", /Samarqand.*Sirdaryo.*Toshkent.*Navoiy/s], ["Ish vaqtingiz qanday?", /09:00–17:00/], ["Siz bilan qanday bog‘lanish mumkin?", /\+998 93 300 20 20/], ["Boshqa savolim bor.", /menejerimiz javob beradi/]]) {
         await ap.locator(".ai-chip--all").last().click(); await ap.waitForTimeout(200);
-        ok((await ap.locator(".ai-suggest .ai-chip").count()) === 15, label + " AI: «Barcha savollar» 15 ta savolni qaytardi");
+        ok((await ap.locator(".ai-suggest .ai-chip").count()) === 14, label + " AI: «Barcha savollar» 14 ta savolni qaytardi");
         await ap.locator(".ai-chip", { hasText: q }).last().click(); await ap.waitForTimeout(700);
         const txt = await ap.evaluate(() => Array.from(document.querySelectorAll(".ai-row--bot .ai-text")).pop().textContent);
         ok(re.test(txt), label + " AI: «" + q + "» → to'g'ri javob");
@@ -312,6 +312,16 @@ async function seed() {
       await ap.locator(".ai-chip--all").last().click(); await ap.locator(".ai-chip", { hasText: "Qaysi eshikni tanlashni tavsiya qilasiz?" }).last().click(); await ap.waitForTimeout(600);
       for (let i = 0; i < 4; i++) { const c = ap.locator(".ai-suggest .ai-chip:not(.ai-chip--all)").first(); if (!(await c.count())) break; await c.click(); await ap.waitForTimeout(600); }
       ok((await ap.locator(".ai-card").count()) >= 2, label + " AI: tavsiya suhbati oxirida mahsulotlar ko'rsatildi");
+      // «Butun ekran» (kompyuterda): panel butun oynani egallaydi, qayta bosilsa qaytadi; telefonda tugma yo'q
+      if (!mob) {
+        await ap.click("[data-ai-full]"); await ap.waitForTimeout(300);
+        const full = await ap.evaluate(() => { const r = document.querySelector(".ai-panel").getBoundingClientRect(); return { w: Math.round(r.width), h: Math.round(r.height), iw: innerWidth, ih: innerHeight, pressed: document.querySelector("[data-ai-full]").getAttribute("aria-pressed"), over: document.documentElement.scrollWidth - innerWidth }; });
+        ok(full.w === full.iw && full.h === full.ih && full.pressed === "true" && full.over <= 0, "desktop AI: «Butun ekran» panelni butun oynaga kengaytirdi");
+        await ap.keyboard.press("Escape"); await ap.waitForTimeout(300);
+        const back = await ap.evaluate(() => ({ w: Math.round(document.querySelector(".ai-panel").getBoundingClientRect().width), open: !document.querySelector(".ai-panel").hidden }));
+        ok(back.open && back.w <= 392, "desktop AI: Esc butun ekrandan chiqaradi (chat yopilmaydi)");
+        await ap.click("[data-ai-full]"); await ap.click("[data-ai-full]"); await ap.waitForTimeout(200);
+      } else ok(!(await ap.locator("[data-ai-full]").isVisible()), "mobil AI: «Butun ekran» tugmasi yo'q (oyna allaqachon to'liq ekran)");
       // xato → qayta urinish
       await ap.route("**/api/assistant", r => r.abort());
       await ap.locator(".ai-chip--all").last().click(); await ap.locator(".ai-chip", { hasText: "Ish vaqtingiz qanday?" }).last().click(); await ap.waitForSelector(".ai-retry", { timeout: 8000 });

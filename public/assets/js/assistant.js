@@ -7,7 +7,7 @@
   var KEY = "yd_ai_v1", MAX_SAVED = 30, TTL = 7 * 24 * 3600 * 1000;
   var QUICK = [
     ["price", "MDF eshiklar narxi qancha?"], ["models", "Qanday eshik modellari bor?"], ["recommend", "Qaysi eshikni tanlashni tavsiya qilasiz?"],
-    ["sizes", "Eshiklarning o‘lchamlari qanday?"], ["colors", "Qanday ranglar mavjud?"], ["material", "MDF eshik nimadan tayyorlanadi?"],
+    ["sizes", "Eshiklarning o‘lchamlari qanday?"], ["colors", "Qanday ranglar mavjud?"],
     ["how_order", "Eshikni qanday buyurtma qilaman?"], ["delivery_service", "Yetkazib berish xizmati bormi?"], ["regions", "Qaysi viloyatlarga yetkazib berasiz?"],
     ["delivery_price", "Yetkazib berish narxi qancha?"], ["install", "Eshikni o‘rnatib berasizmi?"], ["order_status", "Buyurtmam holatini qanday bilaman?"],
     ["contact", "Siz bilan qanday bog‘lanish mumkin?"], ["hours", "Ish vaqtingiz qanday?"], ["other", "Boshqa savolim bor."]
@@ -82,7 +82,7 @@
     if (m.suggestions && m.suggestions.length) {
       var sg = document.createElement("div"); sg.className = "ai-suggest";
       m.suggestions.forEach(function (s) { sg.appendChild(chip(s.label, s)); });
-      if (!m.welcome && m.suggestions.length < QUICK.length) {   // har javobdan keyin 15 ta savolning hammasiga qaytish imkoni
+      if (!m.welcome && m.suggestions.length < QUICK.length) {   // har javobdan keyin 14 ta savolning hammasiga qaytish imkoni
         var all = document.createElement("button"); all.type = "button"; all.className = "ai-chip ai-chip--all"; all.textContent = "Barcha savollar";
         all.addEventListener("click", function () { sg.innerHTML = ""; QUICK.forEach(function (q) { sg.appendChild(chip(q[1], { intent: q[0] })); }); scrollDown(); });
         sg.appendChild(all);
@@ -159,6 +159,7 @@
     panel.innerHTML =
       '<header class="ai-head"><span class="ai-avatar" aria-hidden="true">AI</span>' +
       '<div class="ai-title"><strong>YasinDoors AI</strong><span>Eshik tanlash va buyurtma yordamchisi</span></div>' +
+      '<button type="button" class="ai-icon ai-full-btn" data-ai-full aria-pressed="false" aria-label="Butun ekran" title="Butun ekran"><svg class="ai-ic-expand" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg><svg class="ai-ic-shrink" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/></svg></button>' +
       '<button type="button" class="ai-icon" data-ai-clear aria-label="Chat tarixini tozalash" title="Tarixni tozalash"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6"/></svg></button>' +
       '<button type="button" class="ai-icon" data-ai-close aria-label="Chatni yopish" title="Yopish"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></header>' +
       '<div class="ai-log" id="aiLog" role="log" aria-live="polite" aria-relevant="additions" tabindex="0"></div>' +
@@ -166,11 +167,12 @@
     document.body.appendChild(panel);
     el.panel = panel; el.log = panel.querySelector(".ai-log");
     panel.querySelector("[data-ai-close]").addEventListener("click", function () { toggle(false); });
+    panel.querySelector("[data-ai-full]").addEventListener("click", function () { setFull(!panel.classList.contains("ai-full")); });
     panel.querySelector("[data-ai-clear]").addEventListener("click", function () {
       ls(function () { localStorage.removeItem(KEY); }); lastPayload = null; welcome(); announce("Chat tarixi tozalandi");
     });
     panel.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") { toggle(false); return; }
+      if (e.key === "Escape") { if (panel.classList.contains("ai-full") && window.innerWidth > 640) setFull(false); else toggle(false); return; }
       if (e.key === "Tab") {   // fokusni oyna ichida ushlab turish
         var f = Array.prototype.slice.call(panel.querySelectorAll("button:not([disabled]), a[href], textarea, [tabindex='0']")).filter(function (n) { return n.offsetParent !== null; });
         if (!f.length) return;
@@ -196,10 +198,22 @@
   }
   function announce(t) { var n = document.createElement("div"); n.className = "ai-hint"; n.textContent = t; el.log.appendChild(n); scrollDown(); setTimeout(function () { n.remove(); }, 2500); }
 
+  /* Butun ekran rejimi (kompyuterda; telefonda oyna allaqachon to‘liq ekran) */
+  function setFull(on) {
+    el.panel.classList.toggle("ai-full", on);
+    document.documentElement.classList.toggle("ai-fullscreen", on);
+    var b = el.panel.querySelector("[data-ai-full]");
+    b.setAttribute("aria-pressed", String(on)); b.setAttribute("aria-label", on ? "Butun ekrandan chiqish" : "Butun ekran"); b.title = on ? "Butun ekrandan chiqish" : "Butun ekran";
+    ls(function () { localStorage.setItem("yd_ai_full", on ? "1" : "0"); });
+    setTimeout(scrollDown, 50);
+  }
+
   function toggle(force) {
     build();
     open = typeof force === "boolean" ? force : !open;
     el.panel.hidden = !open;
+    if (!open && el.panel.classList.contains("ai-full")) { document.documentElement.classList.remove("ai-fullscreen"); }
+    if (open && ls(function () { return localStorage.getItem("yd_ai_full"); }) === "1") { el.panel.classList.add("ai-full"); document.documentElement.classList.add("ai-fullscreen"); el.panel.querySelector("[data-ai-full]").setAttribute("aria-pressed", "true"); }
     el.fab.setAttribute("aria-expanded", String(open));
     document.documentElement.classList.toggle("ai-open", open);
     if (open) {

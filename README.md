@@ -317,12 +317,13 @@ to‘lov uchun Payme/Click kabi provayder). Buyurtma holati profilda har ochilga
 
 Saytning pastki o‘ng burchagidagi **«AI yordam»** tugmasi chat oynasini ochadi (barcha ochiq sahifalarda; admin panelda yo‘q).
 
-**Faqat standart savollar rejimi** (`lib/assistant.js`, `POST /api/assistant`, `public/assets/js/assistant.js`): mijoz matn yozmaydi, 15 ta standart savol tugmasidan birini tanlaydi
-(narx, modellar, tavsiya, o‘lcham, rang, material, buyurtma berish, yetkazib berish, viloyatlar, yetkazib berish narxi, o‘rnatish, buyurtma holati, aloqa, ish vaqti, boshqa savol).
+**Faqat standart savollar rejimi** (`lib/assistant.js`, `POST /api/assistant`, `public/assets/js/assistant.js`): mijoz matn yozmaydi, 14 ta standart savol tugmasidan birini tanlaydi
+(narx, modellar, tavsiya, o‘lcham, rang, buyurtma berish, yetkazib berish, viloyatlar, yetkazib berish narxi, o‘rnatish, buyurtma holati, aloqa, ish vaqti, boshqa savol).
 - Javoblar saytning haqiqiy ma’lumotlaridan tuziladi: katalog (narx oralig‘i, uslub, rang, o‘lcham), sozlamalar (telefon, ish vaqti, yetkazib berish/kafolat shartlari — admin panelda
   kiritilgan bo‘lsa), 4 ta viloyat, xarita havolasi. Ma’lumot saytda yo‘q bo‘lsa (o‘rnatish/yetkazib berish narxi) — «saytda belgilanmagan, menejerdan so‘rang» deyiladi, raqam o‘ylab topilmaydi.
 - **Tavsiya** tugmalar orqali: uslub → rang → kenglik → budjet; natija — katalogdagi haqiqiy mahsulotlar (rasm, nom, narx, sahifa havolasi). Mos eshik bo‘lmasa ochiq aytiladi.
 - **Tashqi AI xizmati yo‘q:** API kaliti ham, to‘lov ham kerak emas. Chat matni bazaga yozilmaydi, logga chiqmaydi; tarix faqat foydalanuvchi qurilmasida (7 kun).
+- Oyna kompyuterda «Butun ekran» tugmasi bilan butun ekranga kengayadi (tanlov eslab qolinadi); telefonda u doim to‘liq ekran.
 - IP bo‘yicha cheklov: 10 daqiqada 60 so‘rov.
 
 Tekshirish: `npm test` (tests/assistant.test.js), `npm run test:e2e`.

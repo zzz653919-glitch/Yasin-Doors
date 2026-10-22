@@ -78,3 +78,18 @@ html.ai-open .ai-fab { display: none; }
 html.ai-open .section-nav, html.ai-open .to-top { display: none; }
 
 .ai-chip--all { border-style: dashed; color: var(--gold-strong, var(--text)); }
+
+/* Butun ekran rejimi (kompyuter): oyna ekranni to‘ldiradi, matn qulay kenglikda markazlashadi */
+.ai-full-btn .ai-ic-shrink { display: none; }
+.ai-panel.ai-full .ai-ic-expand { display: none; }
+.ai-panel.ai-full .ai-ic-shrink { display: inline; }
+@media (min-width: 641px) {
+  .ai-panel.ai-full { inset: 0; width: 100%; max-width: none; height: 100%; border-radius: 0; border: 0; z-index: 95; }
+  .ai-panel.ai-full .ai-head { padding: 16px max(20px, calc((100% - 860px) / 2)); }
+  .ai-panel.ai-full .ai-log { padding: 24px max(20px, calc((100% - 860px) / 2)) 12px; }
+  .ai-panel.ai-full .ai-bubble { max-width: 78%; font-size: 16px; }
+  .ai-panel.ai-full .ai-note { padding: 10px max(20px, calc((100% - 860px) / 2)) 14px; font-size: 12.5px; }
+  .ai-panel.ai-full .ai-cards { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+  html.ai-fullscreen, html.ai-fullscreen body { overflow: hidden; }
+}
+@media (max-width: 640px) { .ai-full-btn { display: none; } }
