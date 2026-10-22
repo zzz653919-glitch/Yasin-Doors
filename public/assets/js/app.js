@@ -303,6 +303,7 @@
   }
 
   function footerHTML() {
+    var GEO = window.YDGeo || { SHOP: { lat: 40.160167, lng: 67.8335 }, mapsUrl: function (a, b) { return "https://www.google.com/maps?q=" + a + "," + b; } };
     var socials = "";
     if (CONFIG.telegram) socials += '<a href="' + esc(CONFIG.telegram) + '" target="_blank" rel="noopener" aria-label="Telegram">' + icon("telegram") + "</a>";
     if (CONFIG.instagram) socials += '<a href="' + esc(CONFIG.instagram) + '" target="_blank" rel="noopener" aria-label="Instagram">' + icon("instagram") + "</a>";
@@ -312,19 +313,21 @@
     return '<footer class="site-footer"><div class="container">' +
       '<div class="footer-grid">' +
       "<div>" + logoHTML() +
-      "<p>" + esc(SITE.footer_about || "Faqat MDF eshiklar: zamonaviy dizayn, puxta ishlov va har bir detalga e’tibor.") + "</p>" +
+      "<p>" + esc(SITE.footer_about || "MDF eshiklar va zamonaviy dizayn yechimlari.") + "</p>" +
       (socials ? '<div class="socials">' + socials + "</div>" : "") + "</div>" +
-      '<div><h4>Sahifalar</h4><ul class="footer-links">' +
+      '<div><h4>Bizning manzilimiz</h4><ul class="footer-links footer-contact">' +
+      "<li>" + icon("pin") + "<span>" + contactValue(CONFIG.address) +
+      '<br><a class="footer-map" href="' + esc(GEO.mapsUrl(GEO.SHOP.lat, GEO.SHOP.lng)) + '" target="_blank" rel="noopener">Xaritada ko‘rish →</a></span></li>' +
+      "</ul></div>" +
+      '<div><h4>Telefon</h4><ul class="footer-links footer-contact">' +
+      "<li>" + icon("phone") + "<span>" + phoneLink + "</span></li></ul>" +
+      '<h4 class="footer-sub">Ish vaqti</h4><ul class="footer-links footer-contact">' +
+      "<li>" + icon("clock") + "<span>" + contactValue(CONFIG.workHours) + "</span></li></ul></div>" +
+      '<div><h4>Tezkor havolalar</h4><ul class="footer-links">' +
       '<li><a href="/">Bosh sahifa</a></li><li><a href="/Products">Katalog</a></li>' +
-      '<li><a href="/About">Biz haqimizda</a></li><li><a href="/Contact">Aloqa</a></li></ul></div>' +
-      '<div><h4>Xaridorlar uchun</h4><ul class="footer-links">' +
-      '<li><a href="/Favorites">Sevimlilar</a></li><li><a href="/Cart">Savat</a></li>' +
-      '<li><a href="/Checkout">Buyurtma berish</a></li><li><a href="/About#delivery">Yetkazib berish</a></li></ul></div>' +
-      '<div><h4>Aloqa</h4><ul class="footer-links footer-contact">' +
-      "<li>" + icon("phone") + "<span>" + phoneLink + "</span></li>" +
-      "<li>" + icon("pin") + "<span>" + contactValue(CONFIG.address) + "</span></li>" +
-      "<li>" + icon("clock") + "<span>" + contactValue(CONFIG.workHours) + "</span></li>" +
-      "</ul></div></div>" +
+      '<li><a href="/About">Biz haqimizda</a></li><li><a href="/Contact">Aloqa</a></li>' +
+      '<li><a href="/Cart">Savat</a></li><li><a href="/Favorites">Sevimlilar</a></li></ul></div>' +
+      "</div>" +
       '<div class="footer-bottom"><span>© ' + new Date().getFullYear() + " " + esc(SITE.store_name || "YasinDoors") + ". Barcha huquqlar himoyalangan.</span>" +
       (CATALOG_SOURCE === "db" ? "" : "<span>Saytdagi narxlar namunaviy va o‘zgarishi mumkin.</span>") + "</div>" +
       "</div></footer>";
@@ -558,7 +561,7 @@
     // Rasm yuklanmasa — fallback
     document.addEventListener("error", function (e) {
       var img = e.target;
-      if (img && img.tagName === "IMG" && !img.dataset.fallback) {
+      if (img && img.tagName === "IMG" && !img.dataset.fallback && !img.closest(".leaflet-container")) {
         img.dataset.fallback = "1";
         img.src = FALLBACK_IMG;
       }

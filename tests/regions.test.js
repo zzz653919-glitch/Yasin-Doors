@@ -108,3 +108,43 @@ test("regions.resolve: apostrof variantlari va ruxsat etilgan nomlar", () => {
   assert.throws(() => regions.resolve("samarqand", "Farg‘ona 5", fail));
   assert.throws(() => regions.resolve("samarqand", "Fargʻona 5", fail));
 });
+
+/* ---------- Xaritadan tanlangan koordinatalar (haqiqiy viloyat chegaralari) ---------- */
+const GEO = require("../public/assets/js/geo-regions.js");
+
+test("geo: viloyat markazlari to'g'ri aniqlanadi, boshqa viloyatlar va tashqari nuqtalar null", () => {
+  assert.equal(GEO.regionAt(39.654, 66.975), "samarqand");
+  assert.equal(GEO.regionAt(40.489, 68.784), "sirdaryo");
+  assert.equal(GEO.regionAt(41.469, 69.582), "toshkent");
+  assert.equal(GEO.regionAt(40.103, 65.374), "navoiy");
+  for (const [la, ln] of [[39.77, 64.42], [40.16, 67.8335], [37.2, 67.3], [41.0, 71.7], [0, 0], [NaN, 5], ["x", "y"]]) assert.equal(GEO.regionAt(la, ln), null, la + "," + ln);
+  assert.equal(GEO.SHOP.lat, 40.160167); assert.equal(GEO.SHOP.lng, 67.8335);
+  assert.equal(GEO.mapsUrl(GEO.SHOP.lat, GEO.SHOP.lng), "https://www.google.com/maps?q=40.160167,67.833500");
+});
+
+test("geo: ish vaqti Asia/Tashkent bo'yicha 09:00–17:00", () => {
+  assert.equal(GEO.workStatus(new Date("2026-10-22T03:59:00Z")).open, false); // 08:59
+  assert.equal(GEO.workStatus(new Date("2026-10-22T04:00:00Z")).open, true);  // 09:00
+  assert.equal(GEO.workStatus(new Date("2026-10-22T11:59:00Z")).open, true);  // 16:59
+  assert.equal(GEO.workStatus(new Date("2026-10-22T12:00:00Z")).open, false); // 17:00
+});
+
+test("buyurtma: xaritadagi nuqta saqlanadi; zonadan tashqari, noto'g'ri va mos kelmaydigan nuqtalar rad etiladi", async () => {
+  const ok = await order(C({ region: undefined, lat: 40.489, lng: 68.784, address: "Guliston, Markaz 1" }));
+  assert.equal(ok.status, 200, JSON.stringify(ok.json));
+  const row = await db.get("SELECT address, lat, lng FROM orders ORDER BY id DESC LIMIT 1");
+  assert.equal(row.address, "Sirdaryo viloyati, Guliston, Markaz 1");
+  assert.equal(Number(row.lat), 40.489); assert.equal(Number(row.lng), 68.784);
+  assert.equal((await order(C({ region: "sirdaryo", lat: "40.489", lng: "68.784" }))).status, 200);
+  for (const [lat, lng] of [[39.77, 64.42], [40.160167, 67.8335], [0, 0], ["abc", 5], [40.4, null], [NaN, 1], [1e9, 5], [{}, []], [40.489, undefined]]) {
+    const r = await order(C({ lat, lng }));
+    assert.equal(r.status, 422, JSON.stringify([lat, lng]));
+  }
+  // tanlangan hudud nuqta bilan mos kelmasa
+  assert.equal((await order(C({ region: "navoiy", lat: 40.489, lng: 68.784 }))).status, 422);
+});
+
+test("Telegram xabarida xarita havolasi bor", () => {
+  const msg = telegram.orderMessage({ number: "YD-3", created_at: new Date().toISOString(), name: "A", phone: "1", address: "Samarqand viloyati, x", lat: 39.654, lng: 66.975, install: 0, comment: "", items_count: 1, total: 1000 }, []);
+  assert.ok(msg.includes("https://www.google.com/maps?q=39.654000,66.975000"));
+});

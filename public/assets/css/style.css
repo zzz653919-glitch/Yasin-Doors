@@ -583,6 +583,9 @@ body.menu-open .drawer-backdrop { opacity: 1; visibility: visible; }
 .footer-links a:hover { color: var(--gold); }
 .footer-contact li { display: flex; gap: 10px; align-items: flex-start; color: #a9a296; font-size: 15px; }
 .footer-contact .icon { color: var(--gold); margin-top: 3px; width: 18px; height: 18px; }
+.footer-map { color: var(--gold) !important; font-weight: 600; display: inline-block; margin-top: 6px; }
+.footer-map:hover { text-decoration: underline; }
+.footer-sub { margin-top: 22px; }
 .footer-bottom { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 56px; padding-top: 24px; border-top: 1px solid #262627; font-size: 14px; color: #7a746b; }
 .socials { display: flex; gap: 10px; margin-top: 20px; }
 .socials a { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; border: 1px solid #2c2c2e; color: #cfc9be; transition: border-color .2s, color .2s; }

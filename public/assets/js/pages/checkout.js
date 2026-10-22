@@ -59,6 +59,8 @@ YD.whenReady(function () {
     YDForm.hideAlert(alertEl);
     if (!YD.account.state.user) { YD.account.showGate("/Checkout"); return; }
 
+    var mapErr = window.YDCheckoutMap && window.YDCheckoutMap.error();
+    if (mapErr) { YDForm.showAlert(alertEl, "error", mapErr); return; }
     var bad = YDForm.validate(form, rules);
     if (bad) {
       YDForm.showAlert(alertEl, "error", "Iltimos, belgilangan majburiy maydonlarni to‘g‘ri to‘ldiring.");
@@ -72,6 +74,8 @@ YD.whenReady(function () {
         name: form.elements.name.value.trim(),
         phone: YDForm.formatPhone(form.elements.phone.value),
         region: form.elements.region.value,
+        lat: form.elements.lat.value ? Number(form.elements.lat.value) : undefined,
+        lng: form.elements.lng.value ? Number(form.elements.lng.value) : undefined,
         address: form.elements.address.value.trim(),
         comment: form.elements.comment.value.trim(),
         install: form.elements.install.checked

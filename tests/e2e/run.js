@@ -142,7 +142,21 @@ async function seed() {
     ok((await p.locator("#summaryTotal").innerText()).replace(/\D/g, "") === String(price * 2), "6) ro'yxatdan o'tgach savat saqlangan (jami = 2 x narx)");
     ok((await p.inputValue("#name")) === "Заказ Тестов", "   ism avtomatik to'ldirildi");
     // 4.7 Kirgan foydalanuvchi buyurtma beradi, qo'sh bosish = bitta so'rov
-    await p.selectOption("#region", "toshkent"); await p.fill("#address", "Ташкент, ул. 1"); await p.check("#agree");
+    // Xarita: bizning marker, hudud zonalari, xaritadan nuqta tanlash va zonadan tashqari nuqtani rad etish
+    await p.route("**/tile.openstreetmap.org/**", r => r.fulfill({ contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==", "base64") }));
+    await p.waitForSelector("#deliveryMap .leaflet-marker-icon", { timeout: 8000 });
+    ok((await p.locator("#shopCoords").innerText()).includes("40°09'36.6\"N"), "xarita: bizning manzil koordinatalari ko'rinadi");
+    ok((await p.getAttribute('#deliveryMap + .map-cards a[href*="google.com/maps"]', "href")) === "https://www.google.com/maps?q=40.160167,67.833500", "xarita: Google Maps havolasi (40.160167, 67.833500)");
+    await p.locator("#deliveryMap").scrollIntoViewIfNeeded(); await p.waitForTimeout(1200);
+    const clickLL = async (lat, lng) => { await p.locator("#deliveryMap").scrollIntoViewIfNeeded(); await p.waitForTimeout(700); const q = await p.evaluate(([a, b]) => { const m = window.YDCheckoutMap.map, pt = m.latLngToContainerPoint([a, b]), r = m.getContainer().getBoundingClientRect(); return { x: r.left + pt.x, y: r.top + pt.y }; }, [lat, lng]); await p.mouse.click(q.x, q.y); await p.waitForTimeout(250); };
+    await clickLL(39.77, 64.42); // Buxoro — zonadan tashqari
+    ok((await p.inputValue("#lat")) === "" && /tashqarida/.test(await p.locator("#map-error").innerText()), "xarita: Buxoro nuqtasi rad etildi");
+    await p.fill("#address", "Buxoro, Navoiy 1"); await p.fill("#name", "Заказ Тестов"); await p.check("#agree");
+    await p.click("#submitBtn"); await p.waitForTimeout(500);
+    ok(!(await p.locator(".success-box").isVisible().catch(() => false)), "xarita: zonadan tashqari nuqta bilan buyurtma yuborilmadi");
+    await clickLL(39.654, 66.975); // Samarqand
+    ok((await p.inputValue("#region")) === "samarqand" && Number(await p.inputValue("#lat")) > 39, "xarita: Samarqand nuqtasi tanlandi, hudud avtomatik");
+    await p.fill("#address", "Registon ko'chasi 5");
     let posts = 0; await p.route("**/api/order", async r => { posts++; await new Promise(x => setTimeout(x, 400)); r.continue(); });
     await p.dblclick("#submitBtn"); await p.waitForSelector(".success-box", { timeout: 8000 });
     ok(posts === 1, "4) kirgan foydalanuvchi buyurtma berdi, qo'sh bosish = 1 ta so'rov");
@@ -173,6 +187,19 @@ async function seed() {
     ok(box && box.x >= 0 && box.x + box.width <= 320 && box.y >= 0 && box.y + box.height <= 640, "320px: modal ekrandan chiqmaydi " + JSON.stringify(box));
     await ctx.close();
 
+    /* 4b) Footer: manzil, telefon (tel:), ish vaqti, tezkor havolalar — desktop va mobil */
+    for (const [label, vp] of [["desktop", { width: 1440, height: 900 }], ["mobil", { width: 390, height: 844 }]]) {
+      const fctx = await newCtx({ viewport: vp, isMobile: vp.width < 700, hasTouch: vp.width < 700 }); const fp = await fctx.newPage();
+      await fp.goto(B + "/"); await fp.waitForSelector(".site-footer .footer-grid");
+      const f = await fp.evaluate(() => { const q = s => document.querySelector(".site-footer " + s);
+        return { tel: q('a[href="tel:+998933002020"]') && q('a[href="tel:+998933002020"]').textContent, map: q(".footer-map") && q(".footer-map").getAttribute("href"), text: q(".footer-grid").innerText,
+          links: Array.from(document.querySelectorAll(".site-footer .footer-links li a")).map(a => a.getAttribute("href")).filter(h => h && h[0] === "/"), over: document.documentElement.scrollWidth - innerWidth }; });
+      ok(f.tel === "+998 93 300 20 20", label + " footer: telefon tel:+998933002020 havolasi");
+      ok(f.map === "https://www.google.com/maps?q=40.160167,67.833500", label + " footer: Xaritada ko'rish -> Google Maps");
+      ok(/40°09'36\.6"N 67°50'00\.6"E/.test(f.text) && /Har kuni: 09:00–17:00/.test(f.text) && /MDF eshiklar va zamonaviy dizayn yechimlari\./.test(f.text), label + " footer: manzil, ish vaqti, tavsif");
+      ok(["/", "/Products", "/About", "/Contact", "/Cart", "/Favorites"].every(h => f.links.includes(h)) && f.over <= 0, label + " footer: tezkor havolalar, gorizontal scroll yo'q");
+      await fctx.close();
+    }
     /* 5) CSP bilan 3D konstruktor va sahifalar xatosiz yuklanadi */
     ctx = await newCtx({ viewport: { width: 1280, height: 800 } }); p = await ctx.newPage();
     const cspErr = []; p.on("console", m => { if (/Content Security Policy|Refused to/.test(m.text())) cspErr.push(m.text().slice(0, 100)); });

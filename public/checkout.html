@@ -17,6 +17,8 @@
   <link rel="stylesheet" href="/assets/css/account.css">
   <link rel="stylesheet" href="/assets/css/mobile.css" media="(max-width: 960px)">
   <link rel="stylesheet" href="/assets/css/loader.css">
+  <link rel="stylesheet" href="/assets/vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="/assets/css/map.css">
   <script src="/assets/js/theme-init.js"></script>
   <script src="/assets/js/loader.js"></script>
 </head>
@@ -36,6 +38,7 @@
       <div class="container" id="checkoutRoot">
         <div class="cart-layout">
           <form class="card" id="orderForm" novalidate>
+            <div class="hours-note" id="hoursNote" role="status" hidden></div>
             <h2 class="title-md">Mijoz ma’lumotlari</h2>
             <div class="form-grid" style="margin-top:20px">
               <div class="field">
@@ -52,6 +55,26 @@
                 <label for="region">Yetkazib berish hududi <span class="req">*</span></label>
                 <select class="select" id="region" name="region"><option value="">Viloyatni tanlang</option><option value="samarqand">Samarqand viloyati</option><option value="sirdaryo">Sirdaryo viloyati</option><option value="toshkent">Toshkent viloyati</option><option value="navoiy">Navoiy viloyati</option></select>
                 <span class="error" id="region-error">Hududni tanlang. Yetkazib berish: Samarqand, Sirdaryo, Toshkent va Navoiy viloyatlari.</span>
+              </div>
+              <div class="field full map-field">
+                <span class="label-like">Yetkazib berish nuqtasi (xaritadan, ixtiyoriy)</span>
+                <p class="map-hint">Xaritaga bosing yoki belgini suring — hudud avtomatik aniqlanadi. Manzilni pastda matn bilan ham yozing. Yetkazib berish: Samarqand, Sirdaryo, Toshkent va Navoiy viloyatlari (xaritada belgilangan).</p>
+                <div class="delivery-map" id="deliveryMap" role="application" aria-label="Yetkazib berish manzilini tanlash xaritasi"></div>
+                <div class="map-cards">
+                  <div class="map-card">
+                    <b>Bizning manzilimiz</b>
+                    <span id="shopCoords">40°09'36.6"N 67°50'00.6"E</span>
+                    <a href="https://www.google.com/maps?q=40.160167,67.833500" target="_blank" rel="noopener">Google Maps’da ochish →</a>
+                  </div>
+                  <div class="map-card map-card--you" id="youCard">
+                    <b>Sizning yetkazib berish manzilingiz</b>
+                    <span id="youCoords">Xaritadan nuqta tanlanmagan</span>
+                    <a id="youLink" href="#" target="_blank" rel="noopener" hidden>Google Maps’da ochish →</a>
+                    <button type="button" class="map-clear" id="mapClear" hidden>Nuqtani olib tashlash</button>
+                  </div>
+                </div>
+                <input type="hidden" name="lat" id="lat"><input type="hidden" name="lng" id="lng">
+                <span class="error" id="map-error"></span>
               </div>
               <div class="field full">
                 <label for="address">Yetkazib berish manzili <span class="req">*</span></label>
@@ -92,6 +115,7 @@
   <div data-include="footer"></div>
 
   <script src="/assets/js/config.js"></script>
+  <script src="/assets/js/geo-regions.js"></script>
   <script src="/assets/js/products.js"></script>
   <script src="/assets/js/app.js"></script>
   <script src="/assets/js/account.js"></script>
@@ -99,6 +123,8 @@
   <script src="/assets/js/fx.js"></script>
   <script src="/assets/js/styles.js"></script>
   <script src="/assets/js/form-utils.js"></script>
+  <script src="/assets/vendor/leaflet/leaflet.js"></script>
   <script src="/assets/js/pages/checkout.js"></script>
+  <script src="/assets/js/pages/checkout-map.js"></script>
 </body>
 </html>
