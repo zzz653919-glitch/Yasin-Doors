@@ -10,9 +10,9 @@ html.ai-open .ai-fab { display: none; }
   .ai-fab { right: 14px; bottom: calc(var(--bn-h, 64px) + 14px + env(safe-area-inset-bottom, 0px)); height: 52px; min-width: 52px; padding: 0; width: 52px; justify-content: center; }
   .ai-fab-label { display: none; }
   /* «Sahifa boshiga» tugmasi chat tugmasi ustida turadi — ular to‘qnashmaydi */
-  .to-top { bottom: calc(var(--bn-h, 64px) + 14px + 52px + 12px + env(safe-area-inset-bottom, 0px)) !important; }
+  .to-top { bottom: calc(var(--bn-h, 64px) + 14px + 52px + 18px + env(safe-area-inset-bottom, 0px)) !important; }
   body[data-page="configurator"] .ai-fab { bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
-  body[data-page="configurator"] .to-top { bottom: calc(24px + 52px + 12px + env(safe-area-inset-bottom, 0px)) !important; }
+  body[data-page="configurator"] .to-top { bottom: calc(24px + 52px + 18px + env(safe-area-inset-bottom, 0px)) !important; }
 }
 @media (min-width: 961px) { .to-top { bottom: calc(20px + 56px + 14px + env(safe-area-inset-bottom, 0px)) !important; right: 24px; } }
 

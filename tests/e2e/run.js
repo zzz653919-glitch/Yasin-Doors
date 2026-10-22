@@ -291,7 +291,7 @@ async function seed() {
         const hit = (a, b) => a && b && a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
         return { inView: f.right <= innerWidth && f.bottom <= innerHeight && f.left >= 0, overToTop: hit(f, tr), overNav: nr && nr.height > 0 ? hit(f, nr) : false, name: document.getElementById("aiFab").getAttribute("aria-label") }; });
       ok(g.inView && !g.overToTop && !g.overNav && /AI/.test(g.name), label + " AI: tugma pastki o'ngda, 'sahifa boshiga' va pastki panelni yopmaydi");
-      await ap.click("#aiFab"); await ap.waitForSelector(".ai-panel:not([hidden])");
+      await ap.click("#aiFab"); await ap.waitForSelector(".ai-panel:not([hidden])"); await ap.waitForTimeout(500);   // ochilish animatsiyasi tugasin
       const pn = await ap.evaluate(() => { const r = document.querySelector(".ai-panel").getBoundingClientRect(); return { w: Math.round(r.width), h: Math.round(r.height), over: document.documentElement.scrollWidth - innerWidth, chips: document.querySelectorAll(".ai-suggest .ai-chip").length, title: document.querySelector(".ai-title strong").textContent }; });
       ok(pn.title === "YasinDoors AI" && pn.chips === 15 && pn.over <= 0 && (mob ? pn.w === 390 : pn.w <= 392), label + " AI: oyna ochildi, 15 ta tezkor savol, gorizontal scroll yo'q (" + pn.w + "×" + pn.h + ")");
       // tezkor savol → haqiqiy ma'lumot + mahsulot kartasi (rasm, nom, narx, havola)
