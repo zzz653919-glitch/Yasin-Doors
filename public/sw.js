@@ -4,7 +4,7 @@
    - Katalog (/api/catalog): avval tarmoq, internet yo‘q bo‘lsa — oxirgi kesh.
    - Hisob, admin va buyurtma so‘rovlari HECH QACHON keshlanmaydi (maxfiylik va to‘g‘rilik). */
 "use strict";
-const VERSION = "yd-v1";
+const VERSION = "yd-v2";
 const SHELL_CACHE = VERSION + "-shell";
 const PAGE_CACHE = VERSION + "-pages";
 const DATA_CACHE = VERSION + "-data";
@@ -28,14 +28,20 @@ self.addEventListener("message", e => { if (e.data === "skipWaiting") self.skipW
 async function networkFirst(req, cacheName, timeoutMs) {
   const cache = await caches.open(cacheName);
   try {
-    const ctrl = typeof AbortController === "function" ? new AbortController() : null;
-    const t = ctrl && timeoutMs ? setTimeout(() => ctrl.abort(), timeoutMs) : 0;
-    const res = await fetch(req, ctrl ? { signal: ctrl.signal } : undefined);
-    if (t) clearTimeout(t);
-    if (res && res.ok) cache.put(req, res.clone());
+    // Sahifa (navigate) so‘rovlarida init/signal ishlatilmaydi: sekin tarmoq «internet yo‘q» deb hisoblanmasin.
+    // Kutish chegarasi faqat ma’lumot (JSON) so‘rovlarida.
+    let res;
+    if (timeoutMs && req.mode !== "navigate" && typeof AbortController === "function") {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), timeoutMs);
+      try { res = await fetch(req, { signal: ctrl.signal }); } finally { clearTimeout(t); }
+    } else {
+      res = await fetch(req);
+    }
+    if (res && res.ok && res.type === "basic") cache.put(req, res.clone()).catch(() => null);
     return res;
   } catch (err) {
-    const hit = await cache.match(req, { ignoreSearch: false }) || await caches.match(req, { ignoreSearch: true });
+    const hit = await cache.match(req) || await caches.match(req, { ignoreSearch: true });
     if (hit) return hit;
     throw err;
   }
@@ -56,7 +62,10 @@ self.addEventListener("fetch", e => {
   if (req.headers.has("range")) return;
 
   if (req.mode === "navigate") {
-    e.respondWith(networkFirst(req, PAGE_CACHE, 4000).catch(() => caches.match("/offline.html")));
+    // Sahifa: tarmoq → kesh → (bir marta qayta urinish) → offline sahifa. Offline sahifa faqat haqiqatan tarmoq xatosida.
+    e.respondWith(networkFirst(req, PAGE_CACHE).catch(async () => {
+      try { return await fetch(req); } catch (e2) { return (await caches.match("/offline.html")) || Response.error(); }
+    }));
     return;
   }
   if (url.pathname === "/api/catalog") {
