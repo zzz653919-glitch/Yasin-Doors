@@ -127,7 +127,7 @@ test("ko'rishlar hisoblagichi: bir IP uchun 30 daqiqada bir marta; faol bo'lmaga
 
 test("ombor va sotuvlar: buyurtma tasdiqlanganda qoldiq kamayadi, sotuvlar soni oshadi", async () => {
   const p = (await rawCall("GET", "/api/admin/products?active=1&stock=in", A(sa))).json.items.find(x => x.stock >= 5);
-  const o = await call("POST", "/api/order", { body: { customer: { name: "Test Mijoz", phone: "+998 90 111 22 33", address: "Ташкент, ул. 1" }, items: [{ id: p.id, size: p.sizes[0], qty: 2 }] }, ip: "10.61.0.1" });
+  const o = await call("POST", "/api/order", { body: { customer: { name: "Test Mijoz", phone: "+998 90 111 22 33", region: "toshkent", address: "Ташкент, ул. 1" }, items: [{ id: p.id, size: p.sizes[0], qty: 2 }] }, ip: "10.61.0.1" });
   assert.equal(o.status, 200);
   assert.equal(o.json.total, p.price * 2, "narx serverda");
   assert.equal(Number((await db.get("SELECT stock FROM products WHERE id = ?", [p.id])).stock), p.stock, "Yangi buyurtmada qoldiq o'zgarmaydi");
@@ -139,7 +139,7 @@ test("ombor va sotuvlar: buyurtma tasdiqlanganda qoldiq kamayadi, sotuvlar soni 
   assert.equal(sorted.json.items[0].id, p.id);
   // omborda yetarli bo'lmagan mahsulot (0) ga buyurtma berish mumkin, lekin tasdiqlash rad etiladi — hech narsa o'zgarmaydi
   const zero = (await rawCall("GET", "/api/admin/products?active=1&stock=out", A(sa))).json.items[0];
-  const o2 = await call("POST", "/api/order", { body: { customer: { name: "Test Mijoz", phone: "+998 90 111 22 33", address: "Ташкент, ул. 1" }, items: [{ id: zero.id, size: zero.sizes[0], qty: 1 }] }, ip: "10.61.0.2" });
+  const o2 = await call("POST", "/api/order", { body: { customer: { name: "Test Mijoz", phone: "+998 90 111 22 33", region: "toshkent", address: "Ташкент, ул. 1" }, items: [{ id: zero.id, size: zero.sizes[0], qty: 1 }] }, ip: "10.61.0.2" });
   const id2 = (await rawCall("GET", "/api/admin/orders", A(sa))).json.items.find(x => x.number === o2.json.orderId).id;
   assert.equal((await rawCall("PATCH", `/api/admin/orders/${id2}`, Object.assign({ body: { status: "accepted" } }, A(sa)))).status, 409);
 });

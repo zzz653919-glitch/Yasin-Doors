@@ -133,7 +133,7 @@ test("qidiruvda % va _ belgilari joker sifatida ishlamaydi", async () => {
 });
 
 test("qidiruv: matnli so'rovdagi raqam telefon bo'yicha tasodifiy moslik bermaydi", async () => {
-  const c = n => ({ name: n, phone: "+998 90 555 00 0" + n.slice(-1), address: "Toshkent, qidiruv sinovi 1" });
+  const c = n => ({ name: n, phone: "+998 90 555 00 0" + n.slice(-1), region: "toshkent", address: "Toshkent, qidiruv sinovi 1" });
   for (const n of ["Qidiruv Mijoz 1", "Qidiruv Mijoz 2", "Qidiruv Mijoz 3"]) {
     const r = await call("POST", "/api/order", { body: { customer: c(n), items: [{ id: prodId, size: "800 × 2000", qty: 1 }] }, ip: "10.4." + Math.floor(Math.random() * 250) + ".1" });
     assert.equal(r.status, 200);
@@ -163,7 +163,7 @@ test("noto'g'ri tana shakllari va usullar", async () => {
 });
 
 /* ---------- Ochiq buyurtma ---------- */
-const cust = { name: "Audit Mijoz", phone: "+998 91 111 22 33", address: "Toshkent, Audit ko'chasi 7" };
+const cust = { name: "Audit Mijoz", phone: "+998 91 111 22 33", region: "toshkent", address: "Toshkent, Audit ko'chasi 7" };
 const placeOrder = (items, extra = {}) => call("POST", "/api/order", { body: Object.assign({ customer: cust, items }, extra), ip: "10.7." + Math.floor(Math.random() * 250) + "." + Math.floor(Math.random() * 250) });
 
 test("ochiq buyurtma: miqdor qat'iy tekshiriladi", async () => {

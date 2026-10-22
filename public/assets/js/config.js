@@ -6,10 +6,10 @@
  */
 window.YD_CONFIG = {
   brand: "YasinDoors",
-  phone: "",            // masalan: "+998 90 123 45 67"
+  phone: "+998 93 300 20 20",
   email: "",            // masalan: "info@yasindoors.uz"
-  address: "",          // masalan: "Toshkent sh., ... ko‘chasi, 12-uy"
-  workHours: "",        // masalan: "Du–Sha, 9:00–19:00"
+  address: "40°09'36.6\"N 67°50'00.6\"E",   // koordinatalar: 40.160167, 67.833500
+  workHours: "Har kuni: 09:00–17:00",   // vaqt mintaqasi: Asia/Tashkent
   telegram: "",         // masalan: "https://t.me/yasindoors"
   instagram: "",        // masalan: "https://instagram.com/yasindoors"
   mapEmbedUrl: "",      // Google/Yandex xarita iframe havolasi (ixtiyoriy)

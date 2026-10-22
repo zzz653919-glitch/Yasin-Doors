@@ -142,7 +142,21 @@ async function seed() {
     ok((await p.locator("#summaryTotal").innerText()).replace(/\D/g, "") === String(price * 2), "6) ro'yxatdan o'tgach savat saqlangan (jami = 2 x narx)");
     ok((await p.inputValue("#name")) === "Заказ Тестов", "   ism avtomatik to'ldirildi");
     // 4.7 Kirgan foydalanuvchi buyurtma beradi, qo'sh bosish = bitta so'rov
-    await p.fill("#address", "Ташкент, ул. 1"); await p.check("#agree");
+    // Xarita: bizning marker, hudud zonalari, xaritadan nuqta tanlash va zonadan tashqari nuqtani rad etish
+    await p.route("**/tile.openstreetmap.org/**", r => r.fulfill({ contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==", "base64") }));
+    await p.waitForSelector("#deliveryMap .leaflet-marker-icon", { timeout: 8000 });
+    ok((await p.locator("#shopCoords").innerText()).includes("40°09'36.6\"N"), "xarita: bizning manzil koordinatalari ko'rinadi");
+    ok((await p.getAttribute('#deliveryMap + .map-cards a[href*="google.com/maps"]', "href")) === "https://www.google.com/maps?q=40.160167,67.833500", "xarita: Google Maps havolasi (40.160167, 67.833500)");
+    await p.locator("#deliveryMap").scrollIntoViewIfNeeded(); await p.waitForTimeout(1200);
+    const clickLL = async (lat, lng) => { await p.locator("#deliveryMap").scrollIntoViewIfNeeded(); await p.waitForTimeout(700); const q = await p.evaluate(([a, b]) => { const m = window.YDCheckoutMap.map, pt = m.latLngToContainerPoint([a, b]), r = m.getContainer().getBoundingClientRect(); return { x: r.left + pt.x, y: r.top + pt.y }; }, [lat, lng]); await p.mouse.click(q.x, q.y); await p.waitForTimeout(250); };
+    await clickLL(39.77, 64.42); // Buxoro — zonadan tashqari
+    ok((await p.inputValue("#lat")) === "" && /tashqarida/.test(await p.locator("#map-error").innerText()), "xarita: Buxoro nuqtasi rad etildi");
+    await p.fill("#address", "Buxoro, Navoiy 1"); await p.fill("#name", "Заказ Тестов"); await p.check("#agree");
+    await p.click("#submitBtn"); await p.waitForTimeout(500);
+    ok(!(await p.locator(".success-box").isVisible().catch(() => false)), "xarita: zonadan tashqari nuqta bilan buyurtma yuborilmadi");
+    await clickLL(39.654, 66.975); // Samarqand
+    ok((await p.inputValue("#region")) === "samarqand" && Number(await p.inputValue("#lat")) > 39, "xarita: Samarqand nuqtasi tanlandi, hudud avtomatik");
+    await p.fill("#address", "Registon ko'chasi 5");
     let posts = 0; await p.route("**/api/order", async r => { posts++; await new Promise(x => setTimeout(x, 400)); r.continue(); });
     await p.dblclick("#submitBtn"); await p.waitForSelector(".success-box", { timeout: 8000 });
     ok(posts === 1, "4) kirgan foydalanuvchi buyurtma berdi, qo'sh bosish = 1 ta so'rov");
@@ -152,7 +166,7 @@ async function seed() {
     await p.click("#buyNow"); await p.waitForURL(/Checkout/i, { timeout: 5000 });
     ok(!(await p.locator("#authGate").isVisible().catch(() => false)), "kirgan foydalanuvchi: 'Hoziroq buyurtma' modalsiz checkout'ga o'tadi");
     // 4.9 Backend: autentifikatsiyasiz so'rov rad etiladi (brauzerdan, cookie'siz kontekst)
-    const anon = await (await browser.newContext()).request.post(B + "/api/order", { data: { customer: { name: "Mehmon", phone: "+998901112299", address: "Ташкент, ул. 1" }, items: [{ id: "classic-royal", size: "800 × 2000", qty: 1 }] } });
+    const anon = await (await browser.newContext()).request.post(B + "/api/order", { data: { customer: { name: "Mehmon", phone: "+998901112299", region: "toshkent", address: "Ташкент, ул. 1" }, items: [{ id: "classic-royal", size: "800 × 2000", qty: 1 }] } });
     ok(anon.status() === 401 && (await anon.json()).code === "login_required", "5) backend: autentifikatsiyasiz buyurtma 401 login_required");
     const anonCfg = await (await browser.newContext()).request.post(B + "/api/configurator/order", { data: {} });
     ok(anonCfg.status() === 401, "   backend: konstruktor buyurtmasi ham 401");
@@ -173,6 +187,94 @@ async function seed() {
     ok(box && box.x >= 0 && box.x + box.width <= 320 && box.y >= 0 && box.y + box.height <= 640, "320px: modal ekrandan chiqmaydi " + JSON.stringify(box));
     await ctx.close();
 
+    /* 4b) Footer: manzil, telefon (tel:), ish vaqti, tezkor havolalar — desktop va mobil */
+    for (const [label, vp] of [["desktop", { width: 1440, height: 900 }], ["mobil", { width: 390, height: 844 }]]) {
+      const fctx = await newCtx({ viewport: vp, isMobile: vp.width < 700, hasTouch: vp.width < 700 }); const fp = await fctx.newPage();
+      await fp.goto(B + "/"); await fp.waitForSelector(".site-footer .footer-grid");
+      const f = await fp.evaluate(() => { const q = s => document.querySelector(".site-footer " + s);
+        return { tel: q('a[href="tel:+998933002020"]') && q('a[href="tel:+998933002020"]').textContent, map: q(".footer-map") && q(".footer-map").getAttribute("href"), text: q(".footer-grid").innerText,
+          links: Array.from(document.querySelectorAll(".site-footer .footer-links li a")).map(a => a.getAttribute("href")).filter(h => h && h[0] === "/"), over: document.documentElement.scrollWidth - innerWidth }; });
+      ok(f.tel === "+998 93 300 20 20", label + " footer: telefon tel:+998933002020 havolasi");
+      ok(f.map === "https://www.google.com/maps?q=40.160167,67.833500", label + " footer: Xaritada ko'rish -> Google Maps");
+      ok(!/40°|67°|40\.16|67\.83/.test(f.text) && /Manzilimizni xaritada ko'rish/.test(f.text.replace(/‘/g, "'")) && /Har kuni: 09:00–17:00/.test(f.text) && /MDF eshiklar va zamonaviy dizayn yechimlari\./.test(f.text), label + " footer: koordinatasiz manzil tugmasi, ish vaqti, tavsif");
+      ok(["/", "/Products", "/About", "/Contact", "/Cart", "/Favorites"].every(h => f.links.includes(h)) && f.over <= 0, label + " footer: tezkor havolalar, gorizontal scroll yo'q");
+      await fctx.close();
+    }
+    /* 4d) Mobil katalog: 2 ustun, kartalar, qidiruv/filtr/saralash, savat va sevimlilar, fixed elementlar to'smasligi */
+    for (const w of [320, 360, 375, 390, 430]) {
+      const mctx = await newCtx({ viewport: { width: w, height: 800 }, isMobile: true, hasTouch: true }); const mp = await mctx.newPage();
+      await mp.goto(B + "/Products"); await mp.waitForSelector(".product-card");
+      const g = await mp.evaluate(() => {
+        const cards = Array.from(document.querySelectorAll(".product-card")), c = cards[0], r = c.getBoundingClientRect(), img = c.querySelector("img");
+        const cols = new Set(cards.map(x => Math.round(x.getBoundingClientRect().left))).size;
+        return { cols, fav: !!c.querySelector(".fav-btn"), add: !!c.querySelector(".add-btn"), price: !!c.querySelector(".price"), lazy: img.getAttribute("loading"), fit: getComputedStyle(img).objectFit,
+          ratio: Math.round(c.querySelector(".product-media").getBoundingClientRect().width / c.querySelector(".product-media").getBoundingClientRect().height * 100) / 100,
+          over: document.documentElement.scrollWidth - innerWidth, addH: Math.round(c.querySelector(".add-btn").getBoundingClientRect().height), right: Math.round(r.right), pal: !!document.querySelector(".pal-fab") && getComputedStyle(document.querySelector(".pal-fab")).display !== "none" };
+      });
+      ok(g.cols === 2, w + "px mobil katalog: 2 ustun (" + g.cols + ")");
+      ok(g.fav && g.add && g.price && g.lazy === "lazy" && g.fit === "contain", w + "px karta: sevimli, savat, narx, lazy, rasm kesilmaydi");
+      ok(g.over <= 0 && g.right <= w && g.addH >= 36 && !g.pal, w + "px: gorizontal scroll yo'q, tugma ≥36px, 'Uslublar' tugmasi to'smaydi");
+      if (w === 390) {
+        const total = await mp.locator(".product-card").count();
+        // qidiruv
+        await mp.fill("#searchInput", "zzzz-yoq"); await mp.waitForTimeout(400);
+        ok((await mp.locator(".product-card").count()) === 0, "qidiruv: mos kelmasa natija bo'sh");
+        await mp.fill("#searchInput", ""); await mp.waitForTimeout(400);
+        const firstName = (await mp.locator(".product-card .product-title").first().innerText()).trim();
+        await mp.fill("#searchInput", firstName.slice(0, 6)); await mp.waitForTimeout(400);
+        ok((await mp.locator(".product-card").count()) >= 1 && (await mp.locator(".product-card").count()) <= total, "qidiruv: nom bo'yicha topdi");
+        await mp.fill("#searchInput", ""); await mp.waitForTimeout(400);
+        // filtrlar paneli ochiladi, narx filtri natijani yangilaydi, tozalash tiklaydi
+        await mp.click("#openFilters"); ok(await mp.locator("#filters").isVisible(), "filtrlar paneli ochildi");
+        await mp.waitForTimeout(400);
+        const prices = await mp.$$eval(".product-card .price", els => els.map(e => Number(e.textContent.replace(/\D/g, "").slice(-9))));
+        await mp.fill("#priceMax", "1"); await mp.waitForTimeout(400);
+        ok((await mp.locator(".product-card").count()) === 0, "filtr: narx bo'yicha mahsulotlar yangilandi");
+        await mp.click("#resetFilters"); await mp.waitForTimeout(400);
+        ok((await mp.locator(".product-card").count()) === total, "filtr: tozalash hammasini qaytardi");
+        await mp.click("#filters .filters-open-btn"); await mp.waitForTimeout(300);
+        // saralash
+        await mp.selectOption("#sortSelect", "price-desc"); await mp.waitForTimeout(400);
+        const ps = await mp.$$eval(".product-card .price", els => els.map(e => Number(e.lastChild.textContent.replace(/\D/g, ""))));
+        ok(ps.length > 1 && ps.every((v, i) => i === 0 || ps[i - 1] >= v), "saralash: narx kamayish tartibida");
+        // savat va sevimlilar
+        await mp.locator(".product-card .add-btn").first().click(); await mp.waitForTimeout(400);
+        ok((await mp.evaluate(() => JSON.parse(localStorage.getItem("yd_cart_v1") || "[]").length)) === 1, "savatga qo'shildi (Savatga tugmasi)");
+        await mp.locator(".product-card .fav-btn").first().click(); await mp.waitForTimeout(300);
+        ok((await mp.locator(".product-card .fav-btn.is-active").count()) === 1, "sevimlilarga qo'shildi (yurakcha)");
+        // pastki navigatsiya: 5 band, to'g'ri havolalar, faol = Katalog, kartani yopmaydi
+        const nav = await mp.evaluate(() => Array.from(document.querySelectorAll(".bottom-nav .bn-item")).map(a => [a.getAttribute("href"), a.classList.contains("is-active")]));
+        ok(nav.length === 5 && ["/", "/Products", "/Favorites", "/Cart", "/Profile"].every((h, i) => nav[i][0] === h) && nav[1][1], "pastki navigatsiya: 5 band, faol — Katalog");
+        // header: logo, qidiruv, savat, menyu
+        ok(await mp.evaluate(() => ["a.logo", ".nav-search", 'a[href="/Cart"]', ".menu-toggle"].every(s => { const e = document.querySelector(".site-header " + s); return e && e.getBoundingClientRect().width > 0; })), "header: logo, qidiruv, savat, menyu ko'rinadi");
+        // fixed pastki panel oxirgi kartaning tugmasini yopmaydi (sahifa oxiriga o'tganda)
+        await mp.locator(".product-card .add-btn").last().scrollIntoViewIfNeeded(); await mp.waitForTimeout(300);
+        const hit = await mp.evaluate(() => { const b = Array.from(document.querySelectorAll(".product-card .add-btn")).pop(), r = b.getBoundingClientRect(), e = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !!e && (e === b || b.contains(e)); });
+        ok(hit, "fixed elementlar karta tugmasini to'smaydi");
+      }
+      await mctx.close();
+    }
+    /* 4e) Mobil joylashuv regressiyalari (370x726): header chetdan chiqmaydi, sharh avatari dumaloq, 3D konstruktorda tugmalar ustma-ust tushmaydi, Aloqa sahifasi sakramaydi */
+    { const rctx = await newCtx({ viewport: { width: 370, height: 726 }, isMobile: true, hasTouch: true });
+      await rctx.addInitScript(() => { window.__cls = 0; try { new PerformanceObserver(l => { for (const e of l.getEntries()) if (!e.hadRecentInput) window.__cls += e.value; }).observe({ type: "layout-shift", buffered: true }); } catch (e) { /* yo'q */ } });
+      const rp = await rctx.newPage();
+      await rp.goto(B + "/"); await rp.waitForSelector(".testimonial .avatar");
+      const hdr = await rp.evaluate(() => ({ right: document.querySelector(".site-header .menu-toggle").getBoundingClientRect().right, w: innerWidth, av: (r => [Math.round(r.width), Math.round(r.height)])(document.querySelector(".testimonial .avatar").getBoundingClientRect()) }));
+      ok(hdr.right <= hdr.w - 8, "370px: header menyu tugmasi ekrandan chiqmaydi (" + Math.round(hdr.right) + "/" + hdr.w + ")");
+      ok(hdr.av[0] === 44 && hdr.av[1] === 44, "370px: sharh avatari 44x44 (dumaloq)");
+      const dots = await rp.locator(".dc-dot").count();
+      ok(dots > 0 && dots <= 12, "bosh sahifa karuseli ≤12 slayd (" + dots + ")");
+      await rp.goto(B + "/Configurator"); await rp.waitForSelector(".cfg-tools"); await rp.waitForTimeout(800);
+      const cfg = await rp.evaluate(() => { const v = document.querySelector(".cfg-viewport").getBoundingClientRect(), t = document.querySelector(".cfg-tools").getBoundingClientRect();
+        return { stage: getComputedStyle(document.querySelector(".cfg-stage")).display, vpos: getComputedStyle(document.querySelector(".cfg-viewport")).position, gap: Math.round(t.top - v.bottom), over: document.documentElement.scrollWidth - innerWidth }; });
+      ok(cfg.stage === "contents" && cfg.vpos === "sticky" && cfg.gap >= 0 && cfg.over <= 0, "3D konstruktor (mobil): faqat oyna yopishqoq, tugmalar oyna ostida, gorizontal scroll yo'q");
+      await rp.evaluate(() => scrollTo(0, 700)); await rp.waitForTimeout(500);
+      const cover = await rp.evaluate(() => { const v = document.querySelector(".cfg-viewport").getBoundingClientRect(), s = document.querySelector("#cfgSummary").getBoundingClientRect(); const hit = document.elementFromPoint(v.left + v.width / 2, v.top + 20); return !!hit && !!hit.closest(".cfg-viewport") && v.top >= 0; });
+      ok(cover, "3D konstruktor: aylantirganda oyna tepada qoladi, matn uning ustida chiqmaydi");
+      await rp.goto(B + "/Contact"); await rp.waitForTimeout(1800); await rp.evaluate(() => scrollTo(0, 600)); await rp.waitForTimeout(400);
+      const cls = await rp.evaluate(() => window.__cls);
+      ok(cls < 0.02, "Aloqa sahifasi: yuklanganda kontent sakramaydi (CLS " + cls.toFixed(3) + ")");
+      await rctx.close(); }
     /* 5) CSP bilan 3D konstruktor va sahifalar xatosiz yuklanadi */
     ctx = await newCtx({ viewport: { width: 1280, height: 800 } }); p = await ctx.newPage();
     const cspErr = []; p.on("console", m => { if (/Content Security Policy|Refused to/.test(m.text())) cspErr.push(m.text().slice(0, 100)); });

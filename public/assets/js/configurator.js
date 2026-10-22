@@ -358,6 +358,7 @@
       '<form id="cfgOrderForm" novalidate><div class="form-grid">' +
       '<div class="field"><label for="cfg-name">Ismingiz <span class="req">*</span></label><input class="input" id="cfg-name" name="name" autocomplete="name" maxlength="80"><span class="error" id="name-error">Ismingizni kiriting (kamida 2 ta harf).</span></div>' +
       '<div class="field"><label for="cfg-phone">Telefon raqami <span class="req">*</span></label><input class="input" id="cfg-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="+998 90 123 45 67"><span class="error" id="phone-error">Telefon raqamini to‘g‘ri kiriting.</span></div>' +
+      '<div class="field full"><label for="cfg-region">Yetkazib berish hududi <span class="req">*</span></label><select class="select" id="cfg-region" name="region"><option value="">Viloyatni tanlang</option><option value="samarqand">Samarqand viloyati</option><option value="sirdaryo">Sirdaryo viloyati</option><option value="toshkent">Toshkent viloyati</option><option value="navoiy">Navoiy viloyati</option></select><span class="error" id="region-error">Hududni tanlang (Samarqand, Sirdaryo, Toshkent yoki Navoiy viloyati).</span></div>' +
       '<div class="field full"><label for="cfg-address">Manzil <span class="req">*</span></label><input class="input" id="cfg-address" name="address" autocomplete="street-address" maxlength="200" placeholder="Shahar, tuman, ko‘cha, uy"><span class="error" id="address-error">Manzilni kiriting.</span></div>' +
       '<div class="field full"><label for="cfg-comment">Qo‘shimcha izoh</label><textarea class="textarea" id="cfg-comment" name="comment" maxlength="1000" style="min-height:80px"></textarea></div>' +
       '<div class="field full"><label class="checkbox"><input type="checkbox" name="install"> O‘rnatish xizmati ham kerak</label></div>' +
@@ -385,6 +386,7 @@
     var rules = {
       name: function (v) { return v.replace(/\s/g, "").length >= 2; },
       phone: function (v) { return YDForm.isValidPhone(v); },
+      region: function (v) { return !!v; },
       address: function (v) { return v.length >= 5; },
       agree: function (v) { return v === true; }
     };
@@ -397,7 +399,7 @@
       if (bad) { YDForm.showAlert(alertEl, "error", "Iltimos, belgilangan maydonlarni to‘g‘ri to‘ldiring."); bad.focus(); return; }
       var btn = $("cfgSubmit"), fd = form.elements;
       var payload = {
-        customer: { name: fd.name.value.trim(), phone: YDForm.formatPhone(fd.phone.value), address: fd.address.value.trim(), comment: fd.comment.value.trim(), install: fd.install.checked },
+        customer: { name: fd.name.value.trim(), phone: YDForm.formatPhone(fd.phone.value), region: fd.region.value, address: fd.address.value.trim(), comment: fd.comment.value.trim(), install: fd.install.checked },
         config: state.cfg, website: fd.website.value
       };
       // Takroriy yuborishdan himoya: bir xil konfiguratsiya va telefon uchun qayta urinishda kalit o'zgarmaydi

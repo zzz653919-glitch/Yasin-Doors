@@ -60,7 +60,7 @@ const FULL_RULES = {
   glass: { frosted: 100000, clear: 120000 },
   size: { custom: 250000, extra_sqm: 500000 }
 };
-const customer = { name: "Sinov Mijoz", phone: "+998 90 123 45 67", address: "Toshkent, Sinov ko'chasi 1" };
+const customer = { name: "Sinov Mijoz", phone: "+998 90 123 45 67", region: "toshkent", address: "Toshkent, Sinov ko'chasi 1" };
 const key = () => require("crypto").randomBytes(12).toString("hex");
 let boss;
 

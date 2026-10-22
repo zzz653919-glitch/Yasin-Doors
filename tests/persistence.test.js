@@ -80,7 +80,7 @@ test("3) admin panelda (API) yangi foydalanuvchi ko'rinadi, parol qaytmaydi", as
 });
 
 test("4-5) shu foydalanuvchi buyurtma beradi; buyurtma bazada va adminda; narx serverda hisoblanadi", async () => {
-  const body = { customer: { name: "Алишер Каримов", phone: "+998 90 321 54 76", address: "Ташкент, ул. Тестовая 5" }, items: [{ id: state.product.id, size: "800 × 2000", qty: 2 }], clientTotal: 1, idempotencyKey: "persist-key-0123456789abcdef" };
+  const body = { customer: { name: "Алишер Каримов", phone: "+998 90 321 54 76", region: "toshkent", address: "Ташкент, ул. Тестовая 5" }, items: [{ id: state.product.id, size: "800 × 2000", qty: 2 }], clientTotal: 1, idempotencyKey: "persist-key-0123456789abcdef" };
   const o = await api("POST", "/api/order", { body, cookie: state.user.cookie, csrf: state.user.csrf });
   assert.equal(o.status, 200); assert.equal(o.json.total, 3000000, "narx serverda hisoblandi (clientTotal=1 e'tiborsiz)");
   state.orderNo = o.json.orderId;

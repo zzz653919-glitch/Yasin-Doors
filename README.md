@@ -278,3 +278,19 @@ Baza ulanmagan bo'lsa: ochiq sayt statik katalog bilan ishlayveradi, buyurtmalar
 - [ ] Bosh sahifadagi «Mijozlar fikrlari» namunaviy matnlarini (`public/index.html`) haqiqiy fikrlarga almashtiring yoki bo'limni olib tashlang.
 - [ ] `public/about.html` dagi `[to'ldiriladi]` joylar. Sertifikat yoki kafolatni faqat rasman mavjud bo'lsa yozing.
 - [ ] Mahsulot rasmlarini haqiqiy fotolar bilan almashtiring (admin panel orqali yuklanadi, avtomatik kichraytiriladi).
+
+## Yetkazib berish hududlari
+
+Buyurtma faqat **Samarqand, Sirdaryo, Toshkent va Navoiy viloyatlari** uchun qabul qilinadi (`lib/regions.js`).
+Mijoz buyurtma formasida hududni tanlaydi (`region`); server (`/api/order`, `/api/configurator/order`) tanlovni va manzil matnida
+boshqa viloyat nomi yo‘qligini tekshiradi, manzilga hudud nomi qo‘shib saqlaydi (Telegram xabarida ham shu ko‘rinadi).
+Geokodlash xizmati yo‘q, shuning uchun mijoz matnga yozgan haqiqiy joyni 100% tasdiqlab bo‘lmaydi — bu menejer tasdiqlashi bilan to‘ldiriladi.
+
+## Buyurtma xaritasi, ish vaqti va footer
+
+- Xarita: Leaflet (`public/assets/vendor/leaflet`, lokal) + OpenStreetMap plitkalari — **API kalit kerak emas**. Bizning manzil: `40.160167, 67.833500`
+  ([Google Maps](https://www.google.com/maps?q=40.160167,67.833500)); mijoz nuqtasi alohida ko‘rsatiladi va `orders.lat/lng` ga saqlanadi.
+- Viloyat chegaralari `public/assets/js/geo-regions.js` (brauzer va server bir xil fayldan foydalanadi); server `lib/regions.js` orqali nuqta
+  ruxsat etilgan 4 viloyatdan biriga tushishini tekshiradi. Chegaralar soddalashtirilgan: aniq chegara yaqinida bir necha km xatolik mumkin.
+- Aloqa: `public/assets/js/config.js` (telefon `+998 93 300 20 20`, ish vaqti 09:00–17:00, `Asia/Tashkent`). Ish vaqtidan tashqarida checkout
+  sahifasida xabar chiqadi, buyurtma bloklanmaydi.

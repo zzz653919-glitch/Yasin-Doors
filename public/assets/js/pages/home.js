@@ -6,7 +6,9 @@ YD.whenReady(function () {
   var showcaseEl = document.getElementById("doorShowcase");
   if (showcaseEl && window.YDCarousel) {
     var list = SHOWCASE_ORDER.map(YD.getProduct).filter(Boolean);
-    YD.data.PRODUCTS.forEach(function (p) { if (list.indexOf(p) === -1) list.push(p); });
+    // Katalog katta bo‘lsa (200 ta) hammasini chizmaymiz: karusel va nuqtalar tor ekranda tartibli qolsin
+    YD.data.PRODUCTS.forEach(function (p) { if (list.length < 12 && list.indexOf(p) === -1) list.push(p); });
+    list = list.slice(0, 12);
     YDCarousel.mount(showcaseEl, list, { interval: 5500, label: "YasinDoors MDF eshiklar kolleksiyasi" });
   }
 

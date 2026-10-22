@@ -237,7 +237,7 @@ test("buyurtma: kirgan mijozniki akkauntga bog'lanadi, mehmonniki yo'q; tarix fa
   const sizes = JSON.parse((await db.get("SELECT sizes FROM products WHERE id = ?", [pid])).sizes);
   const order = (extra, cookie) => call("POST", "/api/order", {
     cookie, csrf: cookie ? user.csrf : undefined, ip: "10.1.8." + Math.floor(Math.random() * 200),
-    body: Object.assign({ customer: { name: "Алишер", phone: "+998 90 123 45 67", address: "Ташкент, ул. Тестовая 1" }, items: [{ id: pid, size: sizes[0], qty: 1 }] }, extra)
+    body: Object.assign({ customer: { name: "Алишер", phone: "+998 90 123 45 67", region: "toshkent", address: "Ташкент, ул. Тестовая 1" }, items: [{ id: pid, size: sizes[0], qty: 1 }] }, extra)
   });
   const mine = await order({}, user.cookie);
   assert.equal(mine.status, 200);
@@ -385,7 +385,7 @@ test("IP cheklovi: X-Forwarded-For soxtalashtirib aylanib o'tib bo'lmaydi (proks
 
 /* ---------- Buyurtma faqat kirgan mijozdan ---------- */
 test("buyurtma: autentifikatsiyasiz /api/order va /api/configurator/order rad etiladi (401, login_required)", async () => {
-  const orderBody = { customer: { name: "Mehmon", phone: "+998 90 777 66 55", address: "Ташкент, ул. 1" }, items: [{ id: "classic-royal", size: "800 × 2000", qty: 1 }] };
+  const orderBody = { customer: { name: "Mehmon", phone: "+998 90 777 66 55", region: "toshkent", address: "Ташкент, ул. 1" }, items: [{ id: "classic-royal", size: "800 × 2000", qty: 1 }] };
   const before = Number((await db.get("SELECT COUNT(*) AS n FROM orders")).n);
   for (const url of ["/api/order", "/api/configurator/order"]) {
     const r = await call("POST", url, { body: orderBody, ip: "10.20.0.1" });
@@ -404,7 +404,7 @@ test("buyurtma: autentifikatsiyasiz /api/order va /api/configurator/order rad et
 test("buyurtma: kirgan mijoz CSRF tokensiz yoki begona Origin bilan buyurtma bera olmaydi", async () => {
   const l = await call("POST", "/api/account/login", { body: { identifier: "second@example.com", password: "Sinov-8421-Kalit" }, ip: "10.20.1.1" });
   const s = { cookie: cookieOf(l), csrf: l.json.csrf };
-  const body = { customer: { name: "Madina", phone: "+998 93 555 11 22", address: "Ташкент, ул. 1" }, items: [{ id: "classic-royal", size: "800 × 2000", qty: 1 }] };
+  const body = { customer: { name: "Madina", phone: "+998 93 555 11 22", region: "toshkent", address: "Ташкент, ул. 1" }, items: [{ id: "classic-royal", size: "800 × 2000", qty: 1 }] };
   const noCsrf = await call("POST", "/api/order", { body, cookie: s.cookie, ip: "10.20.1.2" });
   assert.equal(noCsrf.status, 403); assert.equal(noCsrf.json.code, "csrf");
   const foreign = await call("POST", "/api/order", { body, cookie: s.cookie, csrf: s.csrf, headers: { origin: "https://evil.example" }, ip: "10.20.1.3" });
@@ -415,7 +415,7 @@ test("buyurtma: bloklangan akkaunt sessiyasi bilan buyurtma berib bo'lmaydi", as
   const l = await call("POST", "/api/account/login", { body: { identifier: "second@example.com", password: "Sinov-8421-Kalit" }, ip: "10.20.2.1" });
   const s = { cookie: cookieOf(l), csrf: l.json.csrf };
   await db.run("UPDATE accounts SET status = 'blocked' WHERE email = ?", ["second@example.com"]);
-  const r = await call("POST", "/api/order", { body: { customer: { name: "M", phone: "+998 93 555 11 22", address: "Ташкент, ул. 1" }, items: [{ id: "classic-royal", size: "800 × 2000", qty: 1 }] }, cookie: s.cookie, csrf: s.csrf, ip: "10.20.2.2" });
+  const r = await call("POST", "/api/order", { body: { customer: { name: "M", phone: "+998 93 555 11 22", region: "toshkent", address: "Ташкент, ул. 1" }, items: [{ id: "classic-royal", size: "800 × 2000", qty: 1 }] }, cookie: s.cookie, csrf: s.csrf, ip: "10.20.2.2" });
   assert.equal(r.status, 401);
   await db.run("UPDATE accounts SET status = 'active' WHERE email = ?", ["second@example.com"]);
 });

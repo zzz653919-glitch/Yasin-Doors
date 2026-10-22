@@ -1,5 +1,7 @@
 /* Aloqa sahifasi: kontakt kartalari va xabar formasi */
-YD.whenReady(function () {
+/* Kartalar va xarita joyi sahifa chizilishi bilan birga (sinxron) qo‘yiladi: katalog yuklangach pastdagi kontent sakramaydi.
+   Admin sozlamalari kelgach (whenReady) xuddi shu funksiya yangilangan ma’lumot bilan qayta chizadi. */
+function paintContact() {
   var C = YD.config, esc = YD.esc, icon = YD.icon;
 
   function card(ic, label, value, href) {
@@ -24,6 +26,12 @@ YD.whenReady(function () {
     map.querySelector(".icon").style.margin = "0 auto";
   }
   YD.observeReveal();
+}
+paintContact();
+
+YD.whenReady(function () {
+  var C = YD.config, esc = YD.esc, icon = YD.icon;
+  paintContact();
 
   var form = document.getElementById("contactForm");
   var alertEl = document.getElementById("contactAlert");
