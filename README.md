@@ -340,8 +340,12 @@ Asl fotosuratlar zaxirada: `design-src/door-photos/original/` (saytga tarqatilma
 | krem, oltin chiziqli vertikal frezalar | `neo-arka` |
 | ikki qanotli, vertikal panellar va oltin chiziqlar | `sand-duo` |
 | oq, vertikal frezalar va oltin ramka | `grey-stripe` |
+| oq, tor koridorda: vertikal frezalar va oltin ramka | `bianco-gold` (yangi mahsulot) |
+| krem-oq, ikki panelli klassik | `crema-classic` (yangi mahsulot) |
+| ikki qanotli oq, vitraj shisha | `vetro-grande` (yangi mahsulot) |
 
 - Usul: `scripts/door-photos/cutout.py` — eshik konturi ko‘pburchak bilan belgilanadi, GrabCut chegarani rang bo‘yicha aniqlaydi, qirra pikselleri ichki rangdan tiklanadi (devor halosi yo‘q).
   Qayta ishlash: `python3 scripts/door-photos/cutout.py <foto_papka> <chiqish_papka>` (opencv-python-headless, numpy, pillow, scipy).
 - Mavjud bazadagi mahsulotlarda eski SVG yo‘li bo‘lsa, `lib/db.js` migratsiyasi uni yangi PNG ga almashtiradi (admin boshqa rasm qo‘ygan bo‘lsa tegilmaydi).
-- Mahsulot nomi/tavsifi/narxi o‘zgarmagan: foto mos mahsulotga eng yaqin dizayn bo‘yicha qo‘yilgan — kerak bo‘lsa admin panelda tahrirlang.
+- Yangi 3 mahsulot (taxminiy nom va **namunaviy narx**) statik katalogga va (baza mahsulotlar bilan to‘lgan bo‘lsa) bazaga bir marta qo‘shiladi (`lib/photo-catalog.js`, `settings.photo_products_v1`); admin o‘chirsa qaytmaydi.
+  5 ta eski mahsulotning matni/rangi fotoga moslab yangilandi (faqat matn hali o‘zgartirilmagan bo‘lsa). Narx va nomlarni admin panelda o‘zingizga moslang.
