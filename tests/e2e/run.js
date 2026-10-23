@@ -357,10 +357,12 @@ async function seed() {
       for (const id of ids) { await pp.click('[data-ph="model"][data-v="' + id + '"]'); await pp.waitForTimeout(80); allOk = allOk && await pp.evaluate(id => document.getElementById("cfgPhotoImg").src.includes(id + ".png"), id); }
       ok(allOk, label + " foto: har bir model tanlanganda rasm almashadi");
       for (const bg of ["light", "wall", "studio"]) { await pp.click('[data-ph="bg"][data-v="' + bg + '"]'); ok(await pp.evaluate(b => document.getElementById("cfgPhotoBg").classList.contains("is-" + b), bg), label + " foto: fon '" + bg + "'"); }
+      if (mob) await pp.click("#cfgSheetClose");
       const before = await pp.textContent("#cfgPhotoSummary strong"); await pp.click('[data-ph="qty"][data-d="1"]');
       ok(before !== await pp.textContent("#cfgPhotoSummary strong"), label + " foto: narx soniga qarab darhol yangilanadi");
       await pp.click('#cfgPhotoSummary [data-ph="cart"]');
       ok(await pp.evaluate(() => YD.store.getCart().some(i => i.id === "vetro-grande" && i.qty === 2)), label + " foto: savatga qo'shildi");
+      if (mob) await pp.click("#cfgSheetOpen");
       await pp.click('[data-ph="to3d"]'); await pp.waitForTimeout(800);
       ok(await pp.evaluate(() => !document.body.classList.contains("cfg-photo-on") && YDConfigurator.state.cfg.model === "glass" && !document.getElementById("cfgOptions").hidden), label + " foto: 3D ga o'xshash model bilan o'tadi (sozlamalar panel ishlaydi)");
       ok(await pp.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), label + " foto: gorizontal scroll yo'q");
