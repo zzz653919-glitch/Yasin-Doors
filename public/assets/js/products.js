@@ -42,7 +42,7 @@
       color: "oq",
       style: "klassik",
       badges: ["popular"],
-      image: "assets/img/doors/classic-royal.svg",
+      image: "assets/img/doors/photo/classic-royal.png",
       short: "Oq rangli, to‘rt panelli klassik eshik. Oltin rangli tutqich bilan.",
       description: "Classic Royal — an’anaviy to‘rt panelli frezalangan yuzaga ega klassik MDF eshik. Oq rang har qanday interyerga yorug‘lik va ozodalik bag‘ishlaydi, nafis panellar esa eshikka chuqurlik beradi.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "4 ta frezalangan panel" }
@@ -55,7 +55,7 @@
       color: "bej",
       style: "neoklassik",
       badges: ["popular"],
-      image: "assets/img/doors/neo-arka.svg",
+      image: "assets/img/doors/photo/neo-arka.png",
       short: "Fil suyagi rangida, arkali panel va oltin chiziqli bezak.",
       description: "Neo Arka — klassik shakllarni zamonaviy talqinda birlashtirgan neoklassik eshik. Yuqori qismdagi arkasimon panel va nozik oltin rangli chiziqlar mehmonxona va yotoqxonalar uchun mos.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "Arkali panel, dekor chiziqlar" }
@@ -81,7 +81,7 @@
       color: "oq",
       style: "shishali",
       badges: [],
-      image: "assets/img/doors/vetro-bianco.svg",
+      image: "assets/img/doors/photo/vetro-bianco.png",
       short: "Oq eshik, gorizontal xira shisha qo‘shimchalari bilan.",
       description: "Vetro Bianco — beshta gorizontal xira shisha qo‘shimchasiga ega yorug‘ eshik. Koridor va oshxonaga yorug‘lik o‘tkazadi, shu bilan birga shaxsiy hududni saqlaydi.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Xira (matli) shisha", "Dizayn": "5 ta gorizontal shisha" }
@@ -146,7 +146,7 @@
       color: "bej",
       style: "klassik",
       badges: [],
-      image: "assets/img/doors/sand-duo.svg",
+      image: "assets/img/doors/photo/sand-duo.png",
       short: "Qum-bej rang, ikki vertikal panel — yumshoq klassika.",
       description: "Sand Duo — ikki vertikal panelli, yumshoq bej rangdagi eshik. Iliq ranglardagi yotoqxona va bolalar xonasi uchun mos.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "2 ta vertikal panel" }
@@ -159,7 +159,7 @@
       color: "kulrang",
       style: "minimalistik",
       badges: [],
-      image: "assets/img/doors/grey-stripe.svg",
+      image: "assets/img/doors/photo/grey-stripe.png",
       short: "Och kulrang, vertikal nozik frezalar bilan.",
       description: "Grey Stripe — neytral kulrang rang va vertikal nozik frezalar. Har qanday interyerga oson moslashadigan amaliy va zamonaviy eshik.",
       specs: { "Material": "MDF", "Qoplama": "Matovaya plyonka", "Shisha": "Yo‘q", "Dizayn": "Vertikal frezalar" }
