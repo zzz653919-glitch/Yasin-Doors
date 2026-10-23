@@ -42,6 +42,10 @@
         <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Bosh sahifa</a><span>/</span><span aria-current="page">3D konstruktor</span></nav>
         <h1 class="title-lg">3D eshik konstruktori</h1>
         <p>O‘zingizga mos MDF eshikni yig‘ing: model, rang, tutqich va o‘lchamni tanlang — natija darhol 3D da yangilanadi.</p>
+        <div class="cfg-modes" role="tablist" aria-label="Konstruktor rejimi">
+          <button type="button" role="tab" id="cfgModeBtn3d" data-mode="3d" aria-selected="true" aria-controls="cfgViewport">3D konstruktor</button>
+          <button type="button" role="tab" id="cfgModeBtnPhoto" data-mode="photo" aria-selected="false" aria-controls="cfgViewport">Katalog fotolari <span class="cfg-tag">2D</span></button>
+        </div>
       </div>
     </section>
 
@@ -56,6 +60,7 @@
           </div>
           <p class="cfg-legend"><span class="cfg-tag">Buyurtma asosida</span> belgisi bor variantlarning ishlab chiqarilishini menejer tasdiqlaydi.</p>
           <div id="cfgOptions"></div>
+          <div id="cfgPhotoOptions" hidden></div>
         </aside>
 
         <!-- Markaz: 3D ko‘rinish -->
@@ -64,6 +69,19 @@
             <div class="cfg-loading" id="cfgLoading" role="status"><span class="cfg-spinner" aria-hidden="true"></span><span id="cfgLoadingText">3D model yuklanmoqda…</span></div>
             <div class="cfg-fallback" id="cfgFallback" hidden></div>
             <div class="cfg-vignette" aria-hidden="true"></div>
+            <div class="cfg-photo" id="cfgPhoto" hidden>
+              <div class="cfg-photo-pan" id="cfgPhotoPan" tabindex="0" role="img" aria-label="Eshik fotosi (2D). Yaqinlashtirish: g‘ildirak yoki + − tugmalari">
+                <div class="cfg-photo-bg" id="cfgPhotoBg"></div>
+                <img class="cfg-photo-img" id="cfgPhotoImg" alt="" decoding="async" draggable="false">
+              </div>
+              <span class="cfg-photo-badge" id="cfgPhotoBadge">2D foto ko‘rinish — 3D model emas</span>
+              <div class="cfg-photo-zoom" role="group" aria-label="Yaqinlashtirish">
+                <button type="button" data-z="in" aria-label="Yaqinlashtirish">+</button>
+                <button type="button" data-z="out" aria-label="Uzoqlashtirish">−</button>
+                <button type="button" data-z="reset" aria-label="Asl holatga qaytarish">⟲</button>
+              </div>
+              <p class="cfg-photo-hint">G‘ildirak/chimchilash — yaqinlashtirish · sudrang — siljitish</p>
+            </div>
             <div class="cfg-viewbar" id="cfgViewbar" role="group" aria-label="Ko‘rinish burchagi">
               <button type="button" data-view="front">Old</button>
               <button type="button" data-view="back">Orqa</button>
@@ -72,7 +90,7 @@
             </div>
             <p class="cfg-hint" id="cfgHint">Sudrang — aylantirish · G‘ildirak/chimchilash — yaqinlashtirish · Klaviatura: ← → ↑ ↓ va + −</p>
           </div>
-          <div class="cfg-tools" role="toolbar" aria-label="Konstruktor amallari">
+          <div class="cfg-tools" id="cfgTools" role="toolbar" aria-label="Konstruktor amallari">
             <button class="btn btn--outline btn--sm" type="button" id="cfgUndo" disabled><svg class="icon" aria-hidden="true"><use href="#i-arrow-left"></use></svg>Oldingi holat</button>
             <button class="btn btn--outline btn--sm" type="button" id="cfgReset">Boshidan boshlash</button>
             <button class="btn btn--outline btn--sm" type="button" id="cfgShare">Havolani nusxalash</button>
@@ -82,6 +100,7 @@
 
         <!-- O‘ng: buyurtma xulosasi -->
         <aside class="cfg-summary" id="cfgSummary" aria-label="Buyurtma xulosasi"></aside>
+        <aside class="cfg-summary" id="cfgPhotoSummary" aria-label="Katalog eshigi xulosasi" hidden></aside>
       </div>
 
       <button class="btn btn--gold cfg-sheet-open" type="button" id="cfgSheetOpen" aria-controls="cfgPanel" aria-expanded="false">
@@ -113,5 +132,6 @@
   <script src="/assets/js/form-utils.js"></script>
   <script src="/assets/js/configurator-data.js"></script>
   <script type="module" src="/assets/js/configurator.js"></script>
+  <script src="/assets/js/configurator-photo.js" defer></script>
 </body>
 </html>

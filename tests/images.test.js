@@ -126,3 +126,22 @@ test("baza: yangi 3 mahsulot bir marta qo'shiladi (bo'sh bazada emas), o'chirils
   assert.equal((await db.all("SELECT id FROM products WHERE id IN ('crema-classic','vetro-grande')")).length, 2);
   for (const f of [dbFile, dbFile + "-wal", dbFile + "-shm"]) { try { fs.unlinkSync(f); } catch (e) { /* yo'q */ } }
 });
+
+test("konstruktor foto rejimi: har bir foto eshikning kichik rasmi, havolasi va o'xshash 3D modeli bor", () => {
+  const fs2 = require("fs"), path2 = require("path");
+  const js = fs2.readFileSync(path2.join(ROOT, "public/assets/js/configurator-photo.js"), "utf8");
+  const html = fs2.readFileSync(path2.join(ROOT, "public/configurator.html"), "utf8");
+  const C = require(path2.join(ROOT, "public/assets/js/configurator-data.js"));
+  assert.match(html, /configurator-photo\.js/);
+  assert.match(html, /2D foto ko‘rinish — 3D model emas/, "2D belgisi yozilgan");
+  const photo = require(path2.join(ROOT, "public/assets/js/products.js")).PRODUCTS.filter(p => /\/doors\/photo\//.test(p.image));
+  assert.equal(photo.length, 8);
+  for (const p of photo) {
+    const th = path2.join(ROOT, "public", p.image.replace("/doors/photo/", "/doors/photo/thumb/"));
+    assert.ok(fs2.existsSync(th), p.id + " kichik rasmi bor");
+    assert.ok(fs2.statSync(th).size < 120 * 1024, p.id + " kichik rasmi yengil");
+    const m = new RegExp('"' + p.id + '":\\s*\\{\\s*model:\\s*"(\\w+)",\\s*variant:\\s*"(\\w+)"').exec(js);
+    assert.ok(m, p.id + " uchun o'xshash 3D model ko'rsatilgan");
+    assert.ok(C.MODELS[m[1]] && C.MODELS[m[1]].variants[m[2]], p.id + ": o'xshash model/variant mavjud konstruktorda");
+  }
+});
