@@ -84,3 +84,15 @@ input, textarea { -webkit-touch-callout: default; }
 .section-head--row > div { min-width: 0; }
 .section-head--row .btn { flex: none; min-height: 38px; padding: 0 14px; font-size: 13px; }
 @media (max-width: 640px) { .section-head--row .title-lg { font-size: clamp(22px, 6.4vw, 28px); } .section-head--row .btn .icon { display: none; } }
+
+/* Fonsiz (shaffof PNG) eshik fotosuratlari: kesilmaydi, butun eshik ko‘rinadi, ramka ichida biroz havo bilan.
+   Orqa fon rasmning o‘zidan olib tashlangan; kartaning mavjud foni ko‘rinadi (CSS bilan sun’iy fon qo‘shilmaydi). */
+img[src*="/doors/photo/"] { object-fit: contain !important; object-position: 50% 50%; box-sizing: border-box; filter: drop-shadow(0 10px 14px rgba(0, 0, 0, .14)); }
+.product-media img[src*="/doors/photo/"], .detail-media img[src*="/doors/photo/"], .dc-media img[src*="/doors/photo/"], .split-media img[src*="/doors/photo/"] { padding: 6% 8%; }
+.cat-card img[src*="/doors/photo/"] { padding: 8% 14% 22%; }
+.cart-item-media img[src*="/doors/photo/"], .summary-item img[src*="/doors/photo/"], .ai-card img[src*="/doors/photo/"], .cc-img img[src*="/doors/photo/"] { padding: 3px; filter: none; }
+:root[data-theme="dark"] img[src*="/doors/photo/"] { filter: drop-shadow(0 10px 14px rgba(0, 0, 0, .45)); }
+/* Fonsiz fotosuratlarda parallax/zoom o‘lchamni kattalashtirib eshikni kesmasin: rasm joyida turadi, hoverda yengil ko‘tariladi */
+img[src*="/doors/photo/"], img[src*="/doors/photo/"].has-parallax { transform: none !important; transition: transform .35s var(--ease); }
+.product-card:hover .product-media img[src*="/doors/photo/"] { transform: translateY(-4px) !important; }
+.dc-card.is-active .dc-media:hover img[src*="/doors/photo/"], .detail-media:hover img[src*="/doors/photo/"] { transform: none !important; }

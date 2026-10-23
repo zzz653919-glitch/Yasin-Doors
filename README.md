@@ -327,3 +327,21 @@ Saytning pastki o‘ng burchagidagi **«AI yordam»** tugmasi chat oynasini ocha
 - IP bo‘yicha cheklov: 10 daqiqada 60 so‘rov.
 
 Tekshirish: `npm test` (tests/assistant.test.js), `npm run test:e2e`.
+
+## Fonsiz eshik fotosuratlari (shaffof PNG)
+
+5 ta haqiqiy eshik fotosurati (orqa devor/pol olib tashlangan) `public/assets/img/doors/photo/<mahsulot-id>.png` da — **RGBA PNG, haqiqiy alfa kanal** (CSS bilan yashirilmagan).
+Asl fotosuratlar zaxirada: `design-src/door-photos/original/` (saytga tarqatilmaydi). Eski SVG illyustratsiyalar ham o‘chirilmagan.
+
+| Foto | Mahsulot (id) |
+| --- | --- |
+| oq, ikki panelli, oltin ilgaklar | `classic-royal` |
+| ikki qanotli, oq, bezakli shisha | `vetro-bianco` |
+| krem, oltin chiziqli vertikal frezalar | `neo-arka` |
+| ikki qanotli, vertikal panellar va oltin chiziqlar | `sand-duo` |
+| oq, vertikal frezalar va oltin ramka | `grey-stripe` |
+
+- Usul: `scripts/door-photos/cutout.py` — eshik konturi ko‘pburchak bilan belgilanadi, GrabCut chegarani rang bo‘yicha aniqlaydi, qirra pikselleri ichki rangdan tiklanadi (devor halosi yo‘q).
+  Qayta ishlash: `python3 scripts/door-photos/cutout.py <foto_papka> <chiqish_papka>` (opencv-python-headless, numpy, pillow, scipy).
+- Mavjud bazadagi mahsulotlarda eski SVG yo‘li bo‘lsa, `lib/db.js` migratsiyasi uni yangi PNG ga almashtiradi (admin boshqa rasm qo‘ygan bo‘lsa tegilmaydi).
+- Mahsulot nomi/tavsifi/narxi o‘zgarmagan: foto mos mahsulotga eng yaqin dizayn bo‘yicha qo‘yilgan — kerak bo‘lsa admin panelda tahrirlang.

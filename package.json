@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node server.js",
     "create-admin": "node scripts/create-admin.js",
-    "test": "node --test tests/api.test.js tests/audit.test.js tests/configurator.test.js tests/account.test.js tests/persistence.test.js tests/catalog.test.js tests/routes.test.js tests/regions.test.js tests/app.test.js tests/assistant.test.js",
+    "test": "node --test tests/api.test.js tests/audit.test.js tests/configurator.test.js tests/account.test.js tests/persistence.test.js tests/catalog.test.js tests/routes.test.js tests/regions.test.js tests/app.test.js tests/assistant.test.js tests/images.test.js",
     "test:e2e": "node tests/e2e/run.js",
     "check-env": "node scripts/check-env.js",
     "smoke": "node scripts/smoke.js",
