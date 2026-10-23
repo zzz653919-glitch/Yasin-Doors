@@ -340,8 +340,25 @@ Asl fotosuratlar zaxirada: `design-src/door-photos/original/` (saytga tarqatilma
 | krem, oltin chiziqli vertikal frezalar | `neo-arka` |
 | ikki qanotli, vertikal panellar va oltin chiziqlar | `sand-duo` |
 | oq, vertikal frezalar va oltin ramka | `grey-stripe` |
+| oq, tor koridorda: vertikal frezalar va oltin ramka | `bianco-gold` (yangi mahsulot) |
+| krem-oq, ikki panelli klassik | `crema-classic` (yangi mahsulot) |
+| ikki qanotli oq, vitraj shisha | `vetro-grande` (yangi mahsulot) |
 
 - Usul: `scripts/door-photos/cutout.py` — eshik konturi ko‘pburchak bilan belgilanadi, GrabCut chegarani rang bo‘yicha aniqlaydi, qirra pikselleri ichki rangdan tiklanadi (devor halosi yo‘q).
   Qayta ishlash: `python3 scripts/door-photos/cutout.py <foto_papka> <chiqish_papka>` (opencv-python-headless, numpy, pillow, scipy).
 - Mavjud bazadagi mahsulotlarda eski SVG yo‘li bo‘lsa, `lib/db.js` migratsiyasi uni yangi PNG ga almashtiradi (admin boshqa rasm qo‘ygan bo‘lsa tegilmaydi).
-- Mahsulot nomi/tavsifi/narxi o‘zgarmagan: foto mos mahsulotga eng yaqin dizayn bo‘yicha qo‘yilgan — kerak bo‘lsa admin panelda tahrirlang.
+- Yangi 3 mahsulot (taxminiy nom va **namunaviy narx**) statik katalogga va (baza mahsulotlar bilan to‘lgan bo‘lsa) bazaga bir marta qo‘shiladi (`lib/photo-catalog.js`, `settings.photo_products_v1`); admin o‘chirsa qaytmaydi.
+  5 ta eski mahsulotning matni/rangi fotoga moslab yangilandi (faqat matn hali o‘zgartirilmagan bo‘lsa). Narx va nomlarni admin panelda o‘zingizga moslang.
+
+
+## Konstruktorda katalog fotolari (2D rejim)
+
+`/Configurator` sahifasida ikki rejim bor: **3D konstruktor** (haqiqiy 3D, avvalgidek) va **Katalog fotolari 2D**.
+Fonsiz (shaffof PNG) eshik fotolari haqiqiy 3D model **emas** va shunday belgilanadi («2D foto ko‘rinish — 3D model emas»):
+qalinlik, orqa tomon va aylantirish uchun haqiqiy ma’lumot yo‘q, shuning uchun ular o‘ylab topilmagan.
+
+- Foto rejimi: model tanlash (katalogdagi barcha `assets/img/doors/photo/*.png` mahsulotlari avtomatik chiqadi), yaqinlashtirish (g‘ildirak, chimchilash, + − tugmalari, ikki marta bosish), siljitish, fon (qorong‘i studiya / yorug‘ fon / devor), o‘lcham (mahsulotning o‘z o‘lchamlari), soni, **katalog narxi** va savatga qo‘shish.
+- Katalog → konstruktor: foto mahsulot sahifasida «Konstruktorda ko‘rish (2D foto)» tugmasi; havola `/Configurator?photo=<mahsulot-id>`.
+- «3D da o‘xshash modelni ochish» — eng yaqin mavjud 3D model/variant/rangni ochadi (aynan nusxa emas, shu haqida xabar chiqadi). Jadval: `configurator-photo.js` → `SIMILAR`.
+- Server tomonidagi konstruktor buyurtmasi (`/api/configurator/order`) va narx qoidalari o‘zgarmagan: foto rejimi alohida (savat orqali).
+- Yengil yuklash uchun `assets/img/doors/photo/thumb/` (220 px) kichik rasmlari ishlatiladi; katta PNG faqat tanlanganda yuklanadi. Yangi foto eshik qo‘shsangiz, kichik rasmini ham yarating (test buni tekshiradi).
