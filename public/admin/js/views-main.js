@@ -250,7 +250,6 @@
       root.innerHTML = '<div class="page-head"><div><h1>Mahsulotlar</h1><p>MDF eshiklar katalogi — saytda ko\'rinadigan mahsulotlar shu yerda boshqariladi.</p></div><div class="head-actions">' +
         '<button class="btn btn--ghost" data-act="export">' + A.icon("download") + "CSV eksport</button>" +
         (A.can("products.write") ? '<button class="btn btn--ghost" data-act="import">' + A.icon("upload") + 'CSV import</button><input type="file" id="pImportFile" accept=".csv,text/csv" hidden>' +
-          '<button class="btn btn--ghost" data-act="seed">' + A.icon("box") + "200 ta namunaviy eshik</button>" +
           '<button class="btn btn--ghost" data-act="unseed">' + A.icon("trash") + "Namunaviy eshiklarni o'chirish</button>" +
           '<button class="btn btn--gold" data-act="add">' + A.icon("plus") + "Mahsulot qo'shish</button>" : "") + '</div></div><div class="card" id="pCard"></div>';
       var card = $("#pCard", root);

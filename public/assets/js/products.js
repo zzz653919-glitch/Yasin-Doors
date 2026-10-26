@@ -61,19 +61,6 @@
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "Vertikal frezalar, oltin chiziq" }
     },
     {
-      id: "linea-grafit",
-      name: "Linea Grafit",
-      price: 2750000,
-      oldPrice: null,
-      color: "grafit",
-      style: "minimalistik",
-      badges: ["new"],
-      image: "assets/img/doors/linea-grafit.svg",
-      short: "Grafit rang, silliq yuza va vertikal metall chiziq.",
-      description: "Linea Grafit — ortiqcha detallarsiz, silliq yuzali minimalistik eshik. Vertikal metall rangli chiziq zamonaviy kvartira va ofislarga qat’iy, toza ko‘rinish beradi.",
-      specs: { "Material": "MDF", "Qoplama": "Matovaya plyonka", "Shisha": "Yo‘q", "Dizayn": "Silliq yuza, vertikal molding" }
-    },
-    {
       id: "vetro-bianco",
       name: "Vetro Bianco",
       price: 2600000,
@@ -85,58 +72,6 @@
       short: "Oq ikki qanotli eshik, bezakli (vitraj) shisha qo‘shimchalari bilan.",
       description: "Vetro Bianco — ikki qanotli oq MDF eshik: keng va tor bezakli shisha oynalar, pastda frezalangan panellar. Yorug‘likni o‘tkazadi va kirish zonasiga hashamat bag‘ishlaydi.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Bezakli (vitraj)", "Dizayn": "Ikki qanotli, bezakli shisha" }
-    },
-    {
-      id: "loft-black",
-      name: "Loft Black",
-      price: 3400000,
-      oldPrice: null,
-      color: "qora",
-      style: "loft",
-      badges: ["new"],
-      image: "assets/img/doors/loft-black.svg",
-      short: "Qora ramka va to‘rsimon shisha — industrial loft uslubi.",
-      description: "Loft Black — industrial uslubdagi interyerlar uchun qora rangli, to‘rsimon shishali eshik. Ishchi xona, oshxona yoki studiya uchun ajoyib tanlov.",
-      specs: { "Material": "MDF", "Qoplama": "Matovaya plyonka", "Shisha": "Tiniq shisha", "Dizayn": "2 × 4 to‘rsimon shisha" }
-    },
-    {
-      id: "nordic-oak",
-      name: "Nordic Oak",
-      price: 2200000,
-      oldPrice: null,
-      color: "eman",
-      style: "zamonaviy",
-      badges: ["popular"],
-      image: "assets/img/doors/nordic-oak.svg",
-      short: "Och eman teksturasi va gorizontal frezalar — skandinav uslubi.",
-      description: "Nordic Oak — tabiiy och eman teksturasiga ega iliq va yengil eshik. Gorizontal frezalar skandinav uslubidagi xonalar bilan uyg‘un ko‘rinadi.",
-      specs: { "Material": "MDF", "Qoplama": "Teksturali plyonka", "Shisha": "Yo‘q", "Dizayn": "4 ta gorizontal freza" }
-    },
-    {
-      id: "noir-gold",
-      name: "Noir Gold",
-      price: 3900000,
-      oldPrice: null,
-      color: "qora",
-      style: "zamonaviy",
-      badges: ["new", "popular"],
-      image: "assets/img/doors/noir-gold.svg",
-      short: "Chuqur qora rang va oltin rangli geometrik chiziqlar.",
-      description: "Noir Gold — premium kolleksiyaning yorqin vakili. Chuqur qora yuzadagi oltin rangli geometrik chiziqlar eshikni interyerning asosiy aksentiga aylantiradi.",
-      specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "Geometrik dekor chiziqlar" }
-    },
-    {
-      id: "walnut-glass",
-      name: "Walnut Glass",
-      price: 3250000,
-      oldPrice: null,
-      color: "yongoq",
-      style: "shishali",
-      badges: [],
-      image: "assets/img/doors/walnut-glass.svg",
-      short: "Yong‘oq teksturasi va baland vertikal xira shisha.",
-      description: "Walnut Glass — boy yong‘oq teksturasi va markazdagi baland xira shisha uyg‘unligi. Kabinet va mehmonxona uchun iliq, salobatli yechim.",
-      specs: { "Material": "MDF", "Qoplama": "Teksturali plyonka", "Shisha": "Xira (matli) shisha", "Dizayn": "Vertikal shisha panel" }
     },
     {
       id: "sand-duo",

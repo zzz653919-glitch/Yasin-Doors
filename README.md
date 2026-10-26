@@ -362,3 +362,7 @@ qalinlik, orqa tomon va aylantirish uchun haqiqiy ma’lumot yo‘q, shuning uch
 - «3D da o‘xshash modelni ochish» — eng yaqin mavjud 3D model/variant/rangni ochadi (aynan nusxa emas, shu haqida xabar chiqadi). Jadval: `configurator-photo.js` → `SIMILAR`.
 - Server tomonidagi konstruktor buyurtmasi (`/api/configurator/order`) va narx qoidalari o‘zgarmagan: foto rejimi alohida (savat orqali).
 - Yengil yuklash uchun `assets/img/doors/photo/thumb/` (220 px) kichik rasmlari ishlatiladi; katta PNG faqat tanlanganda yuklanadi. Yangi foto eshik qo‘shsangiz, kichik rasmini ham yarating (test buni tekshiradi).
+
+## Katalog faqat foto eshiklardan iborat
+Namunaviy (illyustratsiyali, `assets/img/doors/*.svg`) mahsulotlar katalogdan olib tashlangan: `public/assets/js/products.js` da faqat haqiqiy foto (fonsiz PNG) eshiklar bor.
+Bazada ular birinchi ishga tushishda **bir marta** o‘chiriladi (`lib/photo-catalog.js` → `only_photo_catalog_v1`): foto mahsulotlar, admin o‘zi rasm yuklab qo‘shganlar va ochiq buyurtmadagi mahsulotlar tegilmaydi. «200 ta namunaviy eshik» tugmasi adminden olib tashlandi (generator `lib/catalog-seed.js` faqat sinov uchun qoldi).

@@ -220,11 +220,11 @@ test("parol tiklash: bir martalik, vaqt bilan cheklangan havola, hamma sessiyala
 });
 
 test("sevimlilar: akkauntga bog'langan, qurilmalar o'rtasida saqlanadi", async () => {
-  const put = await call("PUT", "/api/account/favorites", Object.assign({ body: { ids: ["classic-royal", "loft-black", "classic-royal", "<bad>"] } }, authed(user)));
-  assert.equal(put.status, 200); assert.deepEqual(put.json.ids, ["classic-royal", "loft-black"]);
+  const put = await call("PUT", "/api/account/favorites", Object.assign({ body: { ids: ["classic-royal", "neo-arka", "classic-royal", "<bad>"] } }, authed(user)));
+  assert.equal(put.status, 200); assert.deepEqual(put.json.ids, ["classic-royal", "neo-arka"]);
   const login2 = await call("POST", "/api/account/login", { body: { identifier: "alisher@example.com", password: "Tiklangan123" }, ip: "10.1.7.1" });
   const get = await call("GET", "/api/account/favorites", { cookie: cookieOf(login2) });
-  assert.deepEqual(get.json.ids, ["classic-royal", "loft-black"]);
+  assert.deepEqual(get.json.ids, ["classic-royal", "neo-arka"]);
 });
 
 test("buyurtma: kirgan mijozniki akkauntga bog'lanadi, mehmonniki yo'q; tarix faqat o'zining", async () => {

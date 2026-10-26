@@ -38,7 +38,7 @@ async function seed() {
     for (const w of [320, 360, 390, 430, 768, 1024, 1440]) {
       const ctx = await newCtx({ viewport: { width: w, height: 800 }, isMobile: w < 700, hasTouch: w < 700 });
       // Savat va sevimlilar to'la bo'lsin: bo'sh holat uzun matn/elementlarni ko'rsatmaydi
-      await ctx.addInitScript(() => { localStorage.setItem("yd_cart_v1", JSON.stringify([{ id: "classic-royal", size: "800 × 2000", qty: 12 }, { id: "loft-black", size: "800 × 2000", qty: 1 }])); localStorage.setItem("yd_favs_v1", JSON.stringify(["classic-royal", "loft-black"])); });
+      await ctx.addInitScript(() => { localStorage.setItem("yd_cart_v1", JSON.stringify([{ id: "classic-royal", size: "800 × 2000", qty: 12 }, { id: "neo-arka", size: "800 × 2000", qty: 1 }])); localStorage.setItem("yd_favs_v1", JSON.stringify(["classic-royal", "neo-arka"])); });
       const p = await ctx.newPage();
       const bad = [];
       for (const pg of pages) {

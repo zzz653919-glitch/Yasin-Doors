@@ -145,3 +145,24 @@ test("konstruktor foto rejimi: har bir foto eshikning kichik rasmi, havolasi va 
     assert.ok(C.MODELS[m[1]] && C.MODELS[m[1]].variants[m[2]], p.id + ": o'xshash model/variant mavjud konstruktorda");
   }
 });
+
+test("baza: namunaviy (svg) eshiklar bir marta o'chadi; foto va o'zi rasm yuklagan mahsulotlar qoladi; bir martalik", async () => {
+  const dbFile = path.join(os.tmpdir(), `yd-clean-${process.pid}-${Date.now()}.db`);
+  process.env.DATABASE_URL = "file:" + dbFile.replace(/\\/g, "/");
+  const fresh = () => { for (const k of Object.keys(require.cache)) if (/[\\/]lib[\\/](db|photo-catalog)\.js$/.test(k)) delete require.cache[k]; return require("../lib/db"); };
+  let db = fresh(); await db.init();
+  const t = new Date().toISOString();
+  const ins = (id, img) => db.run("INSERT INTO products (id, name, short, description, price, color, style, sizes, image, active, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,1,?,?)", [id, id, "x", "x", 1000, "oq", "klassik", '["800 × 2000"]', img, t, t]);
+  await ins("sample-a", "assets/img/doors/yd-kls-001.svg");
+  await ins("sample-b", "assets/img/doors/linea-grafit.svg");
+  await ins("custom", "uploads/own-door.jpg");
+  const left = async () => (await db.all("SELECT id FROM products ORDER BY id")).map(r => r.id);
+  db = fresh(); await db.init();   // cold start: foto mahsulotlar qo'shiladi, namunaviy svg'lar o'chadi
+  const after = await left();
+  assert.ok(after.includes("custom") && after.includes("bianco-gold"), "o'z rasmli va foto mahsulotlar qoldi");
+  assert.ok(!after.includes("sample-a") && !after.includes("sample-b"), "namunaviy svg mahsulotlar o'chdi");
+  await ins("sample-c", "assets/img/doors/yd-min-002.svg");
+  db = fresh(); await db.init();
+  assert.ok((await left()).includes("sample-c"), "tozalash bir martalik: keyin qo'shilganlar tegilmaydi");
+  for (const f of [dbFile, dbFile + "-wal", dbFile + "-shm"]) { try { fs.unlinkSync(f); } catch (e) { /* yo'q */ } }
+});
