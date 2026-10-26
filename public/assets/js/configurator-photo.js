@@ -21,6 +21,17 @@
     "grey-stripe":   { model: "lines", variant: "l5", decor: "gold" },
     "neo-arka":      { model: "lines", variant: "l5", decor: "gold" },
     "sand-duo":      { model: "lines", variant: "l3", decor: "gold" }
+    "royal-oak":     { model: "classic", variant: "p2", decor: "none" },
+    "bianco-due":    { model: "classic", variant: "p2", decor: "none" },
+    "fluta-due":     { model: "lines", variant: "l5", decor: "none" },
+    "griglia-duo":   { model: "glass", variant: "grid" },
+    "mono-panel":    { model: "classic", variant: "p2", decor: "none" },
+    "nero-vitraj":   { model: "glass", variant: "slot" },
+    "nero-line-duo": { model: "lines", variant: "l3", decor: "none" },
+    "silver-royal":  { model: "classic", variant: "p2", decor: "none" },
+    "bianco-frame":  { model: "classic", variant: "p4", decor: "none" },
+    "frassino":      { model: "flat", variant: "plain" },
+    "silver-panel":  { model: "classic", variant: "p4", decor: "none" }
   };
   var BGS = { studio: "Qorong‘i studiya", light: "Yorug‘ fon", wall: "Devor bilan" };
   var WALLS = { warm: { name: "Iliq oq", hex: "#e9e4da" }, grey: { name: "Kulrang", hex: "#b9b8b4" }, dark: { name: "Grafit", hex: "#4a4b4f" } };

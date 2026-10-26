@@ -2,7 +2,7 @@
 YD.whenReady(function () {
   // Carousel tartibi: turli uslub va ranglar navbatma-navbat ko‘rinsin.
   // Ro‘yxatda yo‘q mahsulotlar oxiriga avtomatik qo‘shiladi.
-  var SHOWCASE_ORDER = ["neo-arka", "classic-royal", "vetro-bianco", "sand-duo", "grey-stripe", "bianco-gold", "crema-classic", "vetro-grande"];
+  var SHOWCASE_ORDER = ["neo-arka", "classic-royal", "vetro-bianco", "sand-duo", "grey-stripe", "bianco-gold", "crema-classic", "vetro-grande", "royal-oak"];
   var showcaseEl = document.getElementById("doorShowcase");
   if (showcaseEl && window.YDCarousel) {
     var list = SHOWCASE_ORDER.map(YD.getProduct).filter(Boolean);
