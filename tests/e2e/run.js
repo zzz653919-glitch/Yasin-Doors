@@ -38,7 +38,7 @@ async function seed() {
     for (const w of [320, 360, 390, 430, 768, 1024, 1440]) {
       const ctx = await newCtx({ viewport: { width: w, height: 800 }, isMobile: w < 700, hasTouch: w < 700 });
       // Savat va sevimlilar to'la bo'lsin: bo'sh holat uzun matn/elementlarni ko'rsatmaydi
-      await ctx.addInitScript(() => { localStorage.setItem("yd_cart_v1", JSON.stringify([{ id: "classic-royal", size: "800 × 2000", qty: 12 }, { id: "loft-black", size: "800 × 2000", qty: 1 }])); localStorage.setItem("yd_favs_v1", JSON.stringify(["classic-royal", "loft-black"])); });
+      await ctx.addInitScript(() => { localStorage.setItem("yd_cart_v1", JSON.stringify([{ id: "classic-royal", size: "800 × 2000", qty: 12 }, { id: "neo-arka", size: "800 × 2000", qty: 1 }])); localStorage.setItem("yd_favs_v1", JSON.stringify(["classic-royal", "neo-arka"])); });
       const p = await ctx.newPage();
       const bad = [];
       for (const pg of pages) {
@@ -337,6 +337,37 @@ async function seed() {
       ok((await ap.locator(".ai-panel:not([hidden])").count()) === 0 && (await ap.evaluate(() => document.activeElement.id)) === "aiFab", label + " AI: Escape yopadi, fokus tugmaga qaytadi");
       ok(aerrs.length === 0, label + " AI: JS xatolari yo'q " + JSON.stringify(aerrs.slice(0, 2)));
       await actx.close();
+    }
+    /* 4i) Konstruktor: katalog fotolari (2D rejim) — tanlash, zoom, fon, narx, savat, 3D ga o'tish; desktop + mobil */
+    for (const [label, vp, mob] of [["desktop", { width: 1366, height: 800 }, false], ["mobil", { width: 390, height: 844 }, true]]) {
+      const pctx = await newCtx({ viewport: vp, isMobile: mob, hasTouch: mob }); const pp = await pctx.newPage(); const perr = [];
+      pp.on("pageerror", e => perr.push(e.message));
+      await pp.goto(B + "/Configurator?photo=sand-duo"); await pp.waitForSelector("#cfgPhotoImg");
+      await pp.waitForFunction(() => document.getElementById("cfgPhotoImg").naturalWidth > 100);
+      ok(await pp.evaluate(() => document.body.classList.contains("cfg-photo-on") && /2D/.test(document.getElementById("cfgPhotoBadge").textContent)), label + " foto rejimi: ?photo ochildi va '2D' belgisi bor");
+      ok((await pp.locator("#cfgViewbar:visible").count()) === 0, label + " foto rejimi: 3D burchak tugmalari (Orqa/Yon) ko'rsatilmaydi");
+      await pp.click('[data-z="in"]'); await pp.click('[data-z="in"]');
+      ok(/scale\(1\.[5-9]/.test(await pp.evaluate(() => document.getElementById("cfgPhotoPan").style.transform)), label + " foto: yaqinlashtirish ishlaydi");
+      await pp.click('[data-z="reset"]');
+      ok(/scale\(1\)|scale\(1\.000\)/.test(await pp.evaluate(() => document.getElementById("cfgPhotoPan").style.transform)), label + " foto: asl holatga qaytarish");
+      if (mob) await pp.click("#cfgSheetOpen");
+      const ids = await pp.$$eval('[data-ph="model"]', els => els.map(e => e.dataset.v));
+      ok(ids.length >= 8, label + " foto: barcha foto eshiklar ro'yxatda (" + ids.length + ")");
+      let allOk = true;
+      for (const id of ids) { await pp.click('[data-ph="model"][data-v="' + id + '"]'); await pp.waitForTimeout(80); allOk = allOk && await pp.evaluate(id => document.getElementById("cfgPhotoImg").src.includes(id + ".png"), id); }
+      ok(allOk, label + " foto: har bir model tanlanganda rasm almashadi");
+      for (const bg of ["light", "wall", "studio"]) { await pp.click('[data-ph="bg"][data-v="' + bg + '"]'); ok(await pp.evaluate(b => document.getElementById("cfgPhotoBg").classList.contains("is-" + b), bg), label + " foto: fon '" + bg + "'"); }
+      if (mob) await pp.click("#cfgSheetClose");
+      const before = await pp.textContent("#cfgPhotoSummary strong"); await pp.click('[data-ph="qty"][data-d="1"]');
+      ok(before !== await pp.textContent("#cfgPhotoSummary strong"), label + " foto: narx soniga qarab darhol yangilanadi");
+      await pp.click('#cfgPhotoSummary [data-ph="cart"]');
+      ok(await pp.evaluate(() => YD.store.getCart().some(i => i.id === "vetro-grande" && i.qty === 2)), label + " foto: savatga qo'shildi");
+      if (mob) await pp.click("#cfgSheetOpen");
+      await pp.click('[data-ph="to3d"]'); await pp.waitForTimeout(800);
+      ok(await pp.evaluate(() => !document.body.classList.contains("cfg-photo-on") && YDConfigurator.state.cfg.model === "glass" && !document.getElementById("cfgOptions").hidden), label + " foto: 3D ga o'xshash model bilan o'tadi (sozlamalar panel ishlaydi)");
+      ok(await pp.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), label + " foto: gorizontal scroll yo'q");
+      ok(perr.length === 0, label + " foto: JS xatolari yo'q " + JSON.stringify(perr.slice(0, 2)));
+      await pctx.close();
     }
     /* 5) CSP bilan 3D konstruktor va sahifalar xatosiz yuklanadi */
     ctx = await newCtx({ viewport: { width: 1280, height: 800 } }); p = await ctx.newPage();

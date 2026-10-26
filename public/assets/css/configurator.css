@@ -215,3 +215,43 @@ html.cfg-modal-open { overflow: hidden; }
 .cfg-lines .is-extra { padding-left: 10px; opacity: .85; }
 .cfg-unit { margin: 8px 0 0; font-size: 13px; }
 .cfg-total-label { display: block; margin-top: 12px; }
+
+/* ---------- Katalog fotolari (2D rejim) ---------- */
+.cfg-modes { display: inline-flex; gap: 4px; margin-top: 16px; padding: 4px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); }
+.cfg-modes button { padding: 9px 18px; border-radius: 999px; font-size: 13.5px; font-weight: 700; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; transition: background-color .2s, color .2s; }
+.cfg-modes button:hover { color: var(--text); }
+.cfg-modes button[aria-selected="true"] { background: var(--gold); color: #1a1409; }
+.cfg-modes button[aria-selected="true"] .cfg-tag { background: rgba(0, 0, 0, .14); color: inherit; }
+body.cfg-photo-on #cfgViewbar, body.cfg-photo-on #cfgHint, body.cfg-photo-on #cfgTools { display: none; }
+#cfgPhotoOptions[hidden], #cfgPhotoSummary[hidden], .cfg-photo[hidden], #cfgOptions[hidden], #cfgSummary[hidden] { display: none; }
+.cfg-ph-thumb { width: 100%; max-width: 64px; height: 92px; object-fit: contain !important; padding: 0 !important; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .25)); }
+.cfg-photo { position: absolute; inset: 0; z-index: 5; overflow: hidden; touch-action: none; cursor: default; background: radial-gradient(90% 70% at 50% 35%, #2a2a2d, #0d0d0f 78%); }
+.cfg-photo.is-light { background: linear-gradient(180deg, #f4f2ee, #dedad2); }
+.cfg-photo.is-wall { background: var(--wall, #e9e4da); }
+.cfg-photo.is-zoomed { cursor: grab; }
+.cfg-photo-pan { position: absolute; inset: 0; display: grid; place-items: center; transform-origin: 50% 50%; will-change: transform; outline: none; }
+.cfg-photo-pan:focus-visible { outline: 2px solid var(--gold); outline-offset: -4px; }
+.cfg-photo-bg { position: absolute; inset: 0; pointer-events: none; }
+.cfg-photo-bg.is-wall { background: linear-gradient(180deg, rgba(255,255,255,.18), rgba(0,0,0,.06)), var(--wall, #e9e4da); }
+.cfg-photo-bg.is-wall::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 9%; background: linear-gradient(180deg, #6d5c47, #54463a); box-shadow: 0 -10px 18px rgba(0, 0, 0, .18); }
+.cfg-photo-bg.is-wall::before { content: ""; position: absolute; left: 0; right: 0; bottom: 9%; height: 3.2%; background: rgba(255, 255, 255, .55); box-shadow: 0 1px 0 rgba(0, 0, 0, .15); }
+.cfg-photo-img { position: relative; max-height: 82%; max-width: 78%; width: auto; height: auto; object-fit: contain; user-select: none; -webkit-user-drag: none; transition: opacity .25s; margin-bottom: 8%; }
+.cfg-photo-img.is-loading { opacity: .25; }
+.cfg-photo-badge { position: absolute; top: 14px; left: 14px; z-index: 2; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 800; background: rgba(14, 14, 15, .72); color: #f3efe8; border: 1px solid rgba(255, 255, 255, .16); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); pointer-events: none; }
+.cfg-photo.is-light .cfg-photo-badge, .cfg-photo.is-wall .cfg-photo-badge { background: rgba(255, 255, 255, .85); color: #1b1b1e; border-color: rgba(0, 0, 0, .12); }
+.cfg-photo-zoom { position: absolute; right: 14px; bottom: 44px; z-index: 3; display: grid; gap: 6px; }
+.cfg-photo-zoom button { width: 44px; height: 44px; border-radius: 50%; font-size: 22px; font-weight: 700; line-height: 1; display: grid; place-items: center; background: rgba(14, 14, 15, .72); color: #f3efe8; border: 1px solid rgba(255, 255, 255, .16); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transition: background-color .2s, opacity .2s; }
+.cfg-photo-zoom button:hover:not(:disabled) { background: rgba(14, 14, 15, .9); }
+.cfg-photo-zoom button:disabled { opacity: .4; cursor: not-allowed; }
+.cfg-photo-hint { position: absolute; left: 0; right: 0; bottom: 12px; z-index: 2; margin: 0; padding: 0 16px; text-align: center; font-size: 12px; color: #8f897f; pointer-events: none; }
+.cfg-photo.is-light .cfg-photo-hint, .cfg-photo.is-wall .cfg-photo-hint { color: #55524c; }
+@media (max-width: 900px) {
+  .cfg-modes { margin-top: 8px; }
+  .cfg-modes button { padding: 8px 14px; font-size: 13px; }
+  .cfg-photo-hint { display: none; }
+  .cfg-photo-zoom { bottom: 10px; right: 10px; }
+  .cfg-photo-zoom button { width: 40px; height: 40px; }
+  .cfg-photo-badge { top: 10px; left: 10px; font-size: 11px; padding: 5px 10px; }
+  .cfg-photo-img { max-height: 84%; margin-bottom: 4%; }
+}
+@media (prefers-reduced-motion: reduce) { .cfg-photo-img { transition: none; } }

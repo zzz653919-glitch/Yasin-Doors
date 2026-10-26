@@ -250,7 +250,7 @@
       root.innerHTML = '<div class="page-head"><div><h1>Mahsulotlar</h1><p>MDF eshiklar katalogi — saytda ko\'rinadigan mahsulotlar shu yerda boshqariladi.</p></div><div class="head-actions">' +
         '<button class="btn btn--ghost" data-act="export">' + A.icon("download") + "CSV eksport</button>" +
         (A.can("products.write") ? '<button class="btn btn--ghost" data-act="import">' + A.icon("upload") + 'CSV import</button><input type="file" id="pImportFile" accept=".csv,text/csv" hidden>' +
-          '<button class="btn btn--ghost" data-act="seed">' + A.icon("box") + "200 ta namunaviy eshik</button>" +
+          '<button class="btn btn--ghost" data-act="unseed">' + A.icon("trash") + "Namunaviy eshiklarni o'chirish</button>" +
           '<button class="btn btn--gold" data-act="add">' + A.icon("plus") + "Mahsulot qo'shish</button>" : "") + '</div></div><div class="card" id="pCard"></div>';
       var card = $("#pCard", root);
       card.innerHTML = '<div class="toolbar"><input class="input grow" id="pq" type="search" placeholder="Nomi bo\'yicha qidirish…" value="' + esc(f.q) + '" aria-label="Qidirish">' +
@@ -410,6 +410,18 @@
               .then(function () { A.toast("CSV fayl yuklab olindi"); }).catch(A.fail).then(function () { A.setBusy(t, false); });
           }
           if (a === "import") $("#pImportFile", root).click();
+          if (a === "unseed") {
+            A.setBusy(t, true);
+            A.post("/products/remove-seed", { dryRun: true }).then(function (r) {
+              A.setBusy(t, false);
+              if (!r.found) { A.toast("O'chiriladigan namunaviy eshik yo'q"); return; }
+              return A.confirm({ title: "Namunaviy eshiklarni o'chirish", danger: true, confirmLabel: "O‘chirish", text: "<b>" + r.found + " ta</b> namunaviy eshik (seed) o'chiriladi. Asl katalog mahsulotlari (foto eshiklar va boshlang'ich modellar) va o'zingiz qo'shganlari <b>tegilmaydi</b>. Ochiq buyurtmadagi mahsulotlar o'chirilmaydi. Bu amalni qaytarib bo'lmaydi." }).then(function (ok) {
+                if (!ok) return;
+                A.setBusy(t, true, "O'chirilmoqda…");
+                return A.post("/products/remove-seed", {}).then(function (d) { A.toast("O'chirildi: " + d.deleted + " ta" + (d.blocked.length ? ", ochiq buyurtma tufayli qoldi: " + d.blocked.length + " ta" : "")); loadCats(); load(); }).then(function () { A.setBusy(t, false); });
+              });
+            }).catch(function (e) { A.setBusy(t, false); A.fail(e); });
+          }
           if (a === "seed") {
             A.confirm({ title: "Namunaviy katalog", confirmLabel: "Qo'shish", text: "200 ta namunaviy MDF eshik (9 kategoriya) qo'shiladi. Narxlar, ombor va tavsiflar <b>namunaviy</b> — keyin tahrirlang. Qayta bosilsa dublikat yaratilmaydi (SKU bo'yicha tekshiriladi)." }).then(function (ok) {
               if (!ok) return;

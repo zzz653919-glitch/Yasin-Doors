@@ -83,6 +83,23 @@ test("seed: avvalgi namunaviy mahsulot bog'lanadi, 200 ta, qayta ishga tushirils
   assert.equal(await total(), 200);
 });
 
+test("namunaviy eshiklarni o'chirish: faqat seed, asl va qo'lda qo'shilgan mahsulotlar saqlanadi, dryRun hech narsa o'chirmaydi", async () => {
+  const { removeSeedProducts } = require("../lib/catalog-seed");
+  const total = async () => Number((await db.get("SELECT COUNT(*) AS n FROM products")).n);
+  const before = await total();
+  await store.createProduct({ name: "Qo'lda qo'shilgan eshik", price: 1500000, stock: 1, sizes: ["800 × 2000"], active: true, image: "assets/img/doors/classic-royal.svg" }, { id: 1, username: "t" });
+  const dry = await removeSeedProducts(db, store, { dryRun: true });
+  assert.equal(dry.found, 190); assert.equal(await total(), before + 1, "dryRun hech narsa o'chirmadi");
+  const r = await removeSeedProducts(db, store, {});
+  assert.equal(r.deleted.length, 190); assert.equal(r.blocked.length, 0);
+  assert.equal(await total(), 11, "10 ta asl + 1 ta qo'lda qo'shilgan qoldi");
+  assert.equal((await db.get("SELECT COUNT(*) AS n FROM products WHERE name = 'Qo''lda qo''shilgan eshik'")).n, 1);
+  assert.equal((await removeSeedProducts(db, store, {})).found, 0, "qayta bajarilsa hech narsa topilmaydi");
+  await db.run("DELETE FROM products WHERE name = 'Qo''lda qo''shilgan eshik'");
+  await seedCatalog(db, { id: 1, username: "sa1" });       // keyingi testlar uchun katalog tiklanadi
+  assert.equal(await total(), 200);
+});
+
 test("admin API: ro'yxat, kategoriya/rang/narx filtrlari, saralash va qidiruv (SKU bo'yicha ham)", async () => {
   const all = await rawCall("GET", "/api/admin/products", A(sa));
   assert.equal(all.json.items.length, 200);
