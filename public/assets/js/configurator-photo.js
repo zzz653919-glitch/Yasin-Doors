@@ -20,7 +20,7 @@
     "bianco-gold":   { model: "lines", variant: "l5", decor: "gold" },
     "grey-stripe":   { model: "lines", variant: "l5", decor: "gold" },
     "neo-arka":      { model: "lines", variant: "l5", decor: "gold" },
-    "sand-duo":      { model: "lines", variant: "l3", decor: "gold" }
+    "sand-duo":      { model: "lines", variant: "l3", decor: "gold" },
     "royal-oak":     { model: "classic", variant: "p2", decor: "none" },
     "bianco-due":    { model: "classic", variant: "p2", decor: "none" },
     "fluta-due":     { model: "lines", variant: "l5", decor: "none" },

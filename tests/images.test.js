@@ -133,6 +133,7 @@ test("konstruktor foto rejimi: har bir foto eshikning kichik rasmi, havolasi va 
   const js = fs2.readFileSync(path2.join(ROOT, "public/assets/js/configurator-photo.js"), "utf8");
   const html = fs2.readFileSync(path2.join(ROOT, "public/configurator.html"), "utf8");
   const C = require(path2.join(ROOT, "public/assets/js/configurator-data.js"));
+  assert.doesNotThrow(() => new (require("vm").Script)(js, { filename: "configurator-photo.js" }), "configurator-photo.js sintaksisi to'g'ri");
   assert.match(html, /configurator-photo\.js/);
   assert.match(html, /2D foto ko‘rinish — 3D model emas/, "2D belgisi yozilgan");
   const photo = require(path2.join(ROOT, "public/assets/js/products.js")).PRODUCTS.filter(p => /\/doors\/photo\//.test(p.image));
