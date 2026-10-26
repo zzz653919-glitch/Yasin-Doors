@@ -43,9 +43,9 @@
       style: "klassik",
       badges: ["popular"],
       image: "assets/img/doors/photo/classic-royal.png",
-      short: "Oq rangli, ikki panelli klassik eshik. Oltin rangli tutqich va ilgaklar bilan.",
-      description: "Classic Royal — an’anaviy ikki panelli frezalangan yuzaga ega klassik MDF eshik. Oq rang har qanday interyerga yorug‘lik va ozodalik bag‘ishlaydi, nafis panellar esa eshikka chuqurlik beradi.",
-      specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "2 ta frezalangan panel" }
+      short: "Oq rangli, to‘rt panelli klassik eshik. Oltin rangli tutqich bilan.",
+      description: "Classic Royal — an’anaviy to‘rt panelli frezalangan yuzaga ega klassik MDF eshik. Oq rang har qanday interyerga yorug‘lik va ozodalik bag‘ishlaydi, nafis panellar esa eshikka chuqurlik beradi.",
+      specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "4 ta frezalangan panel" }
     },
     {
       id: "neo-arka",
@@ -56,9 +56,9 @@
       style: "neoklassik",
       badges: ["popular"],
       image: "assets/img/doors/photo/neo-arka.png",
-      short: "Krem rangli eshik: vertikal frezalangan panel va oltin rangli chiziqli ramka.",
-      description: "Neo Arka — krem rangli neoklassik MDF eshik. Vertikal frezalangan panel oltin rangli chiziq bilan ramkalangan; ramka va naqshli yuza eshikka nafis ko‘rinish beradi.",
-      specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "Vertikal frezalar, oltin chiziq" }
+      short: "Fil suyagi rangida, arkali panel va oltin chiziqli bezak.",
+      description: "Neo Arka — klassik shakllarni zamonaviy talqinda birlashtirgan neoklassik eshik. Yuqori qismdagi arkasimon panel va nozik oltin rangli chiziqlar mehmonxona va yotoqxonalar uchun mos.",
+      specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "Arkali panel, dekor chiziqlar" }
     },
     {
       id: "linea-grafit",
@@ -82,9 +82,9 @@
       style: "shishali",
       badges: [],
       image: "assets/img/doors/photo/vetro-bianco.png",
-      short: "Oq ikki qanotli eshik, bezakli (vitraj) shisha qo‘shimchalari bilan.",
-      description: "Vetro Bianco — ikki qanotli oq MDF eshik: keng va tor bezakli shisha oynalar, pastda frezalangan panellar. Yorug‘likni o‘tkazadi va kirish zonasiga hashamat bag‘ishlaydi.",
-      specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Bezakli (vitraj)", "Dizayn": "Ikki qanotli, bezakli shisha" }
+      short: "Oq eshik, gorizontal xira shisha qo‘shimchalari bilan.",
+      description: "Vetro Bianco — beshta gorizontal xira shisha qo‘shimchasiga ega yorug‘ eshik. Koridor va oshxonaga yorug‘lik o‘tkazadi, shu bilan birga shaxsiy hududni saqlaydi.",
+      specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Xira (matli) shisha", "Dizayn": "5 ta gorizontal shisha" }
     },
     {
       id: "loft-black",
@@ -143,65 +143,26 @@
       name: "Sand Duo",
       price: 2150000,
       oldPrice: 2390000,
-      color: "oq",
+      color: "bej",
       style: "klassik",
       badges: [],
       image: "assets/img/doors/photo/sand-duo.png",
-      short: "Ikki qanotli och rangli eshik: vertikal panellar va oltin chiziqlar.",
-      description: "Sand Duo — ikki qanotli, och rangdagi klassik eshik: vertikal panellar, oltin rangli chiziqli bezak va bezakli romli ustki qism. Keng kirish joylari uchun mos.",
-      specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "Ikki qanotli, vertikal panellar" }
+      short: "Qum-bej rang, ikki vertikal panel — yumshoq klassika.",
+      description: "Sand Duo — ikki vertikal panelli, yumshoq bej rangdagi eshik. Iliq ranglardagi yotoqxona va bolalar xonasi uchun mos.",
+      specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "2 ta vertikal panel" }
     },
     {
       id: "grey-stripe",
       name: "Grey Stripe",
       price: 1950000,
       oldPrice: null,
-      color: "oq",
+      color: "kulrang",
       style: "minimalistik",
       badges: [],
       image: "assets/img/doors/photo/grey-stripe.png",
-      short: "Oq eshik: vertikal nozik frezalar va oltin rangli chiziqli ramka.",
-      description: "Grey Stripe — oq rangli zamonaviy MDF eshik: vertikal nozik frezalangan panel oltin rangli chiziq bilan ramkalangan. Har qanday interyerga oson moslashadi.",
-      specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "Vertikal frezalar, oltin chiziq" }
-    },
-    {
-      id: "bianco-gold",
-      name: "Bianco Gold",
-      price: 2900000,
-      oldPrice: null,
-      color: "oq",
-      style: "neoklassik",
-      badges: ["new"],
-      image: "assets/img/doors/photo/bianco-gold.png",
-      short: "Oq eshik: vertikal frezalangan panel va oltin rangli chiziqli ramka.",
-      description: "Bianco Gold — oq rangli neoklassik MDF eshik. Vertikal nozik frezalangan panel nafis oltin rangli chiziq bilan ramkalangan; keng profilli romi eshikka to‘liq ko‘rinish beradi.",
-      specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "Vertikal frezalar, oltin chiziq" }
-    },
-    {
-      id: "crema-classic",
-      name: "Crema Classic",
-      price: 2450000,
-      oldPrice: null,
-      color: "bej",
-      style: "klassik",
-      badges: ["new"],
-      image: "assets/img/doors/photo/crema-classic.png",
-      short: "Krem-oq rangli ikki panelli klassik eshik, oltin rangli furnitura bilan.",
-      description: "Crema Classic — iliq krem-oq rangdagi klassik MDF eshik: ikki frezalangan panel va oltin rangli tutqich bilan ilgaklar. Devor bezaklari (molding) bor interyerlarga yaxshi mos keladi.",
-      specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "2 ta frezalangan panel" }
-    },
-    {
-      id: "vetro-grande",
-      name: "Vetro Grande",
-      price: 4200000,
-      oldPrice: null,
-      color: "oq",
-      style: "shishali",
-      badges: ["new"],
-      image: "assets/img/doors/photo/vetro-grande.png",
-      short: "Ikki qanotli oq eshik: bezakli vitraj shisha va pastda frezalangan panellar.",
-      description: "Vetro Grande — ikki qanotli oq MDF eshik: keng bezakli vitraj shisha, tor yon oyna, pastda frezalangan panellar va ustida pediment (korniz) bezagi. Keng kirish joylari va zallar uchun.",
-      specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Bezakli (vitraj)", "Dizayn": "Ikki qanotli, vitraj shisha" }
+      short: "Och kulrang, vertikal nozik frezalar bilan.",
+      description: "Grey Stripe — neytral kulrang rang va vertikal nozik frezalar. Har qanday interyerga oson moslashadigan amaliy va zamonaviy eshik.",
+      specs: { "Material": "MDF", "Qoplama": "Matovaya plyonka", "Shisha": "Yo‘q", "Dizayn": "Vertikal frezalar" }
     }
   ];
 
