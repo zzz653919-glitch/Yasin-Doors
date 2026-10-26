@@ -11,7 +11,7 @@ const path = require("path");
 const zlib = require("zlib");
 
 const ROOT = path.join(__dirname, "..");
-const IDS = ["classic-royal", "vetro-bianco", "neo-arka", "sand-duo", "grey-stripe"];
+const IDS = ["classic-royal", "vetro-bianco", "neo-arka", "sand-duo", "grey-stripe", "bianco-gold", "crema-classic", "vetro-grande"];
 
 /** Minimal PNG dekoder (8-bit RGBA, interlace yo'q): alfa kanalni qaytaradi */
 function pngAlpha(file) {
@@ -41,12 +41,12 @@ function pngAlpha(file) {
   return { w, h, alpha };
 }
 
-test("5 ta rasm: haqiqiy shaffoflik (burchaklar shaffof, obyekt noshaffof, yumshoq qirra)", () => {
+test("8 ta rasm: haqiqiy shaffoflik (burchaklar shaffof, obyekt noshaffof, yumshoq qirra)", () => {
   for (const id of IDS) {
     const f = path.join(ROOT, "public/assets/img/doors/photo", id + ".png");
     assert.ok(fs.existsSync(f), id);
     const { w, h, alpha } = pngAlpha(f);
-    assert.ok(w >= 500 && h >= 1000, id + " sifat (o'lcham) saqlangan: " + w + "×" + h);
+    assert.ok(w >= 400 && h >= 850, id + " sifat (o'lcham) saqlangan: " + w + "×" + h);   // fotodagi obyekt hajmi (kattalashtirilmaydi)
     for (const [x, y] of [[0, 0], [w - 1, 0], [0, h - 1], [w - 1, h - 1]]) assert.equal(alpha(x, y), 0, id + " burchak shaffof");
     let transparent = 0, opaque = 0, semi = 0;
     for (let y = 0; y < h; y += 2) for (let x = 0; x < w; x += 2) { const a = alpha(x, y); if (a < 8) transparent++; else if (a > 247) opaque++; else semi++; }
@@ -64,7 +64,7 @@ test("asl fotosuratlar zaxirada, statik katalog yangi rasmlarga ishora qiladi va
   for (const id of IDS) assert.equal(PRODUCTS.find(p => p.id === id).image, "assets/img/doors/photo/" + id + ".png");
   for (const p of PRODUCTS) assert.ok(fs.existsSync(path.join(ROOT, "public", p.image)), p.id + " rasmi topilmadi: " + p.image);
   // Eski SVG illyustratsiyalar o'chirilmagan (zaxira)
-  for (const id of IDS) assert.ok(fs.existsSync(path.join(ROOT, "public/assets/img/doors", id + ".svg")), id + ".svg saqlangan");
+  for (const id of IDS.slice(0, 5)) assert.ok(fs.existsSync(path.join(ROOT, "public/assets/img/doors", id + ".svg")), id + ".svg saqlangan");
   // statik sahifalardagi rasmlar mavjud
   for (const f of ["index.html", "about.html"]) {
     const html = fs.readFileSync(path.join(ROOT, "public", f), "utf8");
@@ -89,4 +89,59 @@ test("baza: eski SVG yo'li yangi PNG ga almashadi, admin qo'ygan boshqa rasm saq
   assert.equal(rows.find(r => r.name === "Slash").image, "assets/img/doors/photo/neo-arka.png");
   assert.equal(rows.find(r => r.name === "Admin rasmi").image, "/api/image/7");
   for (const f of [dbFile, dbFile + "-wal", dbFile + "-shm"]) { try { fs.unlinkSync(f); } catch (e) { /* yo'q */ } }
+});
+
+test("yangi 3 ta mahsulot statik katalogda: nom, narx, rasm; takroriy fotolar qo'shilmagan", () => {
+  const { PRODUCTS } = require("../public/assets/js/products.js");
+  for (const [id, name] of [["bianco-gold", "Bianco Gold"], ["crema-classic", "Crema Classic"], ["vetro-grande", "Vetro Grande"]]) {
+    const p = PRODUCTS.find(x => x.id === id);
+    assert.ok(p && p.name === name && p.price > 0 && p.sizes.length >= 1 && p.short.length > 10 && p.description.length > 30, id);
+  }
+  assert.equal(new Set(PRODUCTS.map(p => p.id)).size, PRODUCTS.length, "id'lar takrorlanmaydi");
+  assert.equal(new Set(PRODUCTS.map(p => p.image)).size, PRODUCTS.length, "bitta rasm ikki mahsulotda ishlatilmagan");
+  const crypto = require("crypto");
+  const hashes = fs.readdirSync(path.join(ROOT, "design-src/door-photos/original")).map(f => crypto.createHash("sha1").update(fs.readFileSync(path.join(ROOT, "design-src/door-photos/original", f))).digest("hex"));
+  assert.equal(new Set(hashes).size, hashes.length, "asl fotolar orasida takror yo'q");
+});
+
+test("baza: yangi 3 mahsulot bir marta qo'shiladi (bo'sh bazada emas), o'chirilsa qaytmaydi; eski matn faqat o'zgartirilmagan bo'lsa yangilanadi", async () => {
+  const dbFile = path.join(os.tmpdir(), `yd-photo-${process.pid}-${Date.now()}.db`);
+  process.env.DATABASE_URL = "file:" + dbFile.replace(/\\/g, "/");
+  const fresh = () => { for (const k of Object.keys(require.cache)) if (/[\\/]lib[\\/](db|photo-catalog)\.js$/.test(k)) delete require.cache[k]; return require("../lib/db"); };
+  let db = fresh(); await db.init();
+  assert.equal(Number((await db.get("SELECT COUNT(*) AS n FROM products")).n), 0, "bo'sh bazaga qo'shilmaydi (statik katalog ishlaydi)");
+  const t = new Date().toISOString();
+  const ins = (id, name, short, img) => db.run("INSERT INTO products (id, name, short, description, price, color, style, sizes, image, active, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,1,?,?)", [id, name, short, "eski tavsif", 1000, "oq", "klassik", '["800 × 2000"]', img, t, t]);
+  await ins("classic-royal", "Classic Royal", "Oq rangli, to‘rt panelli klassik eshik. Oltin rangli tutqich bilan.", "assets/img/doors/classic-royal.svg");
+  await ins("neo-arka", "Neo Arka", "Admin o'zgartirgan matn", "assets/img/doors/neo-arka.svg");
+  db = fresh(); await db.init();   // cold start
+  const ids = (await db.all("SELECT id FROM products")).map(r => r.id);
+  for (const id of ["bianco-gold", "crema-classic", "vetro-grande"]) assert.ok(ids.includes(id), id + " qo'shildi");
+  const cr = await db.get("SELECT short, image FROM products WHERE id = 'classic-royal'");
+  assert.match(cr.short, /ikki panelli/); assert.equal(cr.image, "assets/img/doors/photo/classic-royal.png");
+  assert.equal((await db.get("SELECT short FROM products WHERE id = 'neo-arka'")).short, "Admin o'zgartirgan matn", "admin matni saqlandi");
+  await db.run("DELETE FROM products WHERE id = 'bianco-gold'");
+  db = fresh(); await db.init();
+  assert.equal((await db.all("SELECT id FROM products WHERE id = 'bianco-gold'")).length, 0, "admin o'chirgan mahsulot qaytmaydi");
+  assert.equal((await db.all("SELECT id FROM products WHERE id IN ('crema-classic','vetro-grande')")).length, 2);
+  for (const f of [dbFile, dbFile + "-wal", dbFile + "-shm"]) { try { fs.unlinkSync(f); } catch (e) { /* yo'q */ } }
+});
+
+test("konstruktor foto rejimi: har bir foto eshikning kichik rasmi, havolasi va o'xshash 3D modeli bor", () => {
+  const fs2 = require("fs"), path2 = require("path");
+  const js = fs2.readFileSync(path2.join(ROOT, "public/assets/js/configurator-photo.js"), "utf8");
+  const html = fs2.readFileSync(path2.join(ROOT, "public/configurator.html"), "utf8");
+  const C = require(path2.join(ROOT, "public/assets/js/configurator-data.js"));
+  assert.match(html, /configurator-photo\.js/);
+  assert.match(html, /2D foto ko‘rinish — 3D model emas/, "2D belgisi yozilgan");
+  const photo = require(path2.join(ROOT, "public/assets/js/products.js")).PRODUCTS.filter(p => /\/doors\/photo\//.test(p.image));
+  assert.equal(photo.length, 8);
+  for (const p of photo) {
+    const th = path2.join(ROOT, "public", p.image.replace("/doors/photo/", "/doors/photo/thumb/"));
+    assert.ok(fs2.existsSync(th), p.id + " kichik rasmi bor");
+    assert.ok(fs2.statSync(th).size < 120 * 1024, p.id + " kichik rasmi yengil");
+    const m = new RegExp('"' + p.id + '":\\s*\\{\\s*model:\\s*"(\\w+)",\\s*variant:\\s*"(\\w+)"').exec(js);
+    assert.ok(m, p.id + " uchun o'xshash 3D model ko'rsatilgan");
+    assert.ok(C.MODELS[m[1]] && C.MODELS[m[1]].variants[m[2]], p.id + ": o'xshash model/variant mavjud konstruktorda");
+  }
 });
