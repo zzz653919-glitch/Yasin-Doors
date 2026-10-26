@@ -82,7 +82,6 @@ YD.whenReady(function () {
           '<button class="fav-btn" type="button" data-fav="' + esc(p.id) + '" aria-label="Sevimlilarga qo‘shish">' + icon("heart") + "</button>" +
         "</div>" +
 
-        (/\/doors\/photo\//.test(p.image || "") ? '<a class="btn btn--outline btn--block" style="margin-top:12px" href="/Configurator?photo=' + encodeURIComponent(p.id) + '">Konstruktorda ko‘rish (2D foto)</a>' : "") +
         '<ul class="perks">' +
           "<li>" + icon("ruler") + "<span>O‘lchov olish va buyurtma asosida tayyorlash shartlarini menejer bilan kelishasiz.</span></li>" +
           "<li>" + icon("truck") + "<span>Yetkazib berish va o‘rnatish manzilingizga qarab alohida kelishiladi.</span></li>" +

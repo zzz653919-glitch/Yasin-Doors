@@ -541,5 +541,5 @@
   }
 
   YD.whenReady(start);
-  window.YDConfigurator = { get state() { return state; }, loadConfig: function (cfg, say) { replaceAll(cfg, say); if (state.scene) { state.scene.setView("front"); markView("front"); } }, doorSVG: doorSVG, setDoorBuilder: function (fn) { if (state.scene) state.scene.setDoorBuilder(fn); } };
+  window.YDConfigurator = { get state() { return state; }, doorSVG: doorSVG, setDoorBuilder: function (fn) { if (state.scene) state.scene.setDoorBuilder(fn); } };
 })();
