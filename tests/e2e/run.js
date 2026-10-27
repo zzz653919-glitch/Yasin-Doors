@@ -18,7 +18,7 @@ const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); if (!c) fails++
 
 async function seed() {
   const db = require(path.join(ROOT, "lib/db")), store = require(path.join(ROOT, "lib/store"));
-  const { PRODUCTS } = require(path.join(ROOT, "public/assets/js/products.js"));
+  const { PRODUCTS } = require(path.join(ROOT, "design-src/catalog-backup/products-19-photo-doors.js"));
   await db.init();
   for (const p of PRODUCTS) {
     await store.createProduct({ name: p.name, short: p.short, description: p.description, price: p.price, old_price: p.oldPrice, color: p.color, style: p.style, material: "MDF", sizes: p.sizes, image: p.image, stock: 10, active: true, is_new: false, is_popular: false }, { id: 1, username: "e2e" });

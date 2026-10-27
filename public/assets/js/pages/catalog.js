@@ -108,13 +108,19 @@ YD.whenReady(function () {
       loadInfo.textContent = list.length > shown ? "Ko‘rsatilgan: " + shown + " / " + list.length : "";
     } else {
       loadWrap.hidden = true;
-      grid.innerHTML = '<div style="grid-column:1/-1">' + YD.emptyState({
+      grid.innerHTML = '<div style="grid-column:1/-1">' + (YD.data.PRODUCTS.length ? YD.emptyState({
         icon: "search",
         title: "Hech narsa topilmadi",
         text: "Qidiruv so‘zini o‘zgartirib yoki filtrlarni tozalab ko‘ring.",
         href: "/Products",
         button: "Filtrlarni tozalash"
-      }) + "</div>";
+      }) : YD.emptyState({
+        icon: "search",
+        title: "Katalog hozircha bo‘sh",
+        text: "Yangi eshiklar tez orada qo‘shiladi. Savollar bo‘lsa — biz bilan bog‘laning.",
+        href: "/Contact",
+        button: "Aloqa"
+      })) + "</div>";
     }
 
     document.querySelectorAll("[data-cat]").forEach(function (b) { b.classList.toggle("is-active", state.cats.indexOf(b.dataset.cat) !== -1); b.setAttribute("aria-pressed", b.classList.contains("is-active")); });
