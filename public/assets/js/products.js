@@ -42,7 +42,7 @@
       color: "oq",
       style: "klassik",
       badges: ["popular"],
-      image: "assets/img/doors/photo/classic-royal.png",
+      image: "assets/img/doors/photo/dark/classic-royal.png",
       short: "Oq rangli, ikki panelli klassik eshik. Oltin rangli tutqich va ilgaklar bilan.",
       description: "Classic Royal — an’anaviy ikki panelli frezalangan yuzaga ega klassik MDF eshik. Oq rang har qanday interyerga yorug‘lik va ozodalik bag‘ishlaydi, nafis panellar esa eshikka chuqurlik beradi.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "2 ta frezalangan panel" }
@@ -55,7 +55,7 @@
       color: "bej",
       style: "neoklassik",
       badges: ["popular"],
-      image: "assets/img/doors/photo/neo-arka.png",
+      image: "assets/img/doors/photo/dark/neo-arka.png",
       short: "Krem rangli eshik: vertikal frezalangan panel va oltin rangli chiziqli ramka.",
       description: "Neo Arka — krem rangli neoklassik MDF eshik. Vertikal frezalangan panel oltin rangli chiziq bilan ramkalangan; ramka va naqshli yuza eshikka nafis ko‘rinish beradi.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "Vertikal frezalar, oltin chiziq" }
@@ -68,7 +68,7 @@
       color: "oq",
       style: "shishali",
       badges: [],
-      image: "assets/img/doors/photo/vetro-bianco.png",
+      image: "assets/img/doors/photo/dark/vetro-bianco.png",
       short: "Oq ikki qanotli eshik, bezakli (vitraj) shisha qo‘shimchalari bilan.",
       description: "Vetro Bianco — ikki qanotli oq MDF eshik: keng va tor bezakli shisha oynalar, pastda frezalangan panellar. Yorug‘likni o‘tkazadi va kirish zonasiga hashamat bag‘ishlaydi.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Bezakli (vitraj)", "Dizayn": "Ikki qanotli, bezakli shisha" }
@@ -81,7 +81,7 @@
       color: "oq",
       style: "klassik",
       badges: [],
-      image: "assets/img/doors/photo/sand-duo.png",
+      image: "assets/img/doors/photo/dark/sand-duo.png",
       short: "Ikki qanotli och rangli eshik: vertikal panellar va oltin chiziqlar.",
       description: "Sand Duo — ikki qanotli, och rangdagi klassik eshik: vertikal panellar, oltin rangli chiziqli bezak va bezakli romli ustki qism. Keng kirish joylari uchun mos.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "Ikki qanotli, vertikal panellar" }
@@ -94,7 +94,7 @@
       color: "oq",
       style: "minimalistik",
       badges: [],
-      image: "assets/img/doors/photo/grey-stripe.png",
+      image: "assets/img/doors/photo/dark/grey-stripe.png",
       short: "Oq eshik: vertikal nozik frezalar va oltin rangli chiziqli ramka.",
       description: "Grey Stripe — oq rangli zamonaviy MDF eshik: vertikal nozik frezalangan panel oltin rangli chiziq bilan ramkalangan. Har qanday interyerga oson moslashadi.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "Vertikal frezalar, oltin chiziq" }
@@ -107,7 +107,7 @@
       color: "oq",
       style: "neoklassik",
       badges: ["new"],
-      image: "assets/img/doors/photo/bianco-gold.png",
+      image: "assets/img/doors/photo/dark/bianco-gold.png",
       short: "Oq eshik: vertikal frezalangan panel va oltin rangli chiziqli ramka.",
       description: "Bianco Gold — oq rangli neoklassik MDF eshik. Vertikal nozik frezalangan panel nafis oltin rangli chiziq bilan ramkalangan; keng profilli romi eshikka to‘liq ko‘rinish beradi.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "Vertikal frezalar, oltin chiziq" }
@@ -120,7 +120,7 @@
       color: "bej",
       style: "klassik",
       badges: ["new"],
-      image: "assets/img/doors/photo/crema-classic.png",
+      image: "assets/img/doors/photo/dark/crema-classic.png",
       short: "Krem-oq rangli ikki panelli klassik eshik, oltin rangli furnitura bilan.",
       description: "Crema Classic — iliq krem-oq rangdagi klassik MDF eshik: ikki frezalangan panel va oltin rangli tutqich bilan ilgaklar. Devor bezaklari (molding) bor interyerlarga yaxshi mos keladi.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "2 ta frezalangan panel" }
@@ -133,7 +133,7 @@
       color: "oq",
       style: "shishali",
       badges: ["new"],
-      image: "assets/img/doors/photo/vetro-grande.png",
+      image: "assets/img/doors/photo/dark/vetro-grande.png",
       short: "Ikki qanotli oq eshik: bezakli vitraj shisha va pastda frezalangan panellar.",
       description: "Vetro Grande — ikki qanotli oq MDF eshik: keng bezakli vitraj shisha, tor yon oyna, pastda frezalangan panellar va ustida pediment (korniz) bezagi. Keng kirish joylari va zallar uchun.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Bezakli (vitraj)", "Dizayn": "Ikki qanotli, vitraj shisha" }
@@ -146,7 +146,7 @@
       color: "oq",
       style: "klassik",
       badges: ["new"],
-      image: "assets/img/doors/photo/royal-oak.png",
+      image: "assets/img/doors/photo/dark/royal-oak.png",
       short: "Oymakor naqshli oq-kumush eman teksturali klassik eshik.",
       description: "Royal Oak — yog‘och tolasi ko‘rinadigan oq rangli klassik MDF eshik: oymakor naqshli panellar va bezakli romi bilan.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "Oymakor naqsh, teksturali yuza" }
@@ -159,7 +159,7 @@
       color: "oq",
       style: "klassik",
       badges: ["new"],
-      image: "assets/img/doors/photo/bianco-due.png",
+      image: "assets/img/doors/photo/dark/bianco-due.png",
       short: "Oq rangli ikki panelli klassik eshik, oltin rangli ilgaklar bilan.",
       description: "Bianco Due — oq emalli klassik MDF eshik: ikki frezalangan panel va oltin rangli ilgaklar. Fotosurat vitrinadan olingan.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "2 ta frezalangan panel" }
@@ -172,7 +172,7 @@
       color: "oq",
       style: "neoklassik",
       badges: ["new"],
-      image: "assets/img/doors/photo/fluta-due.png",
+      image: "assets/img/doors/photo/dark/fluta-due.png",
       short: "Oq eshik: ikki panelda vertikal rifli (fluta) bezak.",
       description: "Fluta Due — oq MDF eshik: yuqori va pastki panelda vertikal rifli bezak, romi ustunli.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "Vertikal rifli panellar" }
@@ -185,7 +185,7 @@
       color: "oq",
       style: "shishali",
       badges: ["new"],
-      image: "assets/img/doors/photo/griglia-duo.png",
+      image: "assets/img/doors/photo/dark/griglia-duo.png",
       short: "Ikki qanotli oq eshik: panjarali (to‘rsimon) shisha.",
       description: "Griglia Duo — ikki qanotli oq MDF eshik: panjarali shisha qo‘shimchalari va tor yon oyna.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Xira/tiniq (panjarali)", "Dizayn": "Ikki qanotli, to‘rsimon shisha" }
@@ -198,7 +198,7 @@
       color: "oq",
       style: "klassik",
       badges: ["new"],
-      image: "assets/img/doors/photo/mono-panel.png",
+      image: "assets/img/doors/photo/dark/mono-panel.png",
       short: "Oq rangli bir panelli klassik eshik, oltin rangli tutqich bilan.",
       description: "Mono Panel — oq MDF eshik: bitta katta frezalangan panel va oltin rangli furnitura.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "1 ta frezalangan panel" }
@@ -211,7 +211,7 @@
       color: "oq",
       style: "shishali",
       badges: ["new"],
-      image: "assets/img/doors/photo/nero-vitraj.png",
+      image: "assets/img/doors/photo/dark/nero-vitraj.png",
       short: "Ikki qanotli oq eshik: qora fonli vitraj shisha va oltin chiziqlar.",
       description: "Nero Vitraj — ikki qanotli oq MDF eshik: to‘q rangli vitraj shisha, oltin rangli ilgak va tutqich.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Bezakli (vitraj), to‘q", "Dizayn": "Ikki qanotli, vitraj shisha" }
@@ -224,7 +224,7 @@
       color: "kulrang",
       style: "zamonaviy",
       badges: ["new"],
-      image: "assets/img/doors/photo/nero-line-duo.png",
+      image: "assets/img/doors/photo/dark/nero-line-duo.png",
       short: "Ikki qanotli och kulrang eshik: vertikal qora chiziqlar.",
       description: "Nero Line Duo — ikki qanotli och kulrang MDF eshik: vertikal qora chiziqlar va qora furnitura. Zamonaviy interyer uchun.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "Ikki qanotli, vertikal qora chiziqlar" }
@@ -237,7 +237,7 @@
       color: "oq",
       style: "klassik",
       badges: ["new"],
-      image: "assets/img/doors/photo/silver-royal.png",
+      image: "assets/img/doors/photo/dark/silver-royal.png",
       short: "Oq-kumush eman teksturali eshik, yuqorida oymakor bezak bilan.",
       description: "Silver Royal — oq-kumush rangli klassik MDF eshik: kamarli panellar, yuqorida oymakor bezak va ustunli romi.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "Kamarli panellar, oymakor bezak" }
@@ -250,7 +250,7 @@
       color: "oq",
       style: "neoklassik",
       badges: ["new"],
-      image: "assets/img/doors/photo/bianco-frame.png",
+      image: "assets/img/doors/photo/dark/bianco-frame.png",
       short: "Oq ikki panelli eshik, ustunli romi va korniz bilan.",
       description: "Bianco Frame — oq MDF eshik: ikki panel, ustunli romi va yuqorida korniz.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "2 ta panel, kornizli romi" }
@@ -263,7 +263,7 @@
       color: "kulrang",
       style: "minimalistik",
       badges: ["new"],
-      image: "assets/img/doors/photo/frassino.png",
+      image: "assets/img/doors/photo/dark/frassino.png",
       short: "Och kulrang tekis eshik, yog‘och tolasi teksturasi bilan.",
       description: "Frassino — och kulrang MDF eshik: tekis yuza, yog‘och tolasi teksturasi va qora furnitura. Minimalistik interyer uchun.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "Tekis yuza, tekstura" }
@@ -276,7 +276,7 @@
       color: "oq",
       style: "klassik",
       badges: ["new"],
-      image: "assets/img/doors/photo/silver-panel.png",
+      image: "assets/img/doors/photo/dark/silver-panel.png",
       short: "Oq-kumush teksturali ikki panelli eshik, bezakli panel chetlari bilan.",
       description: "Silver Panel — oq-kumush rangli MDF eshik: ikki panel, bezakli chetlar va ustunli romi.",
       specs: { "Material": "MDF", "Qoplama": "Bo‘yoq (emal)", "Shisha": "Yo‘q", "Dizayn": "2 ta panel, bezakli chet" }

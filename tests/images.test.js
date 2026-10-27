@@ -43,7 +43,7 @@ function pngAlpha(file) {
 
 test("barcha foto rasmlar: haqiqiy shaffoflik (burchaklar shaffof, obyekt noshaffof, yumshoq qirra)", () => {
   for (const id of IDS) {
-    const f = path.join(ROOT, "public/assets/img/doors/photo", id + ".png");
+    const f = path.join(ROOT, "public/assets/img/doors/photo/dark", id + ".png");
     assert.ok(fs.existsSync(f), id);
     const { w, h, alpha } = pngAlpha(f);
     assert.ok(w >= 400 && h >= 850, id + " sifat (o'lcham) saqlangan: " + w + "×" + h);   // fotodagi obyekt hajmi (kattalashtirilmaydi)
@@ -62,7 +62,7 @@ test("asl fotosuratlar zaxirada, statik katalog yangi rasmlarga ishora qiladi va
   const origs = fs.readdirSync(path.join(ROOT, "design-src/door-photos/original")).map(f => f.replace(/\.jpg$/, "").split("+"));   // bitta fotodan ikki eshik: "a+b.jpg"
   for (const id of IDS) assert.ok(origs.some(g => g.includes(id)), id + " asl nusxasi");
   const { PRODUCTS } = require("../public/assets/js/products.js");
-  for (const id of IDS) assert.equal(PRODUCTS.find(p => p.id === id).image, "assets/img/doors/photo/" + id + ".png");
+  for (const id of IDS) assert.equal(PRODUCTS.find(p => p.id === id).image, "assets/img/doors/photo/dark/" + id + ".png");
   for (const p of PRODUCTS) assert.ok(fs.existsSync(path.join(ROOT, "public", p.image)), p.id + " rasmi topilmadi: " + p.image);
   // Eski SVG illyustratsiyalar o'chirilmagan (zaxira)
   for (const id of ["classic-royal", "vetro-bianco", "neo-arka", "sand-duo", "grey-stripe"]) assert.ok(fs.existsSync(path.join(ROOT, "public/assets/img/doors", id + ".svg")), id + ".svg saqlangan");
@@ -166,5 +166,32 @@ test("baza: namunaviy (svg) eshiklar bir marta o'chadi; foto va o'zi rasm yuklag
   await ins("sample-c", "assets/img/doors/yd-min-002.svg");
   db = fresh(); await db.init();
   assert.ok((await left()).includes("sample-c"), "tozalash bir martalik: keyin qo'shilganlar tegilmaydi");
+  for (const f of [dbFile, dbFile + "-wal", dbFile + "-shm"]) { try { fs.unlinkSync(f); } catch (e) { /* yo'q */ } }
+});
+
+test("to'q rasmlar: asl (och) kesmalar zaxirada, shaffoflik (alfa) aynan saqlangan, bazadagi eski yo'l almashadi", async () => {
+  const { PRODUCTS } = require("../public/assets/js/products.js");
+  const photo = PRODUCTS.filter(p => /\/doors\/photo\//.test(p.image));
+  for (const p of photo) {
+    assert.match(p.image, /^assets\/img\/doors\/photo\/dark\/[a-z-]+\.png$/, p.id);
+    const light = path.join(ROOT, "design-src/door-photos/light-cutouts", p.id + ".png");
+    assert.ok(fs.existsSync(light), p.id + " asl (och) kesmasi zaxirada");
+    const a = pngAlpha(light), d = pngAlpha(path.join(ROOT, "public", p.image));
+    assert.equal(a.w, d.w); assert.equal(a.h, d.h);
+    for (let y = 0; y < a.h; y += 37) for (let x = 0; x < a.w; x += 37) assert.equal(d.alpha(x, y), a.alpha(x, y), p.id + " shaffoflik o'zgarmagan");
+  }
+  // bazadagi eski yo'l (bayroq yo'q) → dark; admin yuklagan rasm tegilmaydi
+  const dbFile = path.join(os.tmpdir(), `yd-dark-${process.pid}-${Date.now()}.db`);
+  process.env.DATABASE_URL = "file:" + dbFile.replace(/\\/g, "/");
+  const fresh = () => { for (const k of Object.keys(require.cache)) if (/[\\/]lib[\\/](db|photo-catalog)\.js$/.test(k)) delete require.cache[k]; return require("../lib/db"); };
+  let db = fresh(); await db.init();
+  const t = new Date().toISOString();
+  const ins = (id, img) => db.run("INSERT INTO products (id, name, short, description, price, color, style, sizes, image, active, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,1,?,?)", [id, id, "x", "x", 1000, "oq", "klassik", '["800 × 2000"]', img, t, t]);
+  await ins("classic-royal", "assets/img/doors/photo/classic-royal.png");
+  await ins("sand-duo", "uploads/my-own.jpg");
+  await db.run("DELETE FROM settings WHERE k = 'dark_doors_v1'");
+  db = fresh(); await db.init();
+  assert.equal((await db.get("SELECT image FROM products WHERE id = 'classic-royal'")).image, "assets/img/doors/photo/dark/classic-royal.png");
+  assert.equal((await db.get("SELECT image FROM products WHERE id = 'sand-duo'")).image, "uploads/my-own.jpg", "admin rasmi tegilmadi");
   for (const f of [dbFile, dbFile + "-wal", dbFile + "-shm"]) { try { fs.unlinkSync(f); } catch (e) { /* yo'q */ } }
 });
