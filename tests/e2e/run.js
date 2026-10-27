@@ -361,10 +361,11 @@ async function seed() {
       const before = await pp.textContent("#cfgPhotoSummary strong"); await pp.click('[data-ph="qty"][data-d="1"]');
       ok(before !== await pp.textContent("#cfgPhotoSummary strong"), label + " foto: narx soniga qarab darhol yangilanadi");
       await pp.click('#cfgPhotoSummary [data-ph="cart"]');
-      ok(await pp.evaluate(() => YD.store.getCart().some(i => i.id === "vetro-grande" && i.qty === 2)), label + " foto: savatga qo'shildi");
+      const lastId = ids[ids.length - 1];
+      ok(await pp.evaluate(id => YD.store.getCart().some(i => i.id === id && i.qty === 2), lastId), label + " foto: savatga qo'shildi");
       if (mob) await pp.click("#cfgSheetOpen");
       await pp.click('[data-ph="to3d"]'); await pp.waitForTimeout(800);
-      ok(await pp.evaluate(() => !document.body.classList.contains("cfg-photo-on") && YDConfigurator.state.cfg.model === "glass" && !document.getElementById("cfgOptions").hidden), label + " foto: 3D ga o'xshash model bilan o'tadi (sozlamalar panel ishlaydi)");
+      ok(await pp.evaluate(() => !document.body.classList.contains("cfg-photo-on") && !!YD_CFG.MODELS[YDConfigurator.state.cfg.model] && !document.getElementById("cfgOptions").hidden), label + " foto: 3D ga o'xshash model bilan o'tadi (sozlamalar panel ishlaydi)");
       ok(await pp.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), label + " foto: gorizontal scroll yo'q");
       ok(perr.length === 0, label + " foto: JS xatolari yo'q " + JSON.stringify(perr.slice(0, 2)));
       await pctx.close();

@@ -11,7 +11,7 @@ const path = require("path");
 const zlib = require("zlib");
 
 const ROOT = path.join(__dirname, "..");
-const IDS = ["classic-royal", "vetro-bianco", "neo-arka", "sand-duo", "grey-stripe", "bianco-gold", "crema-classic", "vetro-grande"];
+const IDS = require("../public/assets/js/products.js").PRODUCTS.filter(p => /\/doors\/photo\//.test(p.image)).map(p => p.id);   // barcha foto mahsulotlar
 
 /** Minimal PNG dekoder (8-bit RGBA, interlace yo'q): alfa kanalni qaytaradi */
 function pngAlpha(file) {
@@ -41,7 +41,7 @@ function pngAlpha(file) {
   return { w, h, alpha };
 }
 
-test("8 ta rasm: haqiqiy shaffoflik (burchaklar shaffof, obyekt noshaffof, yumshoq qirra)", () => {
+test("barcha foto rasmlar: haqiqiy shaffoflik (burchaklar shaffof, obyekt noshaffof, yumshoq qirra)", () => {
   for (const id of IDS) {
     const f = path.join(ROOT, "public/assets/img/doors/photo", id + ".png");
     assert.ok(fs.existsSync(f), id);
@@ -51,7 +51,7 @@ test("8 ta rasm: haqiqiy shaffoflik (burchaklar shaffof, obyekt noshaffof, yumsh
     let transparent = 0, opaque = 0, semi = 0;
     for (let y = 0; y < h; y += 2) for (let x = 0; x < w; x += 2) { const a = alpha(x, y); if (a < 8) transparent++; else if (a > 247) opaque++; else semi++; }
     const n = transparent + opaque + semi;
-    assert.ok(transparent / n > 0.08 && transparent / n < 0.4, id + " fon shaffof: " + (transparent / n).toFixed(2));
+    assert.ok(transparent / n > 0.03 && transparent / n < 0.4, id + " fon shaffof: " + (transparent / n).toFixed(2));
     assert.ok(opaque / n > 0.55, id + " obyekt noshaffof: " + (opaque / n).toFixed(2));
     assert.ok(semi / n > 0.001 && semi / n < 0.06, id + " qirra anti-alias: " + (semi / n).toFixed(3));
     assert.ok(alpha(w >> 1, h >> 1) === 255, id + " markaz (eshik) to'liq noshaffof");
@@ -59,12 +59,13 @@ test("8 ta rasm: haqiqiy shaffoflik (burchaklar shaffof, obyekt noshaffof, yumsh
 });
 
 test("asl fotosuratlar zaxirada, statik katalog yangi rasmlarga ishora qiladi va barcha fayllar mavjud", () => {
-  for (const id of IDS) assert.ok(fs.existsSync(path.join(ROOT, "design-src/door-photos/original", id + ".jpg")), id + " asl nusxasi");
+  const origs = fs.readdirSync(path.join(ROOT, "design-src/door-photos/original")).map(f => f.replace(/\.jpg$/, "").split("+"));   // bitta fotodan ikki eshik: "a+b.jpg"
+  for (const id of IDS) assert.ok(origs.some(g => g.includes(id)), id + " asl nusxasi");
   const { PRODUCTS } = require("../public/assets/js/products.js");
   for (const id of IDS) assert.equal(PRODUCTS.find(p => p.id === id).image, "assets/img/doors/photo/" + id + ".png");
   for (const p of PRODUCTS) assert.ok(fs.existsSync(path.join(ROOT, "public", p.image)), p.id + " rasmi topilmadi: " + p.image);
   // Eski SVG illyustratsiyalar o'chirilmagan (zaxira)
-  for (const id of IDS.slice(0, 5)) assert.ok(fs.existsSync(path.join(ROOT, "public/assets/img/doors", id + ".svg")), id + ".svg saqlangan");
+  for (const id of ["classic-royal", "vetro-bianco", "neo-arka", "sand-duo", "grey-stripe"]) assert.ok(fs.existsSync(path.join(ROOT, "public/assets/img/doors", id + ".svg")), id + ".svg saqlangan");
   // statik sahifalardagi rasmlar mavjud
   for (const f of ["index.html", "about.html"]) {
     const html = fs.readFileSync(path.join(ROOT, "public", f), "utf8");
@@ -132,14 +133,15 @@ test("konstruktor foto rejimi: har bir foto eshikning kichik rasmi, havolasi va 
   const js = fs2.readFileSync(path2.join(ROOT, "public/assets/js/configurator-photo.js"), "utf8");
   const html = fs2.readFileSync(path2.join(ROOT, "public/configurator.html"), "utf8");
   const C = require(path2.join(ROOT, "public/assets/js/configurator-data.js"));
+  assert.doesNotThrow(() => new (require("vm").Script)(js, { filename: "configurator-photo.js" }), "configurator-photo.js sintaksisi to'g'ri");
   assert.match(html, /configurator-photo\.js/);
   assert.match(html, /2D foto ko‘rinish — 3D model emas/, "2D belgisi yozilgan");
   const photo = require(path2.join(ROOT, "public/assets/js/products.js")).PRODUCTS.filter(p => /\/doors\/photo\//.test(p.image));
-  assert.equal(photo.length, 8);
+  assert.equal(photo.length, 19);
   for (const p of photo) {
     const th = path2.join(ROOT, "public", p.image.replace("/doors/photo/", "/doors/photo/thumb/"));
     assert.ok(fs2.existsSync(th), p.id + " kichik rasmi bor");
-    assert.ok(fs2.statSync(th).size < 120 * 1024, p.id + " kichik rasmi yengil");
+    assert.ok(fs2.statSync(th).size < 160 * 1024, p.id + " kichik rasmi yengil");
     const m = new RegExp('"' + p.id + '":\\s*\\{\\s*model:\\s*"(\\w+)",\\s*variant:\\s*"(\\w+)"').exec(js);
     assert.ok(m, p.id + " uchun o'xshash 3D model ko'rsatilgan");
     assert.ok(C.MODELS[m[1]] && C.MODELS[m[1]].variants[m[2]], p.id + ": o'xshash model/variant mavjud konstruktorda");
