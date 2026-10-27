@@ -4,13 +4,14 @@ YD.whenReady(function () {
   // Ro‘yxatda yo‘q mahsulotlar oxiriga avtomatik qo‘shiladi.
   var SHOWCASE_ORDER = ["neo-arka", "classic-royal", "vetro-bianco", "sand-duo", "grey-stripe", "bianco-gold", "crema-classic", "vetro-grande", "royal-oak"];
   var showcaseEl = document.getElementById("doorShowcase");
-  if (showcaseEl && window.YDCarousel) {
+  if (showcaseEl && window.YDCarousel && YD.data.PRODUCTS.length) {
     var list = SHOWCASE_ORDER.map(YD.getProduct).filter(Boolean);
     // Katalog katta bo‘lsa (200 ta) hammasini chizmaymiz: karusel va nuqtalar tor ekranda tartibli qolsin
     YD.data.PRODUCTS.forEach(function (p) { if (list.length < 12 && list.indexOf(p) === -1) list.push(p); });
     list = list.slice(0, 12);
     YDCarousel.mount(showcaseEl, list, { interval: 5500, label: "YasinDoors MDF eshiklar kolleksiyasi" });
   }
+  else if (showcaseEl && !YD.data.PRODUCTS.length) { var shSec = showcaseEl.closest("section"); if (shSec) shSec.hidden = true; }   // katalog bo'sh — vitrina yashiriladi
 
 
   /* ---------- Qo‘shimcha bo‘limlar: haqiqiy katalog ma’lumotlari asosida ---------- */
@@ -64,6 +65,7 @@ YD.whenReady(function () {
   var items = YD.data.PRODUCTS.filter(function (p) { return p.badges.indexOf("popular") !== -1; });
   // 4 tadan kam bo‘lsa, qolganlari bilan to‘ldiramiz
   YD.data.PRODUCTS.forEach(function (p) { if (items.length < 4 && items.indexOf(p) === -1) items.push(p); });
+  if (!items.length) { var bsSec = grid.closest("section"); if (bsSec) bsSec.hidden = true; return; }   // katalog bo'sh — bo'lim yashiriladi
   grid.innerHTML = items.slice(0, 4).map(YD.productCard).join("");
   YD.observeReveal(grid);
 });

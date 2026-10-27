@@ -3,7 +3,7 @@ YD.whenReady(function () {
   var grid = document.getElementById("favGrid");
   var toolbar = document.getElementById("favToolbar");
   var subtitle = document.getElementById("favSubtitle");
-  var rendered = "";
+  var rendered = null;
 
   function render() {
     var favs = YD.store.getFavs();
