@@ -1,0 +1,1773 @@
+{
+ "_note": "Katalog tozalashdan OLDIN olib tashlangan mahsulotlar zaxirasi. Rasm fayllari (public/assets/img/doors/*.svg) o'chirilmagan.",
+ "created": "2026-10-27T10:25:58.958Z",
+ "retained": [
+  {
+   "id": "classic-royal",
+   "name": "Classic Royal",
+   "price": 2350000,
+   "image": "assets/img/doors/photo/classic-royal.png"
+  },
+  {
+   "id": "neo-arka",
+   "name": "Neo Arka",
+   "price": 3100000,
+   "image": "assets/img/doors/photo/neo-arka.png"
+  },
+  {
+   "id": "vetro-bianco",
+   "name": "Vetro Bianco",
+   "price": 2600000,
+   "image": "assets/img/doors/photo/vetro-bianco.png"
+  },
+  {
+   "id": "sand-duo",
+   "name": "Sand Duo",
+   "price": 2150000,
+   "image": "assets/img/doors/photo/sand-duo.png"
+  },
+  {
+   "id": "grey-stripe",
+   "name": "Grey Stripe",
+   "price": 1950000,
+   "image": "assets/img/doors/photo/grey-stripe.png"
+  },
+  {
+   "id": "bianco-gold",
+   "name": "Bianco Gold",
+   "price": 2900000,
+   "image": "assets/img/doors/photo/bianco-gold.png"
+  },
+  {
+   "id": "crema-classic",
+   "name": "Crema Classic",
+   "price": 2450000,
+   "image": "assets/img/doors/photo/crema-classic.png"
+  },
+  {
+   "id": "vetro-grande",
+   "name": "Vetro Grande",
+   "price": 4200000,
+   "image": "assets/img/doors/photo/vetro-grande.png"
+  },
+  {
+   "id": "royal-oak",
+   "name": "Royal Oak",
+   "price": 4600000,
+   "image": "assets/img/doors/photo/royal-oak.png"
+  },
+  {
+   "id": "bianco-due",
+   "name": "Bianco Due",
+   "price": 3100000,
+   "image": "assets/img/doors/photo/bianco-due.png"
+  },
+  {
+   "id": "fluta-due",
+   "name": "Fluta Due",
+   "price": 2700000,
+   "image": "assets/img/doors/photo/fluta-due.png"
+  },
+  {
+   "id": "griglia-duo",
+   "name": "Griglia Duo",
+   "price": 3900000,
+   "image": "assets/img/doors/photo/griglia-duo.png"
+  },
+  {
+   "id": "mono-panel",
+   "name": "Mono Panel",
+   "price": 2300000,
+   "image": "assets/img/doors/photo/mono-panel.png"
+  },
+  {
+   "id": "nero-vitraj",
+   "name": "Nero Vitraj",
+   "price": 4100000,
+   "image": "assets/img/doors/photo/nero-vitraj.png"
+  },
+  {
+   "id": "nero-line-duo",
+   "name": "Nero Line Duo",
+   "price": 3500000,
+   "image": "assets/img/doors/photo/nero-line-duo.png"
+  },
+  {
+   "id": "silver-royal",
+   "name": "Silver Royal",
+   "price": 4400000,
+   "image": "assets/img/doors/photo/silver-royal.png"
+  },
+  {
+   "id": "bianco-frame",
+   "name": "Bianco Frame",
+   "price": 2900000,
+   "image": "assets/img/doors/photo/bianco-frame.png"
+  },
+  {
+   "id": "frassino",
+   "name": "Frassino",
+   "price": 2200000,
+   "image": "assets/img/doors/photo/frassino.png"
+  },
+  {
+   "id": "silver-panel",
+   "name": "Silver Panel",
+   "price": 3000000,
+   "image": "assets/img/doors/photo/silver-panel.png"
+  }
+ ],
+ "removed_legacy_samples": [
+  {
+   "id": "linea-grafit",
+   "name": "Linea Grafit",
+   "price": 2750000,
+   "oldPrice": null,
+   "color": "grafit",
+   "style": "minimalistik",
+   "badges": [
+    "new"
+   ],
+   "image": "assets/img/doors/linea-grafit.svg",
+   "short": "Grafit rang, silliq yuza va vertikal metall chiziq.",
+   "description": "Linea Grafit — ortiqcha detallarsiz, silliq yuzali minimalistik eshik. Vertikal metall rangli chiziq zamonaviy kvartira va ofislarga qat’iy, toza ko‘rinish beradi.",
+   "specs": {
+    "Material": "MDF",
+    "Qoplama": "Matovaya plyonka",
+    "Shisha": "Yo‘q",
+    "Dizayn": "Silliq yuza, vertikal molding"
+   },
+   "sizes": [
+    "600 × 2000",
+    "700 × 2000",
+    "800 × 2000",
+    "900 × 2000"
+   ]
+  },
+  {
+   "id": "loft-black",
+   "name": "Loft Black",
+   "price": 3400000,
+   "oldPrice": null,
+   "color": "qora",
+   "style": "loft",
+   "badges": [
+    "new"
+   ],
+   "image": "assets/img/doors/loft-black.svg",
+   "short": "Qora ramka va to‘rsimon shisha — industrial loft uslubi.",
+   "description": "Loft Black — industrial uslubdagi interyerlar uchun qora rangli, to‘rsimon shishali eshik. Ishchi xona, oshxona yoki studiya uchun ajoyib tanlov.",
+   "specs": {
+    "Material": "MDF",
+    "Qoplama": "Matovaya plyonka",
+    "Shisha": "Tiniq shisha",
+    "Dizayn": "2 × 4 to‘rsimon shisha"
+   },
+   "sizes": [
+    "600 × 2000",
+    "700 × 2000",
+    "800 × 2000",
+    "900 × 2000"
+   ]
+  },
+  {
+   "id": "nordic-oak",
+   "name": "Nordic Oak",
+   "price": 2200000,
+   "oldPrice": null,
+   "color": "eman",
+   "style": "zamonaviy",
+   "badges": [
+    "popular"
+   ],
+   "image": "assets/img/doors/nordic-oak.svg",
+   "short": "Och eman teksturasi va gorizontal frezalar — skandinav uslubi.",
+   "description": "Nordic Oak — tabiiy och eman teksturasiga ega iliq va yengil eshik. Gorizontal frezalar skandinav uslubidagi xonalar bilan uyg‘un ko‘rinadi.",
+   "specs": {
+    "Material": "MDF",
+    "Qoplama": "Teksturali plyonka",
+    "Shisha": "Yo‘q",
+    "Dizayn": "4 ta gorizontal freza"
+   },
+   "sizes": [
+    "600 × 2000",
+    "700 × 2000",
+    "800 × 2000",
+    "900 × 2000"
+   ]
+  },
+  {
+   "id": "noir-gold",
+   "name": "Noir Gold",
+   "price": 3900000,
+   "oldPrice": null,
+   "color": "qora",
+   "style": "zamonaviy",
+   "badges": [
+    "new",
+    "popular"
+   ],
+   "image": "assets/img/doors/noir-gold.svg",
+   "short": "Chuqur qora rang va oltin rangli geometrik chiziqlar.",
+   "description": "Noir Gold — premium kolleksiyaning yorqin vakili. Chuqur qora yuzadagi oltin rangli geometrik chiziqlar eshikni interyerning asosiy aksentiga aylantiradi.",
+   "specs": {
+    "Material": "MDF",
+    "Qoplama": "Bo‘yoq (emal)",
+    "Shisha": "Yo‘q",
+    "Dizayn": "Geometrik dekor chiziqlar"
+   },
+   "sizes": [
+    "600 × 2000",
+    "700 × 2000",
+    "800 × 2000",
+    "900 × 2000"
+   ]
+  },
+  {
+   "id": "walnut-glass",
+   "name": "Walnut Glass",
+   "price": 3250000,
+   "oldPrice": null,
+   "color": "yongoq",
+   "style": "shishali",
+   "badges": [],
+   "image": "assets/img/doors/walnut-glass.svg",
+   "short": "Yong‘oq teksturasi va baland vertikal xira shisha.",
+   "description": "Walnut Glass — boy yong‘oq teksturasi va markazdagi baland xira shisha uyg‘unligi. Kabinet va mehmonxona uchun iliq, salobatli yechim.",
+   "specs": {
+    "Material": "MDF",
+    "Qoplama": "Teksturali plyonka",
+    "Shisha": "Xira (matli) shisha",
+    "Dizayn": "Vertikal shisha panel"
+   },
+   "sizes": [
+    "600 × 2000",
+    "700 × 2000",
+    "800 × 2000",
+    "900 × 2000"
+   ]
+  }
+ ],
+ "removed_seed_samples": [
+  {
+   "sku": "YD-MIN-002",
+   "id": "drift-slate",
+   "name": "Drift Slate",
+   "category": "Zamonaviy minimalist",
+   "price": 1590000,
+   "image": "assets/img/doors/yd-min-002.svg"
+  },
+  {
+   "sku": "YD-MIN-003",
+   "id": "mono-latte",
+   "name": "Mono Latte",
+   "category": "Zamonaviy minimalist",
+   "price": 1560000,
+   "image": "assets/img/doors/yd-min-003.svg"
+  },
+  {
+   "sku": "YD-MIN-004",
+   "id": "halo-ash",
+   "name": "Halo Ash",
+   "category": "Zamonaviy minimalist",
+   "price": 2350000,
+   "image": "assets/img/doors/yd-min-004.svg"
+  },
+  {
+   "sku": "YD-MIN-005",
+   "id": "calm-greige",
+   "name": "Calm Greige",
+   "category": "Zamonaviy minimalist",
+   "price": 2550000,
+   "image": "assets/img/doors/yd-min-005.svg"
+  },
+  {
+   "sku": "YD-MIN-006",
+   "id": "orbit-mist",
+   "name": "Orbit Mist",
+   "category": "Zamonaviy minimalist",
+   "price": 2160000,
+   "image": "assets/img/doors/yd-min-006.svg"
+  },
+  {
+   "sku": "YD-MIN-007",
+   "id": "nordic-ash",
+   "name": "Nordic Ash",
+   "category": "Zamonaviy minimalist",
+   "price": 2140000,
+   "image": "assets/img/doors/yd-min-007.svg"
+  },
+  {
+   "sku": "YD-MIN-008",
+   "id": "haven-ash",
+   "name": "Haven Ash",
+   "category": "Zamonaviy minimalist",
+   "price": 1640000,
+   "image": "assets/img/doors/yd-min-008.svg"
+  },
+  {
+   "sku": "YD-MIN-009",
+   "id": "nova-ash",
+   "name": "Nova Ash",
+   "category": "Zamonaviy minimalist",
+   "price": 1590000,
+   "image": "assets/img/doors/yd-min-009.svg"
+  },
+  {
+   "sku": "YD-MIN-010",
+   "id": "ember-sabbia",
+   "name": "Ember Sabbia",
+   "category": "Zamonaviy minimalist",
+   "price": 2010000,
+   "image": "assets/img/doors/yd-min-010.svg"
+  },
+  {
+   "sku": "YD-MIN-011",
+   "id": "kito-greige",
+   "name": "Kito Greige",
+   "category": "Zamonaviy minimalist",
+   "price": 2260000,
+   "image": "assets/img/doors/yd-min-011.svg"
+  },
+  {
+   "sku": "YD-MIN-012",
+   "id": "pavo-cloud",
+   "name": "Pavo Cloud",
+   "category": "Zamonaviy minimalist",
+   "price": 2380000,
+   "image": "assets/img/doors/yd-min-012.svg"
+  },
+  {
+   "sku": "YD-MIN-013",
+   "id": "ione-greige",
+   "name": "Ione Greige",
+   "category": "Zamonaviy minimalist",
+   "price": 2580000,
+   "image": "assets/img/doors/yd-min-013.svg"
+  },
+  {
+   "sku": "YD-MIN-014",
+   "id": "zenit-mist",
+   "name": "Zenit Mist",
+   "category": "Zamonaviy minimalist",
+   "price": 2190000,
+   "image": "assets/img/doors/yd-min-014.svg"
+  },
+  {
+   "sku": "YD-MIN-015",
+   "id": "lark-cloud",
+   "name": "Lark Cloud",
+   "category": "Zamonaviy minimalist",
+   "price": 2100000,
+   "image": "assets/img/doors/yd-min-015.svg"
+  },
+  {
+   "sku": "YD-MIN-016",
+   "id": "solo-ash",
+   "name": "Solo Ash",
+   "category": "Zamonaviy minimalist",
+   "price": 1600000,
+   "image": "assets/img/doors/yd-min-016.svg"
+  },
+  {
+   "sku": "YD-MIN-017",
+   "id": "silk-greige",
+   "name": "Silk Greige",
+   "category": "Zamonaviy minimalist",
+   "price": 1670000,
+   "image": "assets/img/doors/yd-min-017.svg"
+  },
+  {
+   "sku": "YD-MIN-018",
+   "id": "lumen-cloud",
+   "name": "Lumen Cloud",
+   "category": "Zamonaviy minimalist",
+   "price": 2080000,
+   "image": "assets/img/doors/yd-min-018.svg"
+  },
+  {
+   "sku": "YD-MIN-019",
+   "id": "linea-cloud",
+   "name": "Linea Cloud",
+   "category": "Zamonaviy minimalist",
+   "price": 2190000,
+   "image": "assets/img/doors/yd-min-019.svg"
+  },
+  {
+   "sku": "YD-MIN-020",
+   "id": "nube-latte",
+   "name": "Nube Latte",
+   "category": "Zamonaviy minimalist",
+   "price": 2420000,
+   "image": "assets/img/doors/yd-min-020.svg"
+  },
+  {
+   "sku": "YD-MIN-021",
+   "id": "aero-graphite",
+   "name": "Aero Graphite",
+   "category": "Zamonaviy minimalist",
+   "price": 2220000,
+   "image": "assets/img/doors/yd-min-021.svg"
+  },
+  {
+   "sku": "YD-MIN-022",
+   "id": "mira-sabbia",
+   "name": "Mira Sabbia",
+   "category": "Zamonaviy minimalist",
+   "price": 2610000,
+   "image": "assets/img/doors/yd-min-022.svg"
+  },
+  {
+   "sku": "YD-MIN-023",
+   "id": "arco-ash",
+   "name": "Arco Ash",
+   "category": "Zamonaviy minimalist",
+   "price": 1600000,
+   "image": "assets/img/doors/yd-min-023.svg"
+  },
+  {
+   "sku": "YD-MIN-024",
+   "id": "axis-latte",
+   "name": "Axis Latte",
+   "category": "Zamonaviy minimalist",
+   "price": 2110000,
+   "image": "assets/img/doors/yd-min-024.svg"
+  },
+  {
+   "sku": "YD-MIN-025",
+   "id": "plano-ash",
+   "name": "Plano Ash",
+   "category": "Zamonaviy minimalist",
+   "price": 2080000,
+   "image": "assets/img/doors/yd-min-025.svg"
+  },
+  {
+   "sku": "YD-MIN-026",
+   "id": "fjord-graphite",
+   "name": "Fjord Graphite",
+   "category": "Zamonaviy minimalist",
+   "price": 1680000,
+   "image": "assets/img/doors/yd-min-026.svg"
+  },
+  {
+   "sku": "YD-MIN-027",
+   "id": "echo-latte",
+   "name": "Echo Latte",
+   "category": "Zamonaviy minimalist",
+   "price": 2570000,
+   "image": "assets/img/doors/yd-min-027.svg"
+  },
+  {
+   "sku": "YD-MIN-028",
+   "id": "cubo-greige",
+   "name": "Cubo Greige",
+   "category": "Zamonaviy minimalist",
+   "price": 2450000,
+   "image": "assets/img/doors/yd-min-028.svg"
+  },
+  {
+   "sku": "YD-MIN-029",
+   "id": "onda-latte",
+   "name": "Onda Latte",
+   "category": "Zamonaviy minimalist",
+   "price": 2250000,
+   "image": "assets/img/doors/yd-min-029.svg"
+  },
+  {
+   "sku": "YD-MIN-030",
+   "id": "pure-cloud",
+   "name": "Pure Cloud",
+   "category": "Zamonaviy minimalist",
+   "price": 2640000,
+   "image": "assets/img/doors/yd-min-030.svg"
+  },
+  {
+   "sku": "YD-LUX-002",
+   "id": "obsidian-carbon",
+   "name": "Obsidian Carbon",
+   "category": "Premium va luxury",
+   "price": 5180000,
+   "image": "assets/img/doors/yd-lux-002.svg"
+  },
+  {
+   "sku": "YD-LUX-003",
+   "id": "aurum-carbon",
+   "name": "Aurum Carbon",
+   "category": "Premium va luxury",
+   "price": 3940000,
+   "image": "assets/img/doors/yd-lux-003.svg"
+  },
+  {
+   "sku": "YD-LUX-004",
+   "id": "versailles-nero",
+   "name": "Versailles Nero",
+   "category": "Premium va luxury",
+   "price": 5200000,
+   "image": "assets/img/doors/yd-lux-004.svg"
+  },
+  {
+   "sku": "YD-LUX-005",
+   "id": "elysium-walnut",
+   "name": "Elysium Walnut",
+   "category": "Premium va luxury",
+   "price": 5550000,
+   "image": "assets/img/doors/yd-lux-005.svg"
+  },
+  {
+   "sku": "YD-LUX-006",
+   "id": "monarch-linen",
+   "name": "Monarch Linen",
+   "category": "Premium va luxury",
+   "price": 4520000,
+   "image": "assets/img/doors/yd-lux-006.svg"
+  },
+  {
+   "sku": "YD-LUX-007",
+   "id": "opulent-stone",
+   "name": "Opulent Stone",
+   "category": "Premium va luxury",
+   "price": 4470000,
+   "image": "assets/img/doors/yd-lux-007.svg"
+  },
+  {
+   "sku": "YD-LUX-008",
+   "id": "kingsley-onyx",
+   "name": "Kingsley Onyx",
+   "category": "Premium va luxury",
+   "price": 3820000,
+   "image": "assets/img/doors/yd-lux-008.svg"
+  },
+  {
+   "sku": "YD-LUX-009",
+   "id": "medici-walnut",
+   "name": "Medici Walnut",
+   "category": "Premium va luxury",
+   "price": 3800000,
+   "image": "assets/img/doors/yd-lux-009.svg"
+  },
+  {
+   "sku": "YD-LUX-010",
+   "id": "florentia-carbon",
+   "name": "Florentia Carbon",
+   "category": "Premium va luxury",
+   "price": 5370000,
+   "image": "assets/img/doors/yd-lux-010.svg"
+  },
+  {
+   "sku": "YD-LUX-011",
+   "id": "prestige-pearl",
+   "name": "Prestige Pearl",
+   "category": "Premium va luxury",
+   "price": 5460000,
+   "image": "assets/img/doors/yd-lux-011.svg"
+  },
+  {
+   "sku": "YD-LUX-012",
+   "id": "iconic-carbon",
+   "name": "Iconic Carbon",
+   "category": "Premium va luxury",
+   "price": 6710000,
+   "image": "assets/img/doors/yd-lux-012.svg"
+  },
+  {
+   "sku": "YD-LUX-013",
+   "id": "grandeur-stone",
+   "name": "Grandeur Stone",
+   "category": "Premium va luxury",
+   "price": 6620000,
+   "image": "assets/img/doors/yd-lux-013.svg"
+  },
+  {
+   "sku": "YD-LUX-014",
+   "id": "sovereign-graphite",
+   "name": "Sovereign Graphite",
+   "category": "Premium va luxury",
+   "price": 4410000,
+   "image": "assets/img/doors/yd-lux-014.svg"
+  },
+  {
+   "sku": "YD-LUX-015",
+   "id": "imperial-stone",
+   "name": "Imperial Stone",
+   "category": "Premium va luxury",
+   "price": 4360000,
+   "image": "assets/img/doors/yd-lux-015.svg"
+  },
+  {
+   "sku": "YD-LUX-016",
+   "id": "eminence-walnut",
+   "name": "Eminence Walnut",
+   "category": "Premium va luxury",
+   "price": 3690000,
+   "image": "assets/img/doors/yd-lux-016.svg"
+  },
+  {
+   "sku": "YD-LUX-017",
+   "id": "dynasty-cherry",
+   "name": "Dynasty Cherry",
+   "category": "Premium va luxury",
+   "price": 3660000,
+   "image": "assets/img/doors/yd-lux-017.svg"
+  },
+  {
+   "sku": "YD-LUX-018",
+   "id": "sceptre-carbon",
+   "name": "Sceptre Carbon",
+   "category": "Premium va luxury",
+   "price": 5480000,
+   "image": "assets/img/doors/yd-lux-018.svg"
+  },
+  {
+   "sku": "YD-LUX-019",
+   "id": "regal-linen",
+   "name": "Regal Linen",
+   "category": "Premium va luxury",
+   "price": 5560000,
+   "image": "assets/img/doors/yd-lux-019.svg"
+  },
+  {
+   "sku": "YD-LUX-020",
+   "id": "noblesse-graphite",
+   "name": "Noblesse Graphite",
+   "category": "Premium va luxury",
+   "price": 6900000,
+   "image": "assets/img/doors/yd-lux-020.svg"
+  },
+  {
+   "sku": "YD-LUX-021",
+   "id": "cartier-graphite",
+   "name": "Cartier Graphite",
+   "category": "Premium va luxury",
+   "price": 6810000,
+   "image": "assets/img/doors/yd-lux-021.svg"
+  },
+  {
+   "sku": "YD-LUX-022",
+   "id": "lorenzo-stone",
+   "name": "Lorenzo Stone",
+   "category": "Premium va luxury",
+   "price": 4690000,
+   "image": "assets/img/doors/yd-lux-022.svg"
+  },
+  {
+   "sku": "YD-LUX-023",
+   "id": "jubilee-nero",
+   "name": "Jubilee Nero",
+   "category": "Premium va luxury",
+   "price": 4720000,
+   "image": "assets/img/doors/yd-lux-023.svg"
+  },
+  {
+   "sku": "YD-LUX-024",
+   "id": "galleria-carbon",
+   "name": "Galleria Carbon",
+   "category": "Premium va luxury",
+   "price": 5320000,
+   "image": "assets/img/doors/yd-lux-024.svg"
+  },
+  {
+   "sku": "YD-LUX-025",
+   "id": "majestic-onyx",
+   "name": "Majestic Onyx",
+   "category": "Premium va luxury",
+   "price": 5320000,
+   "image": "assets/img/doors/yd-lux-025.svg"
+  },
+  {
+   "sku": "YD-KLS-004",
+   "id": "napoli-pearl",
+   "name": "Napoli Pearl",
+   "category": "Klassik naqshli",
+   "price": 2980000,
+   "image": "assets/img/doors/yd-kls-004.svg"
+  },
+  {
+   "sku": "YD-KLS-005",
+   "id": "ravenna-pearl",
+   "name": "Ravenna Pearl",
+   "category": "Klassik naqshli",
+   "price": 2450000,
+   "image": "assets/img/doors/yd-kls-005.svg"
+  },
+  {
+   "sku": "YD-KLS-006",
+   "id": "siena-mist",
+   "name": "Siena Mist",
+   "category": "Klassik naqshli",
+   "price": 2460000,
+   "image": "assets/img/doors/yd-kls-006.svg"
+  },
+  {
+   "sku": "YD-KLS-007",
+   "id": "cremona-mist",
+   "name": "Cremona Mist",
+   "category": "Klassik naqshli",
+   "price": 2740000,
+   "image": "assets/img/doors/yd-kls-007.svg"
+  },
+  {
+   "sku": "YD-KLS-008",
+   "id": "bologna-bianco",
+   "name": "Bologna Bianco",
+   "category": "Klassik naqshli",
+   "price": 2740000,
+   "image": "assets/img/doors/yd-kls-008.svg"
+  },
+  {
+   "sku": "YD-KLS-009",
+   "id": "parma-sabbia",
+   "name": "Parma Sabbia",
+   "category": "Klassik naqshli",
+   "price": 3500000,
+   "image": "assets/img/doors/yd-kls-009.svg"
+  },
+  {
+   "sku": "YD-KLS-010",
+   "id": "vicenza-milk",
+   "name": "Vicenza Milk",
+   "category": "Klassik naqshli",
+   "price": 3460000,
+   "image": "assets/img/doors/yd-kls-010.svg"
+  },
+  {
+   "sku": "YD-KLS-011",
+   "id": "romano-milk",
+   "name": "Romano Milk",
+   "category": "Klassik naqshli",
+   "price": 2680000,
+   "image": "assets/img/doors/yd-kls-011.svg"
+  },
+  {
+   "sku": "YD-KLS-012",
+   "id": "genova-pearl",
+   "name": "Genova Pearl",
+   "category": "Klassik naqshli",
+   "price": 2700000,
+   "image": "assets/img/doors/yd-kls-012.svg"
+  },
+  {
+   "sku": "YD-KLS-013",
+   "id": "venezia-mist",
+   "name": "Venezia Mist",
+   "category": "Klassik naqshli",
+   "price": 3320000,
+   "image": "assets/img/doors/yd-kls-013.svg"
+  },
+  {
+   "sku": "YD-KLS-014",
+   "id": "lucca-greige",
+   "name": "Lucca Greige",
+   "category": "Klassik naqshli",
+   "price": 2250000,
+   "image": "assets/img/doors/yd-kls-014.svg"
+  },
+  {
+   "sku": "YD-KLS-015",
+   "id": "castello-linen",
+   "name": "Castello Linen",
+   "category": "Klassik naqshli",
+   "price": 2460000,
+   "image": "assets/img/doors/yd-kls-015.svg"
+  },
+  {
+   "sku": "YD-KLS-016",
+   "id": "verona-pearl",
+   "name": "Verona Pearl",
+   "category": "Klassik naqshli",
+   "price": 2150000,
+   "image": "assets/img/doors/yd-kls-016.svg"
+  },
+  {
+   "sku": "YD-KLS-017",
+   "id": "toscana-greige",
+   "name": "Toscana Greige",
+   "category": "Klassik naqshli",
+   "price": 2640000,
+   "image": "assets/img/doors/yd-kls-017.svg"
+  },
+  {
+   "sku": "YD-KLS-018",
+   "id": "bergamo-sabbia",
+   "name": "Bergamo Sabbia",
+   "category": "Klassik naqshli",
+   "price": 2980000,
+   "image": "assets/img/doors/yd-kls-018.svg"
+  },
+  {
+   "sku": "YD-KLS-019",
+   "id": "capri-sabbia",
+   "name": "Capri Sabbia",
+   "category": "Klassik naqshli",
+   "price": 3470000,
+   "image": "assets/img/doors/yd-kls-019.svg"
+  },
+  {
+   "sku": "YD-KLS-020",
+   "id": "pisa-ashwood",
+   "name": "Pisa Ashwood",
+   "category": "Klassik naqshli",
+   "price": 3420000,
+   "image": "assets/img/doors/yd-kls-020.svg"
+  },
+  {
+   "sku": "YD-KLS-021",
+   "id": "amalfi-linen",
+   "name": "Amalfi Linen",
+   "category": "Klassik naqshli",
+   "price": 3280000,
+   "image": "assets/img/doors/yd-kls-021.svg"
+  },
+  {
+   "sku": "YD-KLS-022",
+   "id": "modena-linen",
+   "name": "Modena Linen",
+   "category": "Klassik naqshli",
+   "price": 2300000,
+   "image": "assets/img/doors/yd-kls-022.svg"
+  },
+  {
+   "sku": "YD-KLS-023",
+   "id": "torino-linen",
+   "name": "Torino Linen",
+   "category": "Klassik naqshli",
+   "price": 2510000,
+   "image": "assets/img/doors/yd-kls-023.svg"
+  },
+  {
+   "sku": "YD-KLS-024",
+   "id": "palazzo-greige",
+   "name": "Palazzo Greige",
+   "category": "Klassik naqshli",
+   "price": 2200000,
+   "image": "assets/img/doors/yd-kls-024.svg"
+  },
+  {
+   "sku": "YD-KLS-025",
+   "id": "sorrento-pearl",
+   "name": "Sorrento Pearl",
+   "category": "Klassik naqshli",
+   "price": 2690000,
+   "image": "assets/img/doors/yd-kls-025.svg"
+  },
+  {
+   "sku": "YD-SHI-003",
+   "id": "ultra-graphite",
+   "name": "Ultra Graphite",
+   "category": "Shisha elementli",
+   "price": 3740000,
+   "image": "assets/img/doors/yd-shi-003.svg"
+  },
+  {
+   "sku": "YD-SHI-004",
+   "id": "zefir-walnut",
+   "name": "Zefir Walnut",
+   "category": "Shisha elementli",
+   "price": 3430000,
+   "image": "assets/img/doors/yd-shi-004.svg"
+  },
+  {
+   "sku": "YD-SHI-005",
+   "id": "sfera-graphite",
+   "name": "Sfera Graphite",
+   "category": "Shisha elementli",
+   "price": 2960000,
+   "image": "assets/img/doors/yd-shi-005.svg"
+  },
+  {
+   "sku": "YD-SHI-006",
+   "id": "brio-snow",
+   "name": "Brio Snow",
+   "category": "Shisha elementli",
+   "price": 2760000,
+   "image": "assets/img/doors/yd-shi-006.svg"
+  },
+  {
+   "sku": "YD-SHI-007",
+   "id": "clara-walnut",
+   "name": "Clara Walnut",
+   "category": "Shisha elementli",
+   "price": 3050000,
+   "image": "assets/img/doors/yd-shi-007.svg"
+  },
+  {
+   "sku": "YD-SHI-008",
+   "id": "cristal-slate",
+   "name": "Cristal Slate",
+   "category": "Shisha elementli",
+   "price": 2550000,
+   "image": "assets/img/doors/yd-shi-008.svg"
+  },
+  {
+   "sku": "YD-SHI-009",
+   "id": "aqua-snow",
+   "name": "Aqua Snow",
+   "category": "Shisha elementli",
+   "price": 3780000,
+   "image": "assets/img/doors/yd-shi-009.svg"
+  },
+  {
+   "sku": "YD-SHI-010",
+   "id": "radia-snow",
+   "name": "Radia Snow",
+   "category": "Shisha elementli",
+   "price": 3290000,
+   "image": "assets/img/doors/yd-shi-010.svg"
+  },
+  {
+   "sku": "YD-SHI-011",
+   "id": "perla-walnut",
+   "name": "Perla Walnut",
+   "category": "Shisha elementli",
+   "price": 3250000,
+   "image": "assets/img/doors/yd-shi-011.svg"
+  },
+  {
+   "sku": "YD-SHI-012",
+   "id": "glaze-slate",
+   "name": "Glaze Slate",
+   "category": "Shisha elementli",
+   "price": 3390000,
+   "image": "assets/img/doors/yd-shi-012.svg"
+  },
+  {
+   "sku": "YD-SHI-013",
+   "id": "vitro-slate",
+   "name": "Vitro Slate",
+   "category": "Shisha elementli",
+   "price": 3010000,
+   "image": "assets/img/doors/yd-shi-013.svg"
+  },
+  {
+   "sku": "YD-SHI-014",
+   "id": "alba-slate",
+   "name": "Alba Slate",
+   "category": "Shisha elementli",
+   "price": 2800000,
+   "image": "assets/img/doors/yd-shi-014.svg"
+  },
+  {
+   "sku": "YD-SHI-015",
+   "id": "opale-walnut",
+   "name": "Opale Walnut",
+   "category": "Shisha elementli",
+   "price": 3090000,
+   "image": "assets/img/doors/yd-shi-015.svg"
+  },
+  {
+   "sku": "YD-SHI-016",
+   "id": "prisma-oak",
+   "name": "Prisma Oak",
+   "category": "Shisha elementli",
+   "price": 2610000,
+   "image": "assets/img/doors/yd-shi-016.svg"
+  },
+  {
+   "sku": "YD-SHI-017",
+   "id": "reflex-nero",
+   "name": "Reflex Nero",
+   "category": "Shisha elementli",
+   "price": 3730000,
+   "image": "assets/img/doors/yd-shi-017.svg"
+  },
+  {
+   "sku": "YD-SHI-018",
+   "id": "visio-graphite",
+   "name": "Visio Graphite",
+   "category": "Shisha elementli",
+   "price": 3240000,
+   "image": "assets/img/doors/yd-shi-018.svg"
+  },
+  {
+   "sku": "YD-SHI-019",
+   "id": "diafan-bianco",
+   "name": "Diafan Bianco",
+   "category": "Shisha elementli",
+   "price": 3740000,
+   "image": "assets/img/doors/yd-shi-019.svg"
+  },
+  {
+   "sku": "YD-SHI-020",
+   "id": "opus-slate",
+   "name": "Opus Slate",
+   "category": "Shisha elementli",
+   "price": 2930000,
+   "image": "assets/img/doors/yd-shi-020.svg"
+  },
+  {
+   "sku": "YD-SHI-021",
+   "id": "lucida-nero",
+   "name": "Lucida Nero",
+   "category": "Shisha elementli",
+   "price": 2970000,
+   "image": "assets/img/doors/yd-shi-021.svg"
+  },
+  {
+   "sku": "YD-SHI-022",
+   "id": "iris-graphite",
+   "name": "Iris Graphite",
+   "category": "Shisha elementli",
+   "price": 3620000,
+   "image": "assets/img/doors/yd-shi-022.svg"
+  },
+  {
+   "sku": "YD-SHI-023",
+   "id": "trama-slate",
+   "name": "Trama Slate",
+   "category": "Shisha elementli",
+   "price": 3630000,
+   "image": "assets/img/doors/yd-shi-023.svg"
+  },
+  {
+   "sku": "YD-SHI-024",
+   "id": "xenia-nero",
+   "name": "Xenia Nero",
+   "category": "Shisha elementli",
+   "price": 3790000,
+   "image": "assets/img/doors/yd-shi-024.svg"
+  },
+  {
+   "sku": "YD-SHI-025",
+   "id": "wave-bianco",
+   "name": "Wave Bianco",
+   "category": "Shisha elementli",
+   "price": 3790000,
+   "image": "assets/img/doors/yd-shi-025.svg"
+  },
+  {
+   "sku": "YD-YOG-002",
+   "id": "birch-honey",
+   "name": "Birch Honey",
+   "category": "Yog'och teksturali",
+   "price": 2810000,
+   "image": "assets/img/doors/yd-yog-002.svg"
+  },
+  {
+   "sku": "YD-YOG-003",
+   "id": "larch-wenge",
+   "name": "Larch Wenge",
+   "category": "Yog'och teksturali",
+   "price": 2660000,
+   "image": "assets/img/doors/yd-yog-003.svg"
+  },
+  {
+   "sku": "YD-YOG-004",
+   "id": "quercus-walnut",
+   "name": "Quercus Walnut",
+   "category": "Yog'och teksturali",
+   "price": 2690000,
+   "image": "assets/img/doors/yd-yog-004.svg"
+  },
+  {
+   "sku": "YD-YOG-005",
+   "id": "timber-ashwood",
+   "name": "Timber Ashwood",
+   "category": "Yog'och teksturali",
+   "price": 3330000,
+   "image": "assets/img/doors/yd-yog-005.svg"
+  },
+  {
+   "sku": "YD-YOG-006",
+   "id": "nogal-oak",
+   "name": "Nogal Oak",
+   "category": "Yog'och teksturali",
+   "price": 3340000,
+   "image": "assets/img/doors/yd-yog-006.svg"
+  },
+  {
+   "sku": "YD-YOG-007",
+   "id": "juniper-ashwood",
+   "name": "Juniper Ashwood",
+   "category": "Yog'och teksturali",
+   "price": 3530000,
+   "image": "assets/img/doors/yd-yog-007.svg"
+  },
+  {
+   "sku": "YD-YOG-008",
+   "id": "grove-honey",
+   "name": "Grove Honey",
+   "category": "Yog'och teksturali",
+   "price": 3530000,
+   "image": "assets/img/doors/yd-yog-008.svg"
+  },
+  {
+   "sku": "YD-YOG-009",
+   "id": "taiga-walnut",
+   "name": "Taiga Walnut",
+   "category": "Yog'och teksturali",
+   "price": 2900000,
+   "image": "assets/img/doors/yd-yog-009.svg"
+  },
+  {
+   "sku": "YD-YOG-010",
+   "id": "elm-cherry",
+   "name": "Elm Cherry",
+   "category": "Yog'och teksturali",
+   "price": 2870000,
+   "image": "assets/img/doors/yd-yog-010.svg"
+  },
+  {
+   "sku": "YD-YOG-011",
+   "id": "bosco-oak",
+   "name": "Bosco Oak",
+   "category": "Yog'och teksturali",
+   "price": 2310000,
+   "image": "assets/img/doors/yd-yog-011.svg"
+  },
+  {
+   "sku": "YD-YOG-012",
+   "id": "hazel-walnut",
+   "name": "Hazel Walnut",
+   "category": "Yog'och teksturali",
+   "price": 2280000,
+   "image": "assets/img/doors/yd-yog-012.svg"
+  },
+  {
+   "sku": "YD-YOG-013",
+   "id": "rustico-walnut",
+   "name": "Rustico Walnut",
+   "category": "Yog'och teksturali",
+   "price": 3290000,
+   "image": "assets/img/doors/yd-yog-013.svg"
+  },
+  {
+   "sku": "YD-YOG-014",
+   "id": "cedro-honey",
+   "name": "Cedro Honey",
+   "category": "Yog'och teksturali",
+   "price": 3280000,
+   "image": "assets/img/doors/yd-yog-014.svg"
+  },
+  {
+   "sku": "YD-YOG-015",
+   "id": "alder-chocolate",
+   "name": "Alder Chocolate",
+   "category": "Yog'och teksturali",
+   "price": 3080000,
+   "image": "assets/img/doors/yd-yog-015.svg"
+  },
+  {
+   "sku": "YD-YOG-016",
+   "id": "teak-walnut",
+   "name": "Teak Walnut",
+   "category": "Yog'och teksturali",
+   "price": 3090000,
+   "image": "assets/img/doors/yd-yog-016.svg"
+  },
+  {
+   "sku": "YD-YOG-017",
+   "id": "urban-natural",
+   "name": "Urban Natural",
+   "category": "Yog'och teksturali",
+   "price": 2020000,
+   "image": "assets/img/doors/yd-yog-017.svg"
+  },
+  {
+   "sku": "YD-YOG-018",
+   "id": "olmo-walnut",
+   "name": "Olmo Walnut",
+   "category": "Yog'och teksturali",
+   "price": 2060000,
+   "image": "assets/img/doors/yd-yog-018.svg"
+  },
+  {
+   "sku": "YD-YOG-019",
+   "id": "savanna-chocolate",
+   "name": "Savanna Chocolate",
+   "category": "Yog'och teksturali",
+   "price": 2360000,
+   "image": "assets/img/doors/yd-yog-019.svg"
+  },
+  {
+   "sku": "YD-YOG-020",
+   "id": "forest-walnut",
+   "name": "Forest Walnut",
+   "category": "Yog'och teksturali",
+   "price": 2330000,
+   "image": "assets/img/doors/yd-yog-020.svg"
+  },
+  {
+   "sku": "YD-YOG-021",
+   "id": "fagus-ashwood",
+   "name": "Fagus Ashwood",
+   "category": "Yog'och teksturali",
+   "price": 3240000,
+   "image": "assets/img/doors/yd-yog-021.svg"
+  },
+  {
+   "sku": "YD-YOG-022",
+   "id": "maple-honey",
+   "name": "Maple Honey",
+   "category": "Yog'och teksturali",
+   "price": 3230000,
+   "image": "assets/img/doors/yd-yog-022.svg"
+  },
+  {
+   "sku": "YD-YOG-023",
+   "id": "rovere-wenge",
+   "name": "Rovere Wenge",
+   "category": "Yog'och teksturali",
+   "price": 3030000,
+   "image": "assets/img/doors/yd-yog-023.svg"
+  },
+  {
+   "sku": "YD-YOG-024",
+   "id": "pine-wenge",
+   "name": "Pine Wenge",
+   "category": "Yog'och teksturali",
+   "price": 3040000,
+   "image": "assets/img/doors/yd-yog-024.svg"
+  },
+  {
+   "sku": "YD-YOG-025",
+   "id": "sequoia-honey",
+   "name": "Sequoia Honey",
+   "category": "Yog'och teksturali",
+   "price": 2090000,
+   "image": "assets/img/doors/yd-yog-025.svg"
+  },
+  {
+   "sku": "YD-OQL-001",
+   "id": "dolce-pearl",
+   "name": "Dolce Pearl",
+   "category": "Oq va och rangli",
+   "price": 1580000,
+   "image": "assets/img/doors/yd-oql-001.svg"
+  },
+  {
+   "sku": "YD-OQL-002",
+   "id": "vanilla-snow",
+   "name": "Vanilla Snow",
+   "category": "Oq va och rangli",
+   "price": 2340000,
+   "image": "assets/img/doors/yd-oql-002.svg"
+  },
+  {
+   "sku": "YD-OQL-003",
+   "id": "sorbet-pearl",
+   "name": "Sorbet Pearl",
+   "category": "Oq va och rangli",
+   "price": 2270000,
+   "image": "assets/img/doors/yd-oql-003.svg"
+  },
+  {
+   "sku": "YD-OQL-004",
+   "id": "neve-linen",
+   "name": "Neve Linen",
+   "category": "Oq va och rangli",
+   "price": 2390000,
+   "image": "assets/img/doors/yd-oql-004.svg"
+  },
+  {
+   "sku": "YD-OQL-005",
+   "id": "blanca-greige",
+   "name": "Blanca Greige",
+   "category": "Oq va och rangli",
+   "price": 1780000,
+   "image": "assets/img/doors/yd-oql-005.svg"
+  },
+  {
+   "sku": "YD-OQL-006",
+   "id": "opaline-snow",
+   "name": "Opaline Snow",
+   "category": "Oq va och rangli",
+   "price": 1850000,
+   "image": "assets/img/doors/yd-oql-006.svg"
+  },
+  {
+   "sku": "YD-OQL-007",
+   "id": "lino-natural",
+   "name": "Lino Natural",
+   "category": "Oq va och rangli",
+   "price": 1590000,
+   "image": "assets/img/doors/yd-oql-007.svg"
+  },
+  {
+   "sku": "YD-OQL-008",
+   "id": "ivory-linen",
+   "name": "Ivory Linen",
+   "category": "Oq va och rangli",
+   "price": 2050000,
+   "image": "assets/img/doors/yd-oql-008.svg"
+  },
+  {
+   "sku": "YD-OQL-009",
+   "id": "panna-sabbia",
+   "name": "Panna Sabbia",
+   "category": "Oq va och rangli",
+   "price": 2130000,
+   "image": "assets/img/doors/yd-oql-009.svg"
+  },
+  {
+   "sku": "YD-OQL-010",
+   "id": "hana-cloud",
+   "name": "Hana Cloud",
+   "category": "Oq va och rangli",
+   "price": 2270000,
+   "image": "assets/img/doors/yd-oql-010.svg"
+  },
+  {
+   "sku": "YD-OQL-011",
+   "id": "frost-ashwood",
+   "name": "Frost Ashwood",
+   "category": "Oq va och rangli",
+   "price": 2240000,
+   "image": "assets/img/doors/yd-oql-011.svg"
+  },
+  {
+   "sku": "YD-OQL-012",
+   "id": "kristal-pearl",
+   "name": "Kristal Pearl",
+   "category": "Oq va och rangli",
+   "price": 2360000,
+   "image": "assets/img/doors/yd-oql-012.svg"
+  },
+  {
+   "sku": "YD-OQL-013",
+   "id": "cotton-snow",
+   "name": "Cotton Snow",
+   "category": "Oq va och rangli",
+   "price": 1810000,
+   "image": "assets/img/doors/yd-oql-013.svg"
+  },
+  {
+   "sku": "YD-OQL-014",
+   "id": "gelato-mist",
+   "name": "Gelato Mist",
+   "category": "Oq va och rangli",
+   "price": 1880000,
+   "image": "assets/img/doors/yd-oql-014.svg"
+  },
+  {
+   "sku": "YD-OQL-015",
+   "id": "tenera-pearl",
+   "name": "Tenera Pearl",
+   "category": "Oq va och rangli",
+   "price": 1630000,
+   "image": "assets/img/doors/yd-oql-015.svg"
+  },
+  {
+   "sku": "YD-OQL-016",
+   "id": "meringa-linen",
+   "name": "Meringa Linen",
+   "category": "Oq va och rangli",
+   "price": 2080000,
+   "image": "assets/img/doors/yd-oql-016.svg"
+  },
+  {
+   "sku": "YD-OQL-017",
+   "id": "jasmine-milk",
+   "name": "Jasmine Milk",
+   "category": "Oq va och rangli",
+   "price": 2100000,
+   "image": "assets/img/doors/yd-oql-017.svg"
+  },
+  {
+   "sku": "YD-OQL-018",
+   "id": "quiet-bianco",
+   "name": "Quiet Bianco",
+   "category": "Oq va och rangli",
+   "price": 2390000,
+   "image": "assets/img/doors/yd-oql-018.svg"
+  },
+  {
+   "sku": "YD-OQL-019",
+   "id": "alpina-sabbia",
+   "name": "Alpina Sabbia",
+   "category": "Oq va och rangli",
+   "price": 2450000,
+   "image": "assets/img/doors/yd-oql-019.svg"
+  },
+  {
+   "sku": "YD-OQL-020",
+   "id": "eterna-pearl",
+   "name": "Eterna Pearl",
+   "category": "Oq va och rangli",
+   "price": 2330000,
+   "image": "assets/img/doors/yd-oql-020.svg"
+  },
+  {
+   "sku": "YD-TUQ-002",
+   "id": "shadow-graphite",
+   "name": "Shadow Graphite",
+   "category": "Qora, kulrang va to'q rangli",
+   "price": 2210000,
+   "image": "assets/img/doors/yd-tuq-002.svg"
+  },
+  {
+   "sku": "YD-TUQ-003",
+   "id": "midnight-graphite",
+   "name": "Midnight Graphite",
+   "category": "Qora, kulrang va to'q rangli",
+   "price": 2520000,
+   "image": "assets/img/doors/yd-tuq-003.svg"
+  },
+  {
+   "sku": "YD-TUQ-004",
+   "id": "umber-jet",
+   "name": "Umber Jet",
+   "category": "Qora, kulrang va to'q rangli",
+   "price": 1910000,
+   "image": "assets/img/doors/yd-tuq-004.svg"
+  },
+  {
+   "sku": "YD-TUQ-005",
+   "id": "noctis-chocolate",
+   "name": "Noctis Chocolate",
+   "category": "Qora, kulrang va to'q rangli",
+   "price": 3290000,
+   "image": "assets/img/doors/yd-tuq-005.svg"
+  },
+  {
+   "sku": "YD-TUQ-006",
+   "id": "indigo-wenge",
+   "name": "Indigo Wenge",
+   "category": "Qora, kulrang va to'q rangli",
+   "price": 3120000,
+   "image": "assets/img/doors/yd-tuq-006.svg"
+  },
+  {
+   "sku": "YD-TUQ-007",
+   "id": "gotham-graphite",
+   "name": "Gotham Graphite",
+   "category": "Qora, kulrang va to'q rangli",
+   "price": 3070000,
+   "image": "assets/img/doors/yd-tuq-007.svg"
+  },
+  {
+   "sku": "YD-TUQ-008",
+   "id": "basalt-stone",
+   "name": "Basalt Stone",
+   "category": "Qora, kulrang va to'q rangli",
+   "price": 2920000,
+   "image": "assets/img/doors/yd-tuq-008.svg"
+  },
+  {
+   "sku": "YD-TUQ-009",
+   "id": "obsidian-onyx",
+   "name": "Obsidian Onyx",
+   "category": "Qora, kulrang va to'q rangli",
+   "price": 2350000,
+   "image": "assets/img/doors/yd-tuq-009.svg"
+  },
+  {
+   "sku": "YD-TUQ-010",
+   "id": "lava-jet",
+   "name": "Lava Jet",
+   "category": "Qora, kulrang va to'q rangli",
+   "price": 2260000,
+   "image": "assets/img/doors/yd-tuq-010.svg"
+  },
+  {
+   "sku": "YD-TUQ-011",
+   "id": "hematit-onyx",
+   "name": "Hematit Onyx",
+   "category": "Qora, kulrang va to'q rangli",
+   "price": 2560000,
+   "image": "assets/img/doors/yd-tuq-011.svg"
+  },
+  {
+   "sku": "YD-TUQ-012",
+   "id": "cobalt-wenge",
+   "name": "Cobalt Wenge",
+   "category": "Qora, kulrang va to'q rangli",
+   "price": 1970000,
+   "image": "assets/img/doors/yd-tuq-012.svg"
+  },
+  {
+   "sku": "YD-TUQ-013",
+   "id": "dusk-jet",
+   "name": "Dusk Jet",
+   "category": "Qora, kulrang va to'q rangli",
+   "price": 3250000,
+   "image": "assets/img/doors/yd-tuq-013.svg"
+  },
+  {
+   "sku": "YD-TUQ-014",
+   "id": "kodiak-stone",
+   "name": "Kodiak Stone",
+   "category": "Qora, kulrang va to'q rangli",
+   "price": 2340000,
+   "image": "assets/img/doors/yd-tuq-014.svg"
+  },
+  {
+   "sku": "YD-TUQ-015",
+   "id": "vesper-carbon",
+   "name": "Vesper Carbon",
+   "category": "Qora, kulrang va to'q rangli",
+   "price": 2310000,
+   "image": "assets/img/doors/yd-tuq-015.svg"
+  },
+  {
+   "sku": "YD-TUQ-016",
+   "id": "flint-nero",
+   "name": "Flint Nero",
+   "category": "Qora, kulrang va to'q rangli",
+   "price": 2330000,
+   "image": "assets/img/doors/yd-tuq-016.svg"
+  },
+  {
+   "sku": "YD-TUQ-017",
+   "id": "pitch-graphite",
+   "name": "Pitch Graphite",
+   "category": "Qora, kulrang va to'q rangli",
+   "price": 2320000,
+   "image": "assets/img/doors/yd-tuq-017.svg"
+  },
+  {
+   "sku": "YD-TUQ-018",
+   "id": "raven-slate",
+   "name": "Raven Slate",
+   "category": "Qora, kulrang va to'q rangli",
+   "price": 3020000,
+   "image": "assets/img/doors/yd-tuq-018.svg"
+  },
+  {
+   "sku": "YD-TUQ-019",
+   "id": "tundra-nero",
+   "name": "Tundra Nero",
+   "category": "Qora, kulrang va to'q rangli",
+   "price": 3060000,
+   "image": "assets/img/doors/yd-tuq-019.svg"
+  },
+  {
+   "sku": "YD-TUQ-020",
+   "id": "jaspis-onyx",
+   "name": "Jaspis Onyx",
+   "category": "Qora, kulrang va to'q rangli",
+   "price": 3270000,
+   "image": "assets/img/doors/yd-tuq-020.svg"
+  },
+  {
+   "sku": "YD-GEO-002",
+   "id": "unity-sabbia",
+   "name": "Unity Sabbia",
+   "category": "Geometrik naqshli",
+   "price": 2720000,
+   "image": "assets/img/doors/yd-geo-002.svg"
+  },
+  {
+   "sku": "YD-GEO-003",
+   "id": "quadro-cloud",
+   "name": "Quadro Cloud",
+   "category": "Geometrik naqshli",
+   "price": 2730000,
+   "image": "assets/img/doors/yd-geo-003.svg"
+  },
+  {
+   "sku": "YD-GEO-004",
+   "id": "kubik-nero",
+   "name": "Kubik Nero",
+   "category": "Geometrik naqshli",
+   "price": 2940000,
+   "image": "assets/img/doors/yd-geo-004.svg"
+  },
+  {
+   "sku": "YD-GEO-005",
+   "id": "tessera-cloud",
+   "name": "Tessera Cloud",
+   "category": "Geometrik naqshli",
+   "price": 2930000,
+   "image": "assets/img/doors/yd-geo-005.svg"
+  },
+  {
+   "sku": "YD-GEO-006",
+   "id": "xylo-sabbia",
+   "name": "Xylo Sabbia",
+   "category": "Geometrik naqshli",
+   "price": 3500000,
+   "image": "assets/img/doors/yd-geo-006.svg"
+  },
+  {
+   "sku": "YD-GEO-007",
+   "id": "zigzag-sabbia",
+   "name": "Zigzag Sabbia",
+   "category": "Geometrik naqshli",
+   "price": 3540000,
+   "image": "assets/img/doors/yd-geo-007.svg"
+  },
+  {
+   "sku": "YD-GEO-008",
+   "id": "vector-nero",
+   "name": "Vector Nero",
+   "category": "Geometrik naqshli",
+   "price": 3730000,
+   "image": "assets/img/doors/yd-geo-008.svg"
+  },
+  {
+   "sku": "YD-GEO-009",
+   "id": "pixel-nero",
+   "name": "Pixel Nero",
+   "category": "Geometrik naqshli",
+   "price": 3760000,
+   "image": "assets/img/doors/yd-geo-009.svg"
+  },
+  {
+   "sku": "YD-GEO-010",
+   "id": "hexa-pearl",
+   "name": "Hexa Pearl",
+   "category": "Geometrik naqshli",
+   "price": 2900000,
+   "image": "assets/img/doors/yd-geo-010.svg"
+  },
+  {
+   "sku": "YD-GEO-011",
+   "id": "matrix-pearl",
+   "name": "Matrix Pearl",
+   "category": "Geometrik naqshli",
+   "price": 2890000,
+   "image": "assets/img/doors/yd-geo-011.svg"
+  },
+  {
+   "sku": "YD-GEO-012",
+   "id": "rombo-graphite",
+   "name": "Rombo Graphite",
+   "category": "Geometrik naqshli",
+   "price": 2810000,
+   "image": "assets/img/doors/yd-geo-012.svg"
+  },
+  {
+   "sku": "YD-GEO-013",
+   "id": "zenga-walnut",
+   "name": "Zenga Walnut",
+   "category": "Geometrik naqshli",
+   "price": 2810000,
+   "image": "assets/img/doors/yd-geo-013.svg"
+  },
+  {
+   "sku": "YD-GEO-014",
+   "id": "vertigo-graphite",
+   "name": "Vertigo Graphite",
+   "category": "Geometrik naqshli",
+   "price": 3500000,
+   "image": "assets/img/doors/yd-geo-014.svg"
+  },
+  {
+   "sku": "YD-GEO-015",
+   "id": "sigma-cloud",
+   "name": "Sigma Cloud",
+   "category": "Geometrik naqshli",
+   "price": 3470000,
+   "image": "assets/img/doors/yd-geo-015.svg"
+  },
+  {
+   "sku": "YD-NOD-001",
+   "id": "illusion-mist",
+   "name": "Illusion Mist",
+   "category": "Noodatiy dizaynli",
+   "price": 4140000,
+   "image": "assets/img/doors/yd-nod-001.svg"
+  },
+  {
+   "sku": "YD-NOD-002",
+   "id": "hybrid-graphite",
+   "name": "Hybrid Graphite",
+   "category": "Noodatiy dizaynli",
+   "price": 4100000,
+   "image": "assets/img/doors/yd-nod-002.svg"
+  },
+  {
+   "sku": "YD-NOD-003",
+   "id": "jazz-graphite",
+   "name": "Jazz Graphite",
+   "category": "Noodatiy dizaynli",
+   "price": 3670000,
+   "image": "assets/img/doors/yd-nod-003.svg"
+  },
+  {
+   "sku": "YD-NOD-004",
+   "id": "atlas-nero",
+   "name": "Atlas Nero",
+   "category": "Noodatiy dizaynli",
+   "price": 3670000,
+   "image": "assets/img/doors/yd-nod-004.svg"
+  },
+  {
+   "sku": "YD-NOD-005",
+   "id": "twist-linen",
+   "name": "Twist Linen",
+   "category": "Noodatiy dizaynli",
+   "price": 3460000,
+   "image": "assets/img/doors/yd-nod-005.svg"
+  },
+  {
+   "sku": "YD-NOD-006",
+   "id": "cosmo-bianco",
+   "name": "Cosmo Bianco",
+   "category": "Noodatiy dizaynli",
+   "price": 3470000,
+   "image": "assets/img/doors/yd-nod-006.svg"
+  },
+  {
+   "sku": "YD-NOD-007",
+   "id": "glitch-linen",
+   "name": "Glitch Linen",
+   "category": "Noodatiy dizaynli",
+   "price": 4450000,
+   "image": "assets/img/doors/yd-nod-007.svg"
+  },
+  {
+   "sku": "YD-NOD-008",
+   "id": "fusion-mist",
+   "name": "Fusion Mist",
+   "category": "Noodatiy dizaynli",
+   "price": 4400000,
+   "image": "assets/img/doors/yd-nod-008.svg"
+  },
+  {
+   "sku": "YD-NOD-009",
+   "id": "dada-graphite",
+   "name": "Dada Graphite",
+   "category": "Noodatiy dizaynli",
+   "price": 4070000,
+   "image": "assets/img/doors/yd-nod-009.svg"
+  },
+  {
+   "sku": "YD-NOD-010",
+   "id": "kinetic-linen",
+   "name": "Kinetic Linen",
+   "category": "Noodatiy dizaynli",
+   "price": 4040000,
+   "image": "assets/img/doors/yd-nod-010.svg"
+  },
+  {
+   "sku": "YD-NOD-011",
+   "id": "enigma-nero",
+   "name": "Enigma Nero",
+   "category": "Noodatiy dizaynli",
+   "price": 3390000,
+   "image": "assets/img/doors/yd-nod-011.svg"
+  },
+  {
+   "sku": "YD-NOD-012",
+   "id": "bauhaus-ashwood",
+   "name": "Bauhaus Ashwood",
+   "category": "Noodatiy dizaynli",
+   "price": 4630000,
+   "image": "assets/img/doors/yd-nod-012.svg"
+  },
+  {
+   "sku": "YD-NOD-013",
+   "id": "eclat-mist",
+   "name": "Eclat Mist",
+   "category": "Noodatiy dizaynli",
+   "price": 4340000,
+   "image": "assets/img/doors/yd-nod-013.svg"
+  },
+  {
+   "sku": "YD-NOD-014",
+   "id": "fable-bianco",
+   "name": "Fable Bianco",
+   "category": "Noodatiy dizaynli",
+   "price": 3730000,
+   "image": "assets/img/doors/yd-nod-014.svg"
+  },
+  {
+   "sku": "YD-NOD-015",
+   "id": "chimera-mist",
+   "name": "Chimera Mist",
+   "category": "Noodatiy dizaynli",
+   "price": 3330000,
+   "image": "assets/img/doors/yd-nod-015.svg"
+  }
+ ]
+}
